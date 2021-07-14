@@ -1,6 +1,6 @@
 import outdent from "outdent";
 import { RuleFrontMatter, AccessibilityRequirement } from "../types";
-import { getAccessibilityRequirement } from "../../src/rule/get-accessibility-requirement";
+import { getAccessibilityRequirement } from "../rule/get-accessibility-requirement";
 
 type RuleMetadataArg = { frontmatter: RuleFrontMatter; proposed?: boolean };
 

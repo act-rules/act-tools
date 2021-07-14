@@ -4,21 +4,21 @@ import { getRulePages, getDefinitionPages } from './utils/get-markdown-data';
 import { createFile } from './utils/create-file';
 import { getRuleContent } from './taskforce-rule-page/get-rule-content'
 import { getDefinitionContent } from './taskforce-rule-page/get-definition-content'
-import { program } from 'commander'
+import { Command } from 'commander'
 import { DefinitionPage, RulePage } from './types';
 
-const rulesDirDefault = path.resolve(__dirname, '../node_modules/act-rules-community/_rules')
-const glossaryDirDefault = path.resolve(__dirname, '../node_modules/act-rules-community/pages/glossary')
-
+const program = new Command();
 program
   .option('-i, --ruleIds <id_list>', 'comma separated list of IDs', val => val.split(','))
   .option('-o, --outDir <dirname>', 'Path to output dir')
   .option('-r, --rulesDir <dirname>', 'Path to _rules directory')
   .option('-g, --glossaryDir <dirname>', 'Path to glossary directory')
-  .option('-p, --proposed', 'List the rule with the Proposed rule template')
-  .parse(process.argv)
+  .option('-p, --proposed', 'List the rule with the Proposed rule template');
 
-taskforceMarkdown(program as unknown as TaskforceMarkdownArg)
+program.parse(process.argv);
+const options = program.opts<TaskforceMarkdownArg>();
+
+taskforceMarkdown(options)
   .then(() => {
     console.log('Created taskforce markdown files')
     process.exit()
@@ -27,7 +27,6 @@ taskforceMarkdown(program as unknown as TaskforceMarkdownArg)
     console.error(e)
     process.exit(1)
   })
-
 
 type TaskforceMarkdownArg = {
   rulesDir: string,
@@ -38,10 +37,10 @@ type TaskforceMarkdownArg = {
 }
 
 async function taskforceMarkdown({
-  rulesDir = rulesDirDefault,
-  glossaryDir = glossaryDirDefault,
+  rulesDir = '.',
+  glossaryDir = '.',
   ruleIds = [],
-  outDir = './content/',
+  outDir = '.',
   proposed = false,
 }: TaskforceMarkdownArg): Promise<void> {
   const rulesData = getRulePages(rulesDir)
@@ -49,7 +48,6 @@ async function taskforceMarkdown({
   const glossaryFiles = new Set<string>()
 
   let wcagMapping = getWcagMapping(outDir);
-
   for (let ruleData of rulesData) {
     ruleData = { ...ruleData, proposed }
     if (ruleIds.length && !ruleIds.includes(ruleData.frontmatter?.id)) {
@@ -60,7 +58,8 @@ async function taskforceMarkdown({
     console.log(`Updated ${ruleLink(ruleData)}`)
 
     const { filepath, content } = buildTfRuleFile(ruleData, glossary)
-    await createFile(path.resolve(outDir, 'content', filepath), content)
+    const absolutePath = path.resolve(outDir, 'content', filepath)
+    await createFile(absolutePath, content)
 
     const definitions = parseDefinitions(content)
     definitions.forEach(dfn => glossaryFiles.add(dfn))
@@ -72,8 +71,9 @@ async function taskforceMarkdown({
   }
 
   const content = JSON.stringify(wcagMapping, null, 2);
-  await createFile(path.resolve(outDir, 'wcag-mapping.json'), content)
-  console.log('\nUpdated wcag-mapping.json')
+  const wcagMappingPath = path.resolve(outDir, 'wcag-mapping.json')
+  await createFile(wcagMappingPath, content);
+  console.log(`\nUpdated ${wcagMappingPath}`);
 }
 
 function buildTfRuleFile(ruleData: RulePage, glossary: DefinitionPage[]) {

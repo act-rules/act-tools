@@ -1,5 +1,5 @@
 import { AccessibilityRequirement } from "./get-accessibility-requirement";
-import * as successCriteria from "../../data/sc-urls.json";
+import * as successCriteria from "../data/sc-urls.json";
 
 type SuccessCriterion = {
   num: string;

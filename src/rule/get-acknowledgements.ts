@@ -6,7 +6,7 @@ export function getAcknowledgements(
   acknowledgements: RuleFrontMatter["acknowledgements"],
   contributors: Contributor[]
 ): Acknowledgement[] {
-  const sectionContent = Object.entries(acknowledgements);
+  const sectionContent = Object.entries(acknowledgements || {});
   const sortedSections = sectionContent.sort(sortSections);
 
   return sortedSections.map(([title, content]) => {

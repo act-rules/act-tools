@@ -18,6 +18,20 @@ cd act-tools
 yarn
 ```
 
+## Usage
+
+### Rule Transformer
+
+This tool takes a rule markdown file, and transforms it to a markdown file that the WAI website can consume using Jekyll. To run it, use a command like the following:
+
+```sh
+yarn transform-rule \
+  --rulesDir "../act-rules.github.io/_rules/" \
+  --glossaryDir "../act-rules.github.io/pages/glossary/" \
+  --outDir "../wcag-act-rules/" \
+  --ruleIds 5f99a7,6cfa84
+```
+
 ## Development
 
 The following commands are available for use in development:

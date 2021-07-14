@@ -1,4 +1,4 @@
-import * as techniques from "../../data/techniques-titles.json";
+import * as techniques from "../data/techniques-titles.json";
 import { AccessibilityRequirement } from "./get-accessibility-requirement";
 
 const techniquesTitles: Record<string, string | undefined> = techniques;

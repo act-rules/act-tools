@@ -4,7 +4,7 @@ import {
   getAcknowledgements,
   Acknowledgement,
 } from "../rule/get-acknowledgements";
-import { contributors as contributorsJson } from "../../data/contributors.json";
+import { contributors as contributorsJson } from "../data/contributors.json";
 
 const contributors = contributorsJson as Contributor[];
 

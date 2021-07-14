@@ -15,19 +15,20 @@ import {
  * Parse all markdown files in a given directory and construct metadata of each markdown file
  */
 export const getMarkdownData = (dir: string): MarkdownPage[] => {
-  return globby.sync(`${dir}/**/*.md`).map((markdownPath): MarkdownPage => {
+  const files = globby.sync(`${path.resolve(dir)}/**/*.md`)
+  return files.map((markdownPath): MarkdownPage => {
     const filename = path.parse(markdownPath).base;
     const fileContents = fs.readFileSync(markdownPath, { encoding: "utf-8" });
     const { frontmatter, body, markdownAST } = parsePage(fileContents);
-
-    assert(isRuleFrontmatter(frontmatter));
     return { filename, frontmatter, body, markdownAST };
   });
 };
 
 export const getRulePages = (dir: string): RulePage[] => {
   const rulePages: RulePage[] = [];
-  getMarkdownData(dir).forEach(({ frontmatter, ...page }) => {
+  const markdown = getMarkdownData(dir)
+  markdown.forEach(({ frontmatter, ...page }) => {
+    console.log(page.filename, isRuleFrontmatter(frontmatter))
     if (isRuleFrontmatter(frontmatter)) {
       rulePages.push({ frontmatter, ...page });
     }
@@ -39,8 +40,8 @@ export function isRuleFrontmatter(
   frontmatter: Record<string, unknown>
 ): frontmatter is RuleFrontMatter {
   return (
-    typeof frontmatter["id"] !== "string" &&
-    typeof frontmatter["description"] !== "string"
+    typeof frontmatter["id"] === "string" &&
+    typeof frontmatter["description"] === "string"
   );
 }
 
