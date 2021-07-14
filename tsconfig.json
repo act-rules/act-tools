@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "lib": ["es2015", "es2017", "es2020", "esnext.asynciterable"],
+    "types": ["node", "jest"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es6",
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "pretty": true,
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "outDir": "dist"
+  },
+  "ts-node": {
+    "files": true
+  },
+  "include": ["src/**/*"]
+}
