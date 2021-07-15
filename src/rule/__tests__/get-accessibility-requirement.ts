@@ -13,7 +13,7 @@ describe("getAccessibilityRequirement", () => {
       url: "https://www.w3.org/WAI/WCAG21/Techniques/html/H2",
     });
   });
-  
+
   it("returns success criteria", () => {
     const nonTextContent = getAccessibilityRequirement({
       requirementId: "wcag20:1.1.1",

@@ -24,7 +24,7 @@ export type RuleFrontMatterBase = {
   name: string
   rule_type: 'atomic' | 'composite'
   description: string,
-  accessibility_requirements?: AccessibilityRequirement[]
+  accessibility_requirements?: Record<string, AccessibilityRequirement>
   acknowledgements?: Record<string, string[]>
 }
 
@@ -46,10 +46,10 @@ export type DefinitionFrontMatter = {
 }
 
 export type AccessibilityRequirement = {
-  title: string
   failed: string
   passed: string
   inapplicable: string
+  title?: string
   forConformance?: boolean
 }
 

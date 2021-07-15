@@ -2,7 +2,8 @@ import outdent from "outdent";
 import { parsePage } from "../../utils/parse-page";
 import { createGlossary } from "../../__test-utils";
 import { getRuleContent } from "../get-rule-content";
-import { RulePage } from '../../types';
+import { RulePage } from "../../types";
+import { getDate } from "../get-frontmatter";
 
 describe("getRuleContent", () => {
   const glossaryBase = {
@@ -21,17 +22,26 @@ describe("getRuleContent", () => {
   };
   const glossary = createGlossary(glossaryBase);
 
-  it("runs", () => {
+  it("creates a complete rule page", () => {
     const rulePage = parsePage(outdent`
       ---
       id: 123abc
       name: Hello world
       rule_type: atomic
       description: hello world
+      accessibility_requirements:
+        wcag20:4.1.2: # Name, Role, Value (A)
+          forConformance: true
+          failed: not satisfied
+          passed: further testing needed
+          inapplicable: further testing needed
+      input_aspects:
+        - DOM Tree
       acknowledgements:
         authors:
           - Wilco Fiers
       ---
+
       [hello][], [w3c][]
 
       [hello]: #hello
@@ -51,22 +61,27 @@ describe("getRuleContent", () => {
       github:
         repository: w3c/wcag-act-rules
         path: content/123abc.md
-      # footer: > # Text in footer in HTML
-      #   <p> This is the text in the footer </p>
+      rule_meta:
+        id: 123abc
+        name: "Hello world"
+        rule_type: atomic
+        description: |
+          hello world
+        accessibility_requirements:
+          'wcag20:4.1.2':
+            forConformance: true
+            failed: not satisfied
+            passed: further testing needed
+            inapplicable: further testing needed
+        input_aspects:
+          - handle: DOM Tree
+            url: https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom
+        last_modified: ${getDate()}
+        scs_tested:
+          - handle: Name, Role, Value
+            num: 4.1.2
+            level: A
       ---
-      
-      Rule Type:
-      :   atomic
-      
-      Rule ID:
-      :   123abc
-      
-      Last Modified:
-      :   TODO (format Sep 25, 2019)
-      
-      ## Description
-      
-      hello world
       
       [hello][], [w3c][]
       

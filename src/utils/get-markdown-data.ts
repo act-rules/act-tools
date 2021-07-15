@@ -1,4 +1,3 @@
-import assert from "assert";
 import * as fs from "fs";
 import * as path from "path";
 import globby from "globby";
@@ -15,7 +14,7 @@ import {
  * Parse all markdown files in a given directory and construct metadata of each markdown file
  */
 export const getMarkdownData = (dir: string): MarkdownPage[] => {
-  const files = globby.sync(`${path.resolve(dir)}/**/*.md`)
+  const files = globby.sync(`${path.resolve(dir)}/**/*.md`);
   return files.map((markdownPath): MarkdownPage => {
     const filename = path.parse(markdownPath).base;
     const fileContents = fs.readFileSync(markdownPath, { encoding: "utf-8" });
@@ -26,9 +25,9 @@ export const getMarkdownData = (dir: string): MarkdownPage[] => {
 
 export const getRulePages = (dir: string): RulePage[] => {
   const rulePages: RulePage[] = [];
-  const markdown = getMarkdownData(dir)
+  const markdown = getMarkdownData(dir);
   markdown.forEach(({ frontmatter, ...page }) => {
-    console.log(page.filename, isRuleFrontmatter(frontmatter))
+    console.log(page.filename, isRuleFrontmatter(frontmatter));
     if (isRuleFrontmatter(frontmatter)) {
       rulePages.push({ frontmatter, ...page });
     }
@@ -47,7 +46,8 @@ export function isRuleFrontmatter(
 
 export const getDefinitionPages = (dir: string): DefinitionPage[] => {
   const definitionPages: DefinitionPage[] = [];
-  getMarkdownData(dir).forEach(({ frontmatter, ...page }) => {
+  const markdownFiles = getMarkdownData(dir);
+  markdownFiles.forEach(({ frontmatter, ...page }) => {
     if (isDefinitionFrontmatter(frontmatter)) {
       definitionPages.push({ frontmatter, ...page });
     }
@@ -59,7 +59,7 @@ export function isDefinitionFrontmatter(
   frontmatter: Record<string, unknown>
 ): frontmatter is DefinitionFrontMatter {
   return (
-    typeof frontmatter["title"] !== "string" &&
-    typeof frontmatter["key"] !== "string"
+    typeof frontmatter["title"] === "string" &&
+    typeof frontmatter["key"] === "string"
   );
 }

@@ -18,7 +18,8 @@ export function getMdAcknowledgements({
     "acknowledgments" in frontmatter &&
     typeof acknowledgements === "undefined"
   ) {
-    acknowledgements = frontmatter["acknowledgements"];
+    // Deal with UK spelling
+    acknowledgements = frontmatter["acknowledgments"];
   }
 
   const sections = getAcknowledgements(acknowledgements, contributors);

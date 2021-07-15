@@ -1,7 +1,5 @@
 import { RulePage, DefinitionPage } from "../types";
 import { getFrontmatter } from "./get-frontmatter";
-import { getRuleMetadata } from "./get-rule-metadata";
-import { getRuleDescription } from "./get-rule-description";
 import { getRuleBody } from "./get-rule-body";
 import { getGlossary } from "./get-glossary";
 import { getMdAcknowledgements } from "./get-acknowledgements";
@@ -12,8 +10,6 @@ type RuleGenerator = (ruleData: RulePage, glossary: DefinitionPage[]) => string;
 
 const sectionMethodsInOrder: RuleGenerator[] = [
   getFrontmatter,
-  getRuleMetadata,
-  getRuleDescription,
   getRuleBody,
   getGlossary,
   getMdAcknowledgements,

@@ -1,7 +1,7 @@
 import outdent from "outdent";
 import { parsePage } from "../../utils/parse-page";
 import { getReferenceLinks } from "../get-reference-links";
-import { RulePage } from '../../types';
+import { RulePage } from "../../types";
 
 describe("taskforce-markdown", () => {
   describe("get-reference-links", () => {

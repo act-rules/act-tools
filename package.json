@@ -9,8 +9,8 @@
     "build": "tsc",
     "prebuild": "rimraf dist",
     "develop": "jest --watch",
-    "format": "prettier --write src/**/*.{ts,js}",
-    "lint": "eslint src/**/*.{ts,js}",
+    "format": "prettier --write src/**/*",
+    "lint": "eslint src/**/*",
     "transform-rule": "ts-node src/rule-transform.ts",
     "test": "jest"
   },
@@ -19,6 +19,7 @@
     "fastmatter": "^2.1.1",
     "globby": "^11.0.4",
     "make-dir": "^3.1.0",
+    "moment": "^2.29.1",
     "outdent": "^0.8.0",
     "remark-frontmatter": "^3.0.0",
     "remark-parse": "^9.0.0",

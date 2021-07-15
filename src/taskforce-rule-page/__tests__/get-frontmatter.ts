@@ -1,6 +1,6 @@
 import * as yaml from "js-yaml";
-import { getFrontmatter } from "../get-frontmatter";
-import { RuleFrontMatter, RulePage } from '../../types';
+import { getFrontmatter, getDate } from "../get-frontmatter";
+import { RuleFrontMatter } from "../../types";
 
 function stripDashes(str: string): string {
   return str.replace(/---/g, "");
@@ -8,11 +8,25 @@ function stripDashes(str: string): string {
 
 describe("taskforce-markdown", () => {
   const filenameNoExt = "hello-world-198j8j";
+  const sc214Requirement = {
+    forConformance: true,
+    failed: "not satisfied",
+    passed: "satisfied",
+    inapplicable: "further testing needed",
+  };
+  const frontmatter: RuleFrontMatter = {
+    id: "abc123",
+    name: "hello world",
+    rule_type: "atomic",
+    description: "Some description",
+    input_aspects: ["DOM Tree"],
+    accessibility_requirements: {
+      "wcag21:2.1.4": sc214Requirement,
+    },
+  };
   const ruleData = {
     filename: `${filenameNoExt}.md`,
-    frontmatter: ({
-      name: "hello world",
-    } as RuleFrontMatter)
+    frontmatter,
   };
 
   describe("get-frontmatter", () => {
@@ -44,17 +58,39 @@ describe("taskforce-markdown", () => {
           repository: `w3c/wcag-act-rules`,
           path: `content/${ruleData.filename}`,
         },
+        rule_meta: {
+          id: "abc123",
+          name: "hello world",
+          description: "Some description",
+          rule_type: "atomic",
+          scs_tested: [
+            {
+              num: "2.1.4",
+              handle: "Character Key Shortcuts",
+              level: "A",
+            },
+          ],
+          input_aspects: [
+            {
+              handle: "DOM Tree",
+              url: "https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom",
+            },
+          ],
+          last_modified: getDate(),
+          accessibility_requirements: {
+            "wcag21:2.1.4": sc214Requirement,
+          },
+        },
       });
     });
 
     it("does not include markdown in the title", () => {
-      const frontmatter = getFrontmatter({
+      const name = "`*Hello*` **world, welcome** to _ACT_taskforce_ **";
+      const frontmatterStr = getFrontmatter({
         filename: `${filenameNoExt}.md`,
-        frontmatter: {
-          name: "`*Hello*` **world, welcome** to _ACT_taskforce_ **",
-        },
-      } as unknown as RulePage);
-      const frontmatterData = stripDashes(frontmatter);
+        frontmatter: { ...frontmatter, name },
+      });
+      const frontmatterData = stripDashes(frontmatterStr);
       const data = yaml.load(frontmatterData);
 
       expect(data).toHaveProperty(

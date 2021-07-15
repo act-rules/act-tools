@@ -3,14 +3,14 @@ import { RuleFrontMatter } from "src/types";
 import { getMdAcknowledgements } from "../get-acknowledgements";
 
 const frontmatterFields: RuleFrontMatter = {
-  id: 'foo',
-  name: 'foo',
-  description: '',
-  rule_type: 'atomic',
+  id: "foo",
+  name: "foo",
+  description: "",
+  rule_type: "atomic",
   input_aspects: [],
-  accessibility_requirements: [],
-  acknowledgements: {}
-}
+  accessibility_requirements: {},
+  acknowledgements: {},
+};
 
 describe("taskforce-markdown", () => {
   describe("get-acknowledgements", () => {

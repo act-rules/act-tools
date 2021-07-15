@@ -10,7 +10,6 @@ export function getRuleGlossary(
     outcome: getDefinition("outcome", glossary),
   };
   const keysToSearch = getDefinitionLinks(markdownAST);
-
   while (keysToSearch.length > 0) {
     // Move the key to the "searched" list
     const currentKey = keysToSearch.pop();
@@ -33,9 +32,9 @@ export function getRuleGlossary(
       }
     });
   }
-
   const definitions: DefinitionPage[] = [];
-  Object.values(keysSearched).forEach((definition) => {
+  const dfns = Object.values(keysSearched);
+  dfns.forEach((definition) => {
     if (definition) {
       definitions.push(definition);
     }
