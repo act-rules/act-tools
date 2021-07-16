@@ -49,7 +49,8 @@ describe("getRuleContent", () => {
     `) as RulePage;
     const taskforceMarkdown = getRuleContent(
       { ...rulePage, filename: "123abc.md" },
-      glossary
+      glossary,
+      { matrix: true }
     );
 
     expect(taskforceMarkdown).toBe(outdent`
@@ -91,6 +92,8 @@ describe("getRuleContent", () => {
       {% include_relative glossary/hello.md %}
       {% include_relative glossary/outcome.md %}
       {% include_relative glossary/world.md %}
+      
+      {% include implementations/123abc.md %}
       
       ## Acknowledgements
 
