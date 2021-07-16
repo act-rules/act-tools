@@ -12,7 +12,6 @@ export type MarkdownPage = PageBase & {
 
 export type RulePage = PageBase & {
   frontmatter: RuleFrontMatter
-  proposed?: boolean
 }
 
 export type DefinitionPage = PageBase & {

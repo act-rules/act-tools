@@ -61,6 +61,7 @@ describe("getRuleContent", () => {
       github:
         repository: w3c/wcag-act-rules
         path: content/123abc.md
+      proposed: false
       rule_meta:
         id: 123abc
         name: "Hello world"

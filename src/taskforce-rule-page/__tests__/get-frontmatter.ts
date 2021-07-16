@@ -45,7 +45,7 @@ describe("taskforce-markdown", () => {
     });
 
     it("has the appropriate data in the yaml", () => {
-      const frontmatter = getFrontmatter(ruleData);
+      const frontmatter = getFrontmatter(ruleData, [], { proposed: true });
       const frontmatterData = stripDashes(frontmatter);
       const data = yaml.load(frontmatterData);
 
@@ -58,10 +58,11 @@ describe("taskforce-markdown", () => {
           repository: `w3c/wcag-act-rules`,
           path: `content/${ruleData.filename}`,
         },
+        proposed: true,
         rule_meta: {
           id: "abc123",
           name: "hello world",
-          description: "Some description",
+          description: "Some description\n",
           rule_type: "atomic",
           scs_tested: [
             {

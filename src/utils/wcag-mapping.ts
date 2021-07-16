@@ -17,7 +17,8 @@ export type WcagToActMapping = {
 
 export function updateWcagMapping(
   wcagMapping: WcagMapping[],
-  { frontmatter, filename, proposed }: RulePage
+  { frontmatter, filename }: RulePage,
+  { proposed }: { proposed: boolean }
 ): WcagMapping[] {
   const { id } = frontmatter;
   wcagMapping = wcagMapping.filter(

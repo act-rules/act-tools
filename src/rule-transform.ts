@@ -41,23 +41,23 @@ async function taskforceMarkdown({
   glossaryDir = '.',
   ruleIds = [],
   outDir = '.',
-  proposed = false,
+  proposed = false
 }: TaskforceMarkdownArg): Promise<void> {
   const rulesData = getRulePages(rulesDir)
   const glossary = getDefinitionPages(glossaryDir)
   const glossaryFiles = new Set<string>()
+  const options = { proposed };
 
   let wcagMapping = getWcagMapping(outDir);
   for (let ruleData of rulesData) {
-    ruleData = { ...ruleData, proposed }
     if (ruleIds.length && !ruleIds.includes(ruleData.frontmatter?.id)) {
       continue
     }
     
-    wcagMapping['act-rules'] = updateWcagMapping(wcagMapping['act-rules'], ruleData)
+    wcagMapping['act-rules'] = updateWcagMapping(wcagMapping['act-rules'], ruleData, options)
     console.log(`Updated ${ruleLink(ruleData)}`)
 
-    const { filepath, content } = buildTfRuleFile(ruleData, glossary)
+    const { filepath, content } = buildTfRuleFile(ruleData, glossary, options)
     const absolutePath = path.resolve(outDir, 'content', filepath)
     await createFile(absolutePath, content)
 
@@ -76,10 +76,14 @@ async function taskforceMarkdown({
   console.log(`\nUpdated ${wcagMappingPath}`);
 }
 
-function buildTfRuleFile(ruleData: RulePage, glossary: DefinitionPage[]) {
+function buildTfRuleFile(
+  ruleData: RulePage,
+  glossary: DefinitionPage[],
+  options: Record<string, boolean | undefined>
+) {
   return {
     filepath: ruleData.filename,
-    content: getRuleContent(ruleData, glossary),
+    content: getRuleContent(ruleData, glossary, options),
   }
 }
 

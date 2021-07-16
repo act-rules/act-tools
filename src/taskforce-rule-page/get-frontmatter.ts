@@ -16,13 +16,11 @@ const criteria: Record<
   | undefined
 > = successCriteria;
 
-export const getFrontmatter = ({
-  filename,
-  frontmatter,
-}: {
-  filename: string;
-  frontmatter: RuleFrontMatter;
-}): string => {
+export const getFrontmatter = (
+  { filename, frontmatter }: { filename: string; frontmatter: RuleFrontMatter; },
+  _?: any,
+  options?: Record<string, boolean|undefined>
+): string => {
   const permalink =
     "/standards-guidelines/act/rules/" + filename.replace(".md", "");
   const githubPath = `content/${filename}`;
@@ -36,6 +34,7 @@ export const getFrontmatter = ({
     github:
       repository: w3c/wcag-act-rules
       path: ${githubPath}
+    proposed: ${options?.proposed || false}
     rule_meta:
       ${indent(ruleMeta, 2)}
     ---

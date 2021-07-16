@@ -36,7 +36,7 @@ yarn transform-rule \
 
 The following commands are available for use in development:
 
-- `yarn build`; Compile the TypeScript, and will tell you if there are any type errors
+- `yarn build`: Compile the TypeScript, and will tell you if there are any type errors
 - `yarn test`: Executes all the tests in `__tests__` directories using [Jest](https://jestjs.io/)
 - `yarn develop`: Run tests, and watch for changes
 - `yarn lint`: Check code for lint errors using [ESLint](https://eslint.org/)
