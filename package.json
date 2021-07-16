@@ -21,6 +21,7 @@
     "make-dir": "^3.1.0",
     "moment": "^2.29.1",
     "outdent": "^0.8.0",
+    "pre-commit": "^1.2.2",
     "remark-frontmatter": "^3.0.0",
     "remark-parse": "^9.0.0",
     "rimraf": "^3.0.2",

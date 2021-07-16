@@ -17,9 +17,9 @@ const criteria: Record<
 > = successCriteria;
 
 export const getFrontmatter = (
-  { filename, frontmatter }: { filename: string; frontmatter: RuleFrontMatter; },
-  _?: any,
-  options?: Record<string, boolean|undefined>
+  { filename, frontmatter }: { filename: string; frontmatter: RuleFrontMatter },
+  _?: unknown,
+  options?: Record<string, boolean | undefined>
 ): string => {
   const permalink =
     "/standards-guidelines/act/rules/" + filename.replace(".md", "");
