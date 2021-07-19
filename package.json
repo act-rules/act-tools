@@ -43,7 +43,7 @@
     "typescript": "^4.3.5"
   },
   "jest": {
-    "exclude": "dist",
+    "rootDir": "./src/",
     "transform": {
       ".(ts|tsx)": "ts-jest"
     },
