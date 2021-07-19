@@ -11,12 +11,12 @@ describe("getRuleContent", () => {
       Hello [world][]
 
       [world]: #world
-      [w3c]: //w3.org
+      [w3c]: https://w3.org
     `,
     world: outdent`
-      World of the [ACT-rules community]
+      World of the [ACT-rules community][]
 
-      [act-rules community]: //act-rules.github.io
+      [act-rules community]: https://act-rules.github.io
     `,
     outcome: `All good.`,
   };
@@ -45,7 +45,7 @@ describe("getRuleContent", () => {
       [hello][], [w3c][]
 
       [hello]: #hello
-      [w3c]: //w3.org 'W3C website'
+      [w3c]: https://w3.org 'W3C website'
     `) as RulePage;
     const taskforceMarkdown = getRuleContent(
       { ...rulePage, filename: "123abc.md" },
@@ -89,9 +89,17 @@ describe("getRuleContent", () => {
       
       ## Glossary
       
-      {% include_relative glossary/hello.md %}
-      {% include_relative glossary/outcome.md %}
-      {% include_relative glossary/world.md %}
+      ### Hello {#hello}
+
+      Hello [world][]
+
+      ### Outcome {#outcome}
+
+      All good.
+
+      ### World {#world}
+
+      World of the [ACT-rules community][]
       
       {% include implementations/123abc.md %}
       
@@ -108,8 +116,10 @@ describe("getRuleContent", () => {
       
       This is the first version of this ACT rule.
       
+      [act-rules community]: https://act-rules.github.io
       [hello]: #hello
-      [w3c]: //w3.org 'W3C website'
-    `);
+      [w3c]: https://w3.org 'W3C website'
+      [world]: #world
+    ` + '\n');
   });
 });

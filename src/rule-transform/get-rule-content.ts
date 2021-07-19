@@ -6,6 +6,7 @@ import { getImplementations } from "./rule-content/get-implementations";
 import { getMdAcknowledgements } from "./rule-content/get-acknowledgements";
 import { getChangelog } from "./rule-content/get-changelog";
 import { getReferenceLinks } from "./rule-content/get-reference-links";
+import { getRuleDefinitions } from "../act/get-rule-definitions";
 
 type RuleGenerator = (
   ruleData: RulePage, 
@@ -24,8 +25,9 @@ const sectionMethodsInOrder: RuleGenerator[] = [
 ];
 
 export const getRuleContent: RuleGenerator = (ruleData, glossary, options = {}) => {
+  const ruleDefinitions = getRuleDefinitions(ruleData, glossary);
   const rulePageSections = sectionMethodsInOrder.map((createContent) => {
-    return createContent(ruleData, glossary, options || {});
+    return createContent(ruleData, ruleDefinitions, options);
   });
-  return rulePageSections.join("\n\n");
+  return rulePageSections.join("\n\n") + '\n';
 };

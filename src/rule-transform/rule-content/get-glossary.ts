@@ -1,19 +1,42 @@
+import { Parent } from 'unist';
 import { DefinitionPage } from "../../types";
-import { getRuleGlossary } from "../../utils/get-rule-glossary";
-import { Node } from "unist";
+import { joinStrings } from '../../utils/join-strings'
 
 export const getGlossary = (
-  { markdownAST }: { markdownAST: Node },
+  _: unknown,
   glossary: DefinitionPage[]
 ): string => {
-  const ruleGlossary = getRuleGlossary(markdownAST, glossary);
-  const glossaryIncludes = ruleGlossary.map(getGlossaryMarkdown).join("\n");
-
-  return `## Glossary\n\n` + glossaryIncludes;
+  const glossaryTexts = glossary.map(getGlossaryMarkdown)
+  return joinStrings(`## Glossary`, ...glossaryTexts);
 };
 
-type Definition = ReturnType<typeof getRuleGlossary>[0];
+function getGlossaryMarkdown(definition: DefinitionPage): string {
+  const { title, key } = definition.frontmatter;
+  const heading = `### ${title} {#${key}}`;
+  const body = getDefinitionBody(definition)
+  return joinStrings(heading, body);
+}
 
-function getGlossaryMarkdown({ frontmatter }: Definition) {
-  return `{% include_relative glossary/${frontmatter.key}.md %}`;
+function getDefinitionBody(definition: DefinitionPage): string | string[] {
+  // Delete all lines after the first heading
+  // References are mixed into the bottom of the rule page later
+  const lines = definition.body.split('\n');
+  const headingLineNum = lines.findIndex(line => line.match(/^##/));
+  if (headingLineNum === -1) {
+    return stripDefinitions(definition)
+  }
+
+  lines.splice(headingLineNum);
+  return lines;
+}
+
+function stripDefinitions({ body, markdownAST }: DefinitionPage): string {
+  const AST = markdownAST as Parent;
+  const firstRefLink = AST.children.find(({ type }) => type === 'definition');
+  const refLinkOffset = firstRefLink?.position?.start?.offset;
+
+  return (refLinkOffset
+    ? body.substr(0, refLinkOffset)
+    : body
+  )
 }

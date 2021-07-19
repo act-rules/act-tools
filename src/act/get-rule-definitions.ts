@@ -1,9 +1,9 @@
 import { Node } from "unist";
 import { DefinitionPage } from "../types";
-import { getMarkdownAstNodesOfType } from "./get-markdown-ast-nodes-of-type";
+import { getMarkdownAstNodesOfType } from "../utils/get-markdown-ast-nodes-of-type";
 
-export function getRuleGlossary(
-  markdownAST: Node,
+export function getRuleDefinitions(
+  { markdownAST }: { markdownAST: Node },
   glossary: DefinitionPage[]
 ): DefinitionPage[] {
   const keysSearched: Record<string, DefinitionPage | undefined> = {
