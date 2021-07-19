@@ -1,9 +1,9 @@
 import outdent from "outdent";
 import { parsePage } from "../../utils/parse-page";
-import { createGlossary } from "../../__test-utils";
+import { createGlossary } from "../__test-utils";
 import { getRuleContent } from "../get-rule-content";
 import { RulePage } from "../../types";
-import { getDate } from "../get-frontmatter";
+import { getDate } from "../rule-content/get-frontmatter";
 
 describe("getRuleContent", () => {
   const glossaryBase = {

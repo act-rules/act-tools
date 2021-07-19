@@ -12,7 +12,7 @@ const frontmatterFields: RuleFrontMatter = {
   acknowledgements: {},
 };
 
-describe("taskforce-markdown", () => {
+describe("rule-content", () => {
   describe("get-acknowledgements", () => {
     const acknowledgements = {
       beans: ["great"],

@@ -1,10 +1,10 @@
 import { Node, Parent, Literal } from "unist";
 import { outdent } from "outdent";
-import { AccessibilityRequirement, RuleFrontMatter } from "../types";
-import { parseMarkdown } from "../utils/parse-markdown";
 import moment from "moment";
 import * as yaml from "js-yaml";
-import successCriteria from "../data/sc-urls.json";
+import { AccessibilityRequirement, RuleFrontMatter } from "../../types";
+import { parseMarkdown } from "../../utils/parse-markdown";
+import successCriteria from "../../data/sc-urls.json";
 
 const criteria: Record<
   string,

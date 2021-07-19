@@ -1,12 +1,12 @@
 import * as yaml from "js-yaml";
 import { getFrontmatter, getDate } from "../get-frontmatter";
-import { RuleFrontMatter } from "../../types";
+import { RuleFrontMatter } from "../../../types";
 
 function stripDashes(str: string): string {
   return str.replace(/---/g, "");
 }
 
-describe("taskforce-markdown", () => {
+describe("rule-content", () => {
   const filenameNoExt = "hello-world-198j8j";
   const sc214Requirement = {
     forConformance: true,

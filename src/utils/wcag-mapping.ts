@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { RulePage, RuleFrontMatter } from "../types";
-import { getWcagCriterion } from "../rule/get-wcag-criterion";
+import { getWcagCriterion } from "../act/get-wcag-criterion";
 
 export type WcagMapping = {
   title: string;

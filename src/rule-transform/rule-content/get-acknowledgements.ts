@@ -1,10 +1,10 @@
 import outdent from "outdent";
-import { Contributor, RuleFrontMatter } from "../types";
+import { Contributor, RuleFrontMatter } from "../../types";
 import {
   getAcknowledgements,
   Acknowledgement,
-} from "../rule/get-acknowledgements";
-import { contributors as contributorsJson } from "../data/contributors.json";
+} from "../../act/get-acknowledgements";
+import { contributors as contributorsJson } from "../../data/contributors.json";
 
 const contributors = contributorsJson as Contributor[];
 

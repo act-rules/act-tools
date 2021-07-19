@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { existsSync } from 'fs';
 import outdent from 'outdent';
-import { createFile } from './create-file'
+import { createFile } from '../utils/create-file'
 
 const template = outdent`
   ## Implementations

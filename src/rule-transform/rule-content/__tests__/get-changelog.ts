@@ -1,7 +1,7 @@
 import outdent from "outdent";
 import { getChangelog } from "../get-changelog";
 
-describe("taskforce-markdown", () => {
+describe("rule-content", () => {
   describe("get-changelog", () => {
     it("returns a static changelog", () => {
       const log = getChangelog();

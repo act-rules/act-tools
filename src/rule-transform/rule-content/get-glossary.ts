@@ -1,5 +1,5 @@
-import { DefinitionPage } from "../types";
-import { getRuleGlossary } from "../utils/get-rule-glossary";
+import { DefinitionPage } from "../../types";
+import { getRuleGlossary } from "../../utils/get-rule-glossary";
 import { Node } from "unist";
 
 export const getGlossary = (

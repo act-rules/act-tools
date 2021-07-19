@@ -1,8 +1,8 @@
-import { parsePage } from "../../utils/parse-page";
+import { parsePage } from "../../../utils/parse-page";
 import { getGlossary } from "../get-glossary";
 import { createGlossary } from "../../__test-utils";
 
-describe("taskforce-markdown", () => {
+describe("rule-content", () => {
   describe("get-glossary", () => {
     const glossaryBase = {
       hello: "Hello [world](#world).",

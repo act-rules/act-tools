@@ -1,11 +1,11 @@
 import { RulePage, DefinitionPage } from "../types";
-import { getFrontmatter } from "./get-frontmatter";
-import { getRuleBody } from "./get-rule-body";
-import { getGlossary } from "./get-glossary";
-import { getImplementations } from "./get-implementations";
-import { getMdAcknowledgements } from "./get-acknowledgements";
-import { getChangelog } from "./get-changelog";
-import { getReferenceLinks } from "./get-reference-links";
+import { getFrontmatter } from "./rule-content/get-frontmatter";
+import { getRuleBody } from "./rule-content/get-rule-body";
+import { getGlossary } from "./rule-content/get-glossary";
+import { getImplementations } from "./rule-content/get-implementations";
+import { getMdAcknowledgements } from "./rule-content/get-acknowledgements";
+import { getChangelog } from "./rule-content/get-changelog";
+import { getReferenceLinks } from "./rule-content/get-reference-links";
 
 type RuleGenerator = (
   ruleData: RulePage, 

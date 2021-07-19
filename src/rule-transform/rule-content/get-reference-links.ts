@@ -1,5 +1,5 @@
 import { Parent } from "unist";
-import { RulePage } from "../types";
+import { RulePage } from "../../types";
 
 export function getReferenceLinks({ body, markdownAST }: RulePage): string {
   const children = (markdownAST as Parent).children;

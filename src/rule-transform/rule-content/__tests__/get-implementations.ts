@@ -1,7 +1,7 @@
 import { getImplementations } from "../get-implementations";
 import { RuleFrontMatter } from "src/types";
 
-describe("taskforce-markdown", () => {
+describe("rule-content", () => {
   const frontmatter = { id: 'abc123' } as RuleFrontMatter;
   describe("get-implementations", () => {
     it('is empty when `matrix` is undefined', () => {

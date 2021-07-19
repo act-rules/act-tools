@@ -1,6 +1,6 @@
 import outdent from "outdent";
 import { getDefinitionContent } from "../get-definition-content";
-import { createGlossary } from "../../__test-utils";
+import { createGlossary } from "../__test-utils";
 import { DefinitionPage } from "src/types";
 
 describe("getDefinitionContent", () => {

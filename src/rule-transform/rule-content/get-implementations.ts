@@ -1,4 +1,4 @@
-import { RuleFrontMatter } from '../types';
+import { RuleFrontMatter } from '../../types';
 
 export const getImplementations = (
   { frontmatter }: { frontmatter: RuleFrontMatter; },

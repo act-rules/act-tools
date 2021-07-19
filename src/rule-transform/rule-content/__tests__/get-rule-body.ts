@@ -1,8 +1,8 @@
 import outdent from "outdent";
-import { parseMarkdown } from "../../utils/parse-markdown";
+import { parseMarkdown } from "../../../utils/parse-markdown";
 import { getRuleBody } from "../get-rule-body";
 
-describe("taskforce-markdown", () => {
+describe("rule-content", () => {
   describe("get-rule-body", () => {
     it("returns the trimmed body if there are no reference links", () => {
       const body = outdent`
