@@ -1,29 +1,26 @@
-import { Parent } from 'unist';
+import { Parent } from "unist";
 import { DefinitionPage } from "../../types";
-import { joinStrings } from '../../utils/join-strings'
+import { joinStrings } from "../../utils/join-strings";
 
-export const getGlossary = (
-  _: unknown,
-  glossary: DefinitionPage[]
-): string => {
-  const glossaryTexts = glossary.map(getGlossaryMarkdown)
+export const getGlossary = (_: unknown, glossary: DefinitionPage[]): string => {
+  const glossaryTexts = glossary.map(getGlossaryMarkdown);
   return joinStrings(`## Glossary`, ...glossaryTexts);
 };
 
 function getGlossaryMarkdown(definition: DefinitionPage): string {
   const { title, key } = definition.frontmatter;
   const heading = `### ${title} {#${key}}`;
-  const body = getDefinitionBody(definition)
+  const body = getDefinitionBody(definition);
   return joinStrings(heading, body);
 }
 
 function getDefinitionBody(definition: DefinitionPage): string | string[] {
   // Delete all lines after the first heading
   // References are mixed into the bottom of the rule page later
-  const lines = definition.body.split('\n');
-  const headingLineNum = lines.findIndex(line => line.match(/^##/));
+  const lines = definition.body.split("\n");
+  const headingLineNum = lines.findIndex((line) => line.match(/^##/));
   if (headingLineNum === -1) {
-    return stripDefinitions(definition)
+    return stripDefinitions(definition);
   }
 
   lines.splice(headingLineNum);
@@ -32,11 +29,8 @@ function getDefinitionBody(definition: DefinitionPage): string | string[] {
 
 function stripDefinitions({ body, markdownAST }: DefinitionPage): string {
   const AST = markdownAST as Parent;
-  const firstRefLink = AST.children.find(({ type }) => type === 'definition');
+  const firstRefLink = AST.children.find(({ type }) => type === "definition");
   const refLinkOffset = firstRefLink?.position?.start?.offset;
 
-  return (refLinkOffset
-    ? body.substr(0, refLinkOffset)
-    : body
-  )
+  return !refLinkOffset ? body : body.substr(0, refLinkOffset);
 }

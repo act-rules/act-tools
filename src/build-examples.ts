@@ -1,19 +1,49 @@
-import { Command } from 'commander'
-import { buildExamples, BuildExampleOptions } from './build-examples/command'
+import * as path from "path";
+import { createFile } from "./utils/create-file";
+import { getRulePages } from "./utils/get-markdown-data";
+import {
+  extractTestCases,
+  TestCaseData,
+} from "./build-examples/extract-test-cases";
+import { updateTestCaseJson } from "./build-examples/update-test-case-json";
 
-const program = new Command();
-program
-  .option('-i, --ruleIds <id_list>', 'comma separated list of IDs', val => val.split(','))
-  .option('-r, --rulesDir <dirname>', 'Path to _rules directory')
-  .option('-o, --outDir <dirname>', 'Path to output dir')
-  .option('-t, --testCaseJson <filepath>', 'Path to testcase.json')
-  .option('--baseUrl <url>', 'URL of the site where test cases are save', 'https://act-rules.github.io');
+export type BuildExampleOptions = Partial<{
+  rulesDir: string;
+  outDir: string;
+  ruleIds: string[];
+  baseUrl: string;
+  testCaseJson: string;
+}>;
 
-program.parse(process.argv);
-const options = program.opts<BuildExampleOptions>();
-  
-buildExamples(options)
-  .catch(e => {
-    console.error(e)
-    process.exit(1)
-  })
+export async function buildExamples({
+  rulesDir = ".",
+  ruleIds,
+  outDir = ".",
+  baseUrl = "https://act-rules.github.io",
+  testCaseJson,
+}: BuildExampleOptions): Promise<void> {
+  const rulesData = getRulePages(rulesDir, ruleIds);
+  const testCaseData: TestCaseData[] = [];
+  for (const ruleData of rulesData) {
+    const extractedCases = extractTestCases(ruleData, { baseUrl });
+    testCaseData.push(...extractedCases);
+  }
+
+  // Create testcase files
+  for (const { codeSnippet, filePath } of testCaseData) {
+    const testCasePath = path.resolve(outDir, "content", filePath);
+    await createFile(testCasePath, codeSnippet);
+  }
+  console.log(
+    `created ${testCaseData.length} test cases in ${path.resolve(
+      outDir,
+      "content/testcases/"
+    )}`
+  );
+
+  // Write testcases.json
+  if (testCaseJson) {
+    await updateTestCaseJson(testCaseJson, baseUrl, testCaseData, ruleIds);
+    console.log(`Updated ${testCaseJson}`);
+  }
+}

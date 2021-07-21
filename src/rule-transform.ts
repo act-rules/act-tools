@@ -1,24 +1,73 @@
-import { Command } from 'commander'
-import { ruleTransform, RuleTransformOptions } from './rule-transform/command'
+import * as path from "path";
+import {
+  getWcagMapping,
+  updateWcagMapping,
+} from "./rule-transform/wcag-mapping";
+import { getRulePages, getDefinitionPages } from "./utils/get-markdown-data";
+import { createFile } from "./utils/create-file";
+import { createMatrixFile } from "./rule-transform/create-matrix-file";
+import { getRuleContent } from "./rule-transform/get-rule-content";
+import { DefinitionPage, RulePage } from "./types";
 
-const program = new Command();
-program
-  .option('-i, --ruleIds <id_list>', 'comma separated list of IDs', val => val.split(','))
-  .option('-o, --outDir <dirname>', 'Path to output dir')
-  .option('-r, --rulesDir <dirname>', 'Path to _rules directory')
-  .option('-g, --glossaryDir <dirname>', 'Path to glossary directory')
-  .option('-p, --proposed', 'List the rule with the Proposed rule template')
-  .option('-m, --matrix', 'Add a table to link to the implementation matrix');
+export type RuleTransformOptions = Partial<{
+  rulesDir: string;
+  glossaryDir: string;
+  outDir: string;
+  ruleIds: string[];
+  proposed: boolean;
+  matrix: boolean;
+}>;
 
-program.parse(process.argv);
-const options = program.opts<RuleTransformOptions>();
+export async function ruleTransform({
+  rulesDir = ".",
+  glossaryDir = ".",
+  ruleIds = [],
+  outDir = ".",
+  proposed = false,
+  matrix = true,
+}: RuleTransformOptions): Promise<void> {
+  const options = { proposed, matrix };
+  const rulesData = getRulePages(rulesDir, ruleIds);
+  const glossary = getDefinitionPages(glossaryDir);
+  const wcagMapping = getWcagMapping(outDir);
 
-ruleTransform(options)
-  .then(() => {
-    console.log('Created taskforce markdown files')
-    process.exit()
-  })
-  .catch(e => {
-    console.error(e)
-    process.exit(1)
-  })
+  for (const ruleData of rulesData) {
+    wcagMapping["act-rules"] = updateWcagMapping(
+      wcagMapping["act-rules"],
+      ruleData,
+      options
+    );
+    console.log(`Updated ${ruleLink(ruleData)}`);
+
+    const { filepath, content } = buildTfRuleFile(ruleData, glossary, options);
+    const absolutePath = path.resolve(outDir, "content", filepath);
+    await createFile(absolutePath, content);
+    if (options.matrix) {
+      await createMatrixFile(outDir, ruleData.frontmatter?.id);
+    }
+  }
+
+  const content = JSON.stringify(wcagMapping, null, 2);
+  const wcagMappingPath = path.resolve(outDir, "wcag-mapping.json");
+  await createFile(wcagMappingPath, content);
+  console.log(`\nUpdated ${wcagMappingPath}`);
+}
+
+function buildTfRuleFile(
+  ruleData: RulePage,
+  glossary: DefinitionPage[],
+  options: Record<string, boolean | undefined>
+) {
+  return {
+    filepath: ruleData.filename,
+    content: getRuleContent(ruleData, glossary, options),
+  };
+}
+
+function ruleLink({ frontmatter, filename }: RulePage) {
+  return `[${frontmatter.name}](${ruleUrl(filename)})`;
+}
+
+function ruleUrl(filename: string): string {
+  return `/standards-guidelines/act/rules/${filename.replace(".md", "")}/`;
+}

@@ -1,7 +1,7 @@
-import { resolve } from 'path';
-import { existsSync } from 'fs';
-import outdent from 'outdent';
-import { createFile } from '../utils/create-file'
+import { resolve } from "path";
+import { existsSync } from "fs";
+import outdent from "outdent";
+import { createFile } from "../utils/create-file";
 
 const template = outdent`
   ## Implementations
@@ -12,16 +12,19 @@ const template = outdent`
   | Implementation | Consistency          | Complete | Report
   |----------------|----------------------|----------|-------------
   |                |                      |          | [View Report](https://act-rules.github.io/implementation/.../#id-)
-`
+`;
 
 export async function createMatrixFile(
   outDir: string,
   id: string
 ): Promise<void> {
   const matrixFilePath = resolve(
-    outDir, '_includes', 'implementations', `${id}.md`
-  )
+    outDir,
+    "_includes",
+    "implementations",
+    `${id}.md`
+  );
   if (!existsSync(matrixFilePath)) {
-    await createFile(matrixFilePath, template)
+    await createFile(matrixFilePath, template);
   }
 }

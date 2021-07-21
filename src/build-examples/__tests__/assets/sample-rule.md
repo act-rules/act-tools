@@ -11,7 +11,8 @@ description: abc123 rule
 
 ```html
 <html>
-<p>hello world</p>
+  <p>hello world</p>
+</html>
 ```
 
 ### Failed
@@ -19,7 +20,7 @@ description: abc123 rule
 #### Failed Example 1
 
 ```html
-<img src="no-alt.jpg">
+<img src="no-alt.jpg" />
 ```
 
 ### Inapplicable

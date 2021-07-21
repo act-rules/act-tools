@@ -10,21 +10,21 @@ describe("rule-content", () => {
       Foo is great.
 
       [great]: https://w3.org/
-    `
+    `;
 
     const bar = outdent`
       Bar is greater than [foo][]
 
       [w3c]: https://w3.org
-    `
+    `;
 
     const page = outdent`
       [hello][], [w3c][]
 
       [w3c]: https://w3.org 'W3C website'
       [hello]: #hello
-    `
-  
+    `;
+
     it("returns a string", () => {
       const rulePage = parsePage(page) as RulePage;
       const referenceLinks = getReferenceLinks(rulePage, []);
@@ -34,7 +34,7 @@ describe("rule-content", () => {
       `);
     });
 
-    it('returns references from the glossary', () => {
+    it("returns references from the glossary", () => {
       const rulePage = parsePage(page) as RulePage;
       const glossary = createGlossary({ foo });
       const referenceLinks = getReferenceLinks(rulePage, glossary);
@@ -45,7 +45,7 @@ describe("rule-content", () => {
       `);
     });
 
-    it('removes duplicate references', () => {
+    it("removes duplicate references", () => {
       const rulePage = parsePage(page) as RulePage;
       const glossary = createGlossary({ bar });
       const referenceLinks = getReferenceLinks(rulePage, glossary);
@@ -53,6 +53,6 @@ describe("rule-content", () => {
         [hello]: #hello
         [w3c]: https://w3.org 'W3C website'
       `);
-    })
+    });
   });
 });

@@ -1,18 +1,23 @@
-import outdent from 'outdent';
-import { indent } from '../utils/indent'
+import outdent from "outdent";
+import { indent } from "../utils/indent";
 
-export function addCodeTemplate(code: string, lang: string, title: string): string {
-  if (['html', 'xhtml'].includes(lang) === false) {
+const htmlDoctype = "<!DOCTYPE html>";
+const xhtmlDoctype =
+  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
+
+export function addCodeTemplate(
+  code: string,
+  lang: string,
+  title: string
+): string {
+  if (["html", "xhtml"].includes(lang) === false) {
     return code;
   }
   if (/<!doctype/i.test(code)) {
     return code;
   }
 
-  const doctype = `<!DOCTYPE html${
-    lang !== 'xhtml' ? '' : ' PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"'
-  }>`
-
+  const doctype = lang === "html" ? htmlDoctype : xhtmlDoctype;
   if (/<html/i.test(code)) {
     return `${doctype}\n${code}`;
   }
@@ -20,7 +25,11 @@ export function addCodeTemplate(code: string, lang: string, title: string): stri
   return htmlTemplate(doctype, title, code);
 }
 
-export const htmlTemplate = (doctype: string, title: string, code: string): string => {
+export const htmlTemplate = (
+  doctype: string,
+  title: string,
+  code: string
+): string => {
   return outdent`
     ${doctype}
     <html lang="en">
@@ -28,8 +37,8 @@ export const htmlTemplate = (doctype: string, title: string, code: string): stri
     \t<title>${title}</title>
     </head>
     <body>
-    ${indent(code, '\t', 1)}
+    ${indent(code, "\t", 1)}
     </body>
     </html>
   `;
-}
+};

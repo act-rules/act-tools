@@ -5,7 +5,7 @@ import makeDir from "make-dir";
 
 // Some stuff to simplify testing:
 let isMocked = false;
-let mockCalls: { path: string, content: string | unknown }[] = []
+let mockCalls: { path: string; content: string | unknown }[] = [];
 const writeFile = promisify(fs.writeFile);
 
 /**
@@ -16,14 +16,12 @@ export const createFile = async (
   content: string | unknown
 ): Promise<void> => {
   if (isMocked) {
-    mockCalls.push({ path, content })
+    mockCalls.push({ path, content });
     return;
   }
 
-  const stringData = (typeof content !== 'string'
-  ? JSON.stringify(content, null, 2)
-  : content
-  );
+  const stringData =
+    typeof content !== "string" ? JSON.stringify(content, null, 2) : content;
 
   const dirname = getDirName(path);
   await makeDir(dirname);
@@ -37,4 +35,4 @@ createFile.mock = () => {
 
 createFile.calls = () => {
   return mockCalls;
-}
+};

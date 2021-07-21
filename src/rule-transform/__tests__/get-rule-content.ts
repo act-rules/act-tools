@@ -53,7 +53,8 @@ describe("getRuleContent", () => {
       { matrix: true }
     );
 
-    expect(taskforceMarkdown).toBe(outdent`
+    expect(taskforceMarkdown).toBe(
+      outdent`
       ---
       title: "Hello world"
       permalink: /standards-guidelines/act/rules/123abc/
@@ -120,6 +121,8 @@ describe("getRuleContent", () => {
       [hello]: #hello
       [w3c]: https://w3.org 'W3C website'
       [world]: #world
-    ` + '\n');
+
+    `
+    );
   });
 });

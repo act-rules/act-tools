@@ -11,9 +11,10 @@
     "develop": "jest --watch",
     "format": "prettier --write src/**/*",
     "lint": "eslint src/**/*",
-    "transform-rule": "ts-node src/rule-transform.ts",
-    "build-examples": "ts-node src/build-examples.ts",
-    "test": "jest"
+    "transform-rule": "ts-node src/cli/rule-transform.ts",
+    "build-examples": "ts-node src/cli/build-examples.ts",
+    "test": "jest",
+    "prepare": "husky install"
   },
   "dependencies": {
     "commander": "^8.0.0",
@@ -55,18 +56,11 @@
       "js"
     ]
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "linters": {
-      "src/**/*.{js,ts}": [
-        "eslint --write",
-        "prettier --write",
-        "git add"
-      ]
-    }
+    "src/**/*.{js,ts,json}": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ]
   }
 }

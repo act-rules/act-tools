@@ -1,4 +1,4 @@
-import outdent from 'outdent';
+import outdent from "outdent";
 import { parsePage } from "../../../utils/parse-page";
 import { getGlossary } from "../get-glossary";
 import { createGlossary } from "../../__test-utils";
@@ -10,7 +10,7 @@ describe("rule-content", () => {
       You can see [it][].
 
       [it]: https://w3.org/
-    `
+    `;
     const visible = outdent`
       You can see [it][].
 
@@ -19,8 +19,8 @@ describe("rule-content", () => {
       Ignore me
 
       [it]: https://w3.org/
-    `
-    
+    `;
+
     it("includes the outcome", () => {
       const glossary = createGlossary({ outcome });
       const rulePage = parsePage("Some rule page");
@@ -35,7 +35,7 @@ describe("rule-content", () => {
       `);
     });
 
-    it('strips references', () => {
+    it("strips references", () => {
       const glossary = createGlossary({ attribute });
       const rulePage = parsePage("Some rule page");
       const ruleGlossary = getGlossary(rulePage, glossary);
@@ -48,8 +48,8 @@ describe("rule-content", () => {
         You can see [it][].
       `);
     });
-    
-    it('strips any subheading', () => {
+
+    it("strips any subheading", () => {
       const glossary = createGlossary({ visible });
       const rulePage = parsePage("Some rule page");
       const ruleGlossary = getGlossary(rulePage, glossary);
