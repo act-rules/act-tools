@@ -12,6 +12,7 @@
     "format": "prettier --write src/**/*",
     "lint": "eslint src/**/*",
     "transform-rule": "ts-node src/rule-transform.ts",
+    "build-examples": "ts-node src/build-examples.ts",
     "test": "jest"
   },
   "dependencies": {

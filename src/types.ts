@@ -53,3 +53,24 @@ export type AccessibilityRequirement = {
 }
 
 export type Contributor = { name: string, url?: string }
+
+export type TestCase = {
+  ruleId: string
+  ruleName: string
+  testcaseId: string
+  testcaseTitle: string,
+  url: string,
+  relativePath: string,
+  expected: string,
+  rulePage: string,
+  ruleAccessibilityRequirements: RuleFrontMatter["accessibility_requirements"],
+}
+
+export type TestCaseJson = {
+  name: string,
+  website: string,
+  license: string,
+  description: string,
+  count: number,
+  testcases: TestCase[]
+}

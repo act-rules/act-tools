@@ -22,7 +22,7 @@ yarn
 
 ### Rule Transformer
 
-This tool takes a rule markdown file, and transforms it to a markdown file that the WAI website can consume using Jekyll. To run it, use a command like the following:
+This tool takes rule markdown files and transforms it to a markdown file that the WAI website can consume using Jekyll. To run it, use a command like the following:
 
 ```sh
 yarn transform-rule \
@@ -30,6 +30,18 @@ yarn transform-rule \
   --glossaryDir "../act-rules.github.io/pages/glossary/" \
   --outDir "../wcag-act-rules/" \
   --matrix \
+  --ruleIds 5f99a7,6cfa84
+```
+
+### Build Examples
+
+This tool takes rule markdown files, extracts the examples from it, saves those into a directory, and creates a new testcases.json file.
+
+```sh
+yarn build-examples \
+  --rulesDir "../act-rules.github.io/_rules/" \
+  --outDir "../wcag-act-rules/" \
+  --testCaseJson "../wcag-act-rules/content/testcases.json" \
   --ruleIds 5f99a7,6cfa84
 ```
 

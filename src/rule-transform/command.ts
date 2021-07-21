@@ -6,14 +6,14 @@ import { createMatrixFile } from './create-matrix-file';
 import { getRuleContent } from './get-rule-content'
 import { DefinitionPage, RulePage } from '../types';
 
-export type RuleTransformArg = {
-  rulesDir: string,
-  glossaryDir: string,
-  ruleIds: string[],
+export type RuleTransformOptions = Partial<{
+  rulesDir: string
+  glossaryDir: string
   outDir: string
+  ruleIds: string[]
   proposed: boolean
   matrix: boolean
-}
+}>
 
 export async function ruleTransform({
   rulesDir = '.',
@@ -22,17 +22,13 @@ export async function ruleTransform({
   outDir = '.',
   proposed = false,
   matrix = true
-}: RuleTransformArg): Promise<void> {
-  const rulesData = getRulePages(rulesDir)
-  const glossary = getDefinitionPages(glossaryDir)
+}: RuleTransformOptions): Promise<void> {
   const options = { proposed, matrix };
-
+  const rulesData = getRulePages(rulesDir, ruleIds);
+  const glossary = getDefinitionPages(glossaryDir)
   const wcagMapping = getWcagMapping(outDir);
-  for (const ruleData of rulesData) {
-    if (ruleIds.length && !ruleIds.includes(ruleData.frontmatter?.id)) {
-      continue
-    }
 
+  for (const ruleData of rulesData) {
     wcagMapping['act-rules'] = updateWcagMapping(wcagMapping['act-rules'], ruleData, options)
     console.log(`Updated ${ruleLink(ruleData)}`)
     

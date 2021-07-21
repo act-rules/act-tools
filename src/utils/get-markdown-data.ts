@@ -23,12 +23,11 @@ export const getMarkdownData = (dir: string): MarkdownPage[] => {
   });
 };
 
-export const getRulePages = (dir: string): RulePage[] => {
+export const getRulePages = (dir: string, ruleIds?: string[]): RulePage[] => {
   const rulePages: RulePage[] = [];
   const markdown = getMarkdownData(dir);
   markdown.forEach(({ frontmatter, ...page }) => {
-    console.log(page.filename, isRuleFrontmatter(frontmatter));
-    if (isRuleFrontmatter(frontmatter)) {
+    if (isRuleFrontmatter(frontmatter) && isIncluded(frontmatter.id, ruleIds)) {
       rulePages.push({ frontmatter, ...page });
     }
   });
@@ -62,4 +61,8 @@ export function isDefinitionFrontmatter(
     typeof frontmatter["title"] === "string" &&
     typeof frontmatter["key"] === "string"
   );
+}
+
+function isIncluded(key: string, haystack?: string[]): boolean {
+  return !haystack || haystack.includes(key);
 }

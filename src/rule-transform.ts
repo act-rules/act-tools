@@ -1,5 +1,5 @@
 import { Command } from 'commander'
-import { ruleTransform, RuleTransformArg } from './rule-transform/command'
+import { ruleTransform, RuleTransformOptions } from './rule-transform/command'
 
 const program = new Command();
 program
@@ -11,7 +11,7 @@ program
   .option('-m, --matrix', 'Add a table to link to the implementation matrix');
 
 program.parse(process.argv);
-const options = program.opts<RuleTransformArg>();
+const options = program.opts<RuleTransformOptions>();
 
 ruleTransform(options)
   .then(() => {
