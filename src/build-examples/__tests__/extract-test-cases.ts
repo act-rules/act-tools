@@ -1,6 +1,6 @@
 import outdent from "outdent";
 import * as path from "path";
-import { getRulePages } from "../../utils/get-markdown-data";
+import { getRulePages } from "../../utils/get-page-data";
 import { extractTestCases } from "../extract-test-cases";
 
 describe("build-examples", () => {

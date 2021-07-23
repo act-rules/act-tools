@@ -1,7 +1,9 @@
-node_modules
-dist
-logs
+node_modules/
+dist/
+logs/
 *.log
 .env
 .DS_Store
-.npmrc
+.npmrc/
+.tmp/
+coverage/

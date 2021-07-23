@@ -1,13 +1,13 @@
-import { Node, Parent } from "unist";
+import { Parent } from "unist";
 
 export function getRuleBody({
   body,
   markdownAST,
 }: {
   body: string;
-  markdownAST: Node;
+  markdownAST: Parent;
 }): string {
-  const children = (markdownAST as Parent).children;
+  const children = markdownAST.children;
   const firstDfn = children.find(({ type }) => type === "definition");
   if (firstDfn && firstDfn.position) {
     const { offset } = firstDfn.position.start;

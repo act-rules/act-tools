@@ -1,4 +1,3 @@
-import { Parent } from "unist";
 import { DefinitionPage } from "../../types";
 import { joinStrings } from "../../utils/join-strings";
 
@@ -28,8 +27,9 @@ function getDefinitionBody(definition: DefinitionPage): string | string[] {
 }
 
 function stripDefinitions({ body, markdownAST }: DefinitionPage): string {
-  const AST = markdownAST as Parent;
-  const firstRefLink = AST.children.find(({ type }) => type === "definition");
+  const firstRefLink = markdownAST.children.find(
+    ({ type }) => type === "definition"
+  );
   const refLinkOffset = firstRefLink?.position?.start?.offset;
 
   return !refLinkOffset ? body : body.substr(0, refLinkOffset);

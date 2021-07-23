@@ -1,9 +1,9 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
+import * as fs from "fs";
+import { createFile } from "../utils/create-file";
 import { RulePage, RuleFrontMatter } from "../types";
 import { getWcagCriterion } from "../act/get-wcag-criterion";
 
-export type WcagMapping = {
+export type ActRulePage = {
   title: string;
   permalink: string;
   successCriteria: string[];
@@ -11,19 +11,38 @@ export type WcagMapping = {
   proposed?: boolean;
 };
 
-export type WcagToActMapping = {
-  "act-rules": WcagMapping[];
+export type WcagMapping = {
+  "act-rules": ActRulePage[];
 };
 
+export async function createWcagMapping(
+  wcagMappingPath: string,
+  rulePages: RulePage[],
+  { proposed = false }: { proposed?: boolean } = {}
+): Promise<WcagMapping> {
+  let wcagMapping: WcagMapping;
+  try {
+    wcagMapping = JSON.parse(fs.readFileSync(wcagMappingPath, "utf8"));
+  } catch (e) {
+    wcagMapping = { "act-rules": [] };
+  }
+
+  wcagMapping["act-rules"] = rulePages.reduce((actRulePages, rulePage) => {
+    return updateWcagMapping(actRulePages, rulePage, { proposed });
+  }, wcagMapping["act-rules"]);
+
+  await createFile(wcagMappingPath, wcagMapping);
+
+  return wcagMapping;
+}
+
 export function updateWcagMapping(
-  wcagMapping: WcagMapping[],
+  wcagMapping: ActRulePage[],
   { frontmatter, filename }: RulePage,
   { proposed }: { proposed: boolean }
-): WcagMapping[] {
+): ActRulePage[] {
   const { id } = frontmatter;
-  wcagMapping = wcagMapping.filter(
-    ({ permalink }) => !permalink.includes("-" + id)
-  );
+  wcagMapping = wcagMapping.filter(({ permalink }) => !permalink.includes(id));
   const { successCriteria, wcagTechniques } = getRequirements(frontmatter);
 
   wcagMapping.push({
@@ -34,18 +53,6 @@ export function updateWcagMapping(
     proposed,
   });
   return wcagMapping;
-}
-
-function ruleUrl(filename: string): string {
-  return `/standards-guidelines/act/rules/${filename.replace(".md", "")}/`;
-}
-
-export function getWcagMapping(dirname: string): WcagToActMapping {
-  const mappingStr = readFileSync(
-    resolve(dirname, "wcag-mapping.json"),
-    "utf-8"
-  );
-  return JSON.parse(mappingStr) as WcagToActMapping;
 }
 
 export function getRequirements({
@@ -68,4 +75,8 @@ export function getRequirements({
     }
   });
   return { successCriteria, wcagTechniques };
+}
+
+function ruleUrl(filename: string): string {
+  return `/standards-guidelines/act/rules/${filename.replace(".md", "")}/`;
 }

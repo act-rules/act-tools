@@ -1,4 +1,3 @@
-import { Parent } from "unist";
 import { PageBase } from "../../types";
 
 export function getReferenceLinks(
@@ -20,7 +19,7 @@ export function getReferenceLinks(
 
 function getReferences(page: PageBase): Record<string, string> {
   const references: Record<string, string> = {};
-  const children = (page.markdownAST as Parent).children;
+  const { children } = page.markdownAST;
   const firstDfn = children.find(({ type }) => type === "definition");
   const offset = firstDfn?.position?.start?.offset;
   if (typeof offset !== "number") {

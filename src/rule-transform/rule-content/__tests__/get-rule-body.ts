@@ -1,5 +1,6 @@
 import outdent from "outdent";
-import { parseMarkdown } from "../../../utils/parse-markdown";
+import { Parent } from "unist";
+import { parseMarkdown } from "../../../utils/parse-page";
 import { getRuleBody } from "../get-rule-body";
 
 describe("rule-content", () => {
@@ -9,7 +10,7 @@ describe("rule-content", () => {
         ## Hello world
 
       `; // indent is intentional
-      const markdownAST = parseMarkdown(body);
+      const markdownAST = parseMarkdown(body) as Parent;
       const stripped = getRuleBody({ body, markdownAST });
 
       expect(stripped).toBe(body.trim());
@@ -34,7 +35,7 @@ describe("rule-content", () => {
 
       `; // blank line is intentional
       const body = content + "\n" + references;
-      const markdownAST = parseMarkdown(body);
+      const markdownAST = parseMarkdown(body) as Parent;
 
       const stripped = getRuleBody({ body, markdownAST });
       expect(stripped).toBe(content.trim());

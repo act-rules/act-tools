@@ -1,7 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
+import assert from "assert";
 import globby from "globby";
-import { parsePage } from "./parse-page";
+import { parsePage, isParent } from "./parse-page";
 import {
   DefinitionPage,
   DefinitionFrontMatter,
@@ -19,6 +20,8 @@ export const getMarkdownData = (dir: string): MarkdownPage[] => {
     const filename = path.parse(markdownPath).base;
     const fileContents = fs.readFileSync(markdownPath, { encoding: "utf-8" });
     const { frontmatter, body, markdownAST } = parsePage(fileContents);
+
+    assert(isParent(markdownAST), "Markdown file was empty");
     return { filename, frontmatter, body, markdownAST };
   });
 };

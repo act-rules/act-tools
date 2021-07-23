@@ -33,6 +33,11 @@ createFile.mock = () => {
   mockCalls = [];
 };
 
+createFile.resetMock = () => {
+  isMocked = false;
+  mockCalls = [];
+};
+
 createFile.calls = () => {
   return mockCalls;
 };

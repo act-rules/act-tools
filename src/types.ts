@@ -1,76 +1,76 @@
-import { Node } from 'unist'
+import { Parent } from "unist";
 
 export type PageBase = {
-  body: string,
-  markdownAST: Node
-  filename: string
-}
+  body: string;
+  markdownAST: Parent;
+  filename: string;
+};
 
 export type MarkdownPage = PageBase & {
-  frontmatter: Record<string, unknown>
-}
+  frontmatter: Record<string, unknown>;
+};
 
 export type RulePage = PageBase & {
-  frontmatter: RuleFrontMatter
-}
+  frontmatter: RuleFrontMatter;
+};
 
 export type DefinitionPage = PageBase & {
-  frontmatter: DefinitionFrontMatter
-}
+  frontmatter: DefinitionFrontMatter;
+};
 
 export type RuleFrontMatterBase = {
-	id: string
-  name: string
-  rule_type: 'atomic' | 'composite'
-  description: string,
-  accessibility_requirements?: Record<string, AccessibilityRequirement>
-  acknowledgements?: Record<string, string[]>
-}
+  id: string;
+  name: string;
+  rule_type: "atomic" | "composite";
+  description: string;
+  accessibility_requirements?: Record<string, AccessibilityRequirement>;
+  acknowledgements?: Record<string, string[]>;
+};
 
 export type AtomicRuleFrontmatter = RuleFrontMatterBase & {
-  rule_type: 'atomic'
-  input_aspects: string[]
-}
+  rule_type: "atomic";
+  input_aspects: string[];
+};
 
 export type CompositeRuleFrontmatter = RuleFrontMatterBase & {
-  rule_type: 'composite'
-  input_rules: string[],
-}
+  rule_type: "composite";
+  input_rules: string[];
+};
 
 export type RuleFrontMatter = AtomicRuleFrontmatter | CompositeRuleFrontmatter;
 
 export type DefinitionFrontMatter = {
-  title: string,
-  key: string
-}
+  title: string;
+  key: string;
+};
 
 export type AccessibilityRequirement = {
-  failed: string
-  passed: string
-  inapplicable: string
-  title?: string
-  forConformance?: boolean
-}
+  failed: string;
+  passed: string;
+  inapplicable: string;
+  title?: string;
+  forConformance?: boolean;
+};
 
-export type Contributor = { name: string, url?: string }
+export type Contributor = { name: string; url?: string };
 
 export type TestCase = {
-  ruleId: string
-  ruleName: string
-  testcaseId: string
-  testcaseTitle: string,
-  url: string,
-  relativePath: string,
-  expected: string,
-  rulePage: string,
-  ruleAccessibilityRequirements: RuleFrontMatter["accessibility_requirements"],
-}
+  ruleId: string;
+  ruleName: string;
+  testcaseId: string;
+  testcaseTitle: string;
+  url: string;
+  relativePath: string;
+  expected: string;
+  rulePage: string;
+  ruleAccessibilityRequirements: RuleFrontMatter["accessibility_requirements"];
+};
 
 export type TestCaseJson = {
-  name: string,
-  website: string,
-  license: string,
-  description: string,
-  count: number,
-  testcases: TestCase[]
-}
+  name: string;
+  website: string;
+  license: string;
+  description: string;
+  count: number;
+  testcases: TestCase[];
+};

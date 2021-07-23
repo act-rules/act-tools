@@ -3,7 +3,7 @@ import { existsSync } from "fs";
 import outdent from "outdent";
 import { createFile } from "../utils/create-file";
 
-const template = outdent`
+export const template = outdent`
   ## Implementations
 
   This section is not part of the official rule. It is populated dynamically and 

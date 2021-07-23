@@ -1,6 +1,6 @@
 import * as path from "path";
 import { createFile } from "./utils/create-file";
-import { getRulePages } from "./utils/get-markdown-data";
+import { getRulePages } from "./utils/get-page-data";
 import {
   extractTestCases,
   TestCaseData,

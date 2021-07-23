@@ -1,6 +1,6 @@
 import * as path from "path";
 import { TestCaseJson } from "../../types";
-import { getRulePages } from "../../utils/get-markdown-data";
+import { getRulePages } from "../../utils/get-page-data";
 import { createFile } from "../../utils/create-file";
 import { extractTestCases } from "../extract-test-cases";
 import { updateTestCaseJson } from "../update-test-case-json";
@@ -12,6 +12,10 @@ describe("build-examples", () => {
     const baseUrl = "https://act-rules.github.io";
     const ruleData = getRulePages(rulesDir, ["abc123"])[0];
     const testCases = extractTestCases(ruleData, { baseUrl });
+
+    afterEach(() => {
+      createFile.resetMock();
+    });
 
     it("creates new test cases if no ruleIds are passed", () => {
       createFile.mock();

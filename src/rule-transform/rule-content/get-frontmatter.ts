@@ -3,7 +3,7 @@ import { outdent } from "outdent";
 import moment from "moment";
 import * as yaml from "js-yaml";
 import { AccessibilityRequirement, RuleFrontMatter } from "../../types";
-import { parseMarkdown } from "../../utils/parse-markdown";
+import { parseMarkdown } from "../../utils/parse-page";
 import successCriteria from "../../data/sc-urls.json";
 
 const criteria: Record<
@@ -79,15 +79,16 @@ function stripMarkdownFromStr(str: string): string {
   return stripMarkdownFromAST(AST);
 }
 
-function stripMarkdownFromAST(markdownAST: Node): string {
-  const node = markdownAST as Parent | Literal;
+function stripMarkdownFromAST(node: Node | Parent | Literal): string {
   if ("value" in node) {
     return node.value as string;
   }
 
   let str = "";
-  for (const child of node.children || []) {
-    str += stripMarkdownFromAST(child);
+  if ("children" in node) {
+    for (const child of node.children || []) {
+      str += stripMarkdownFromAST(child);
+    }
   }
   return str;
 }

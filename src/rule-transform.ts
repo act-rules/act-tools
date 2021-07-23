@@ -1,13 +1,10 @@
 import * as path from "path";
-import {
-  getWcagMapping,
-  updateWcagMapping,
-} from "./rule-transform/wcag-mapping";
-import { getRulePages, getDefinitionPages } from "./utils/get-markdown-data";
+import { getRulePages, getDefinitionPages } from "./utils/get-page-data";
 import { createFile } from "./utils/create-file";
 import { createMatrixFile } from "./rule-transform/create-matrix-file";
 import { getRuleContent } from "./rule-transform/get-rule-content";
 import { DefinitionPage, RulePage } from "./types";
+import { createWcagMapping } from "./rule-transform/create-wcag-mapping";
 
 export type RuleTransformOptions = Partial<{
   rulesDir: string;
@@ -29,28 +26,20 @@ export async function ruleTransform({
   const options = { proposed, matrix };
   const rulesData = getRulePages(rulesDir, ruleIds);
   const glossary = getDefinitionPages(glossaryDir);
-  const wcagMapping = getWcagMapping(outDir);
 
   for (const ruleData of rulesData) {
-    wcagMapping["act-rules"] = updateWcagMapping(
-      wcagMapping["act-rules"],
-      ruleData,
-      options
-    );
-    console.log(`Updated ${ruleLink(ruleData)}`);
-
     const { filepath, content } = buildTfRuleFile(ruleData, glossary, options);
     const absolutePath = path.resolve(outDir, "content", filepath);
     await createFile(absolutePath, content);
+    console.log(`Updated ${ruleLink(ruleData)}`);
     if (options.matrix) {
       await createMatrixFile(outDir, ruleData.frontmatter?.id);
     }
   }
 
-  const content = JSON.stringify(wcagMapping, null, 2);
-  const wcagMappingPath = path.resolve(outDir, "wcag-mapping.json");
-  await createFile(wcagMappingPath, content);
-  console.log(`\nUpdated ${wcagMappingPath}`);
+  const wcagMappingPath = path.resolve(outDir, "wcagmapping.json");
+  createWcagMapping(wcagMappingPath, rulesData);
+  console.log(`Updated ${wcagMappingPath}`);
 }
 
 function buildTfRuleFile(
