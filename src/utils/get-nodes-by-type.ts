@@ -9,10 +9,7 @@ import { Node, Parent } from "unist";
  * @param {String} type AST type
  * @return {Array}
  */
-export const getMarkdownAstNodesOfType = (
-  markdownAST?: Node,
-  type?: string
-): Node[] => {
+export const getNodesByType = (markdownAST: Node, type: string): Node[] => {
   assert(markdownAST, `markdownAST is required`);
   assert(
     type,
@@ -20,19 +17,22 @@ export const getMarkdownAstNodesOfType = (
   );
 
   const nodes: Node[] = [];
-  visit(markdownAST, type, (node) => {
-    nodes.push(node);
+  walkAstTree(markdownAST, (node) => {
+    if (node.type === type) {
+      nodes.push(node);
+    }
   });
   return nodes;
 };
 
-function visit(node: Node, type: string, cb: (node: Node) => void) {
-  if (node.type === type) {
-    cb(node);
-  }
+export function walkAstTree(
+  node: Node | Parent,
+  cb: (node: Node) => void
+): void {
+  cb(node);
   if ("children" in node) {
-    (node as Parent).children.forEach((child) => {
-      visit(child, type, cb);
+    node.children.forEach((child) => {
+      walkAstTree(child, cb);
     });
   }
 }

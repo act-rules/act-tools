@@ -35,12 +35,12 @@ describe("utils", () => {
   });
 
   describe("getRulePages", () => {
-    it("returns definition pages", () => {
+    it("returns rule pages", () => {
       fs.writeFileSync(`${tmpDir}/abc123.md`, ruleText);
       fs.writeFileSync(`${tmpDir}/dfn.md`, definitionText);
-      const dfnPages = getRulePages(tmpDir);
-      expect(dfnPages).toHaveLength(1);
-      expect(dfnPages[0].filename).toContain("abc123.md");
+      const rulePages = getRulePages(tmpDir);
+      expect(rulePages).toHaveLength(1);
+      expect(rulePages[0].filename).toContain("abc123.md");
     });
   });
 

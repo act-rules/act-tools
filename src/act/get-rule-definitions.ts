@@ -1,6 +1,6 @@
 import { Node } from "unist";
 import { DefinitionPage } from "../types";
-import { getMarkdownAstNodesOfType } from "../utils/get-markdown-ast-nodes-of-type";
+import { getNodesByType } from "../utils/index";
 
 export function getRuleDefinitions(
   { markdownAST }: { markdownAST: Node },
@@ -49,12 +49,9 @@ type LinkNode = Node & { url: string };
 
 function getDefinitionLinks(markdownAST: Node): string[] {
   // get all links -> eg: [Alpha](https://....) or [Beta](#semantic-role)
-  const pageLinks = getMarkdownAstNodesOfType(markdownAST, "link").map(getUrl);
+  const pageLinks = getNodesByType(markdownAST, "link").map(getUrl);
   // get all definition links  -> eg: [alpha]: https:// 'Link to something' or [beta]: #some-glossary 'Def to some glossary'
-  const definitionLinks = getMarkdownAstNodesOfType(
-    markdownAST,
-    "definition"
-  ).map(getUrl);
+  const definitionLinks = getNodesByType(markdownAST, "definition").map(getUrl);
 
   const allLinks = [...pageLinks, ...definitionLinks];
   const localLinks = allLinks.filter((dfnTerm) => dfnTerm[0] === "#");

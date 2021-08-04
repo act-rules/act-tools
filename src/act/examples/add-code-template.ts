@@ -1,5 +1,5 @@
 import outdent from "outdent";
-import { indent } from "../utils/indent";
+import { indent } from "../../utils/indent";
 
 const htmlDoctype = "<!DOCTYPE html>";
 const xhtmlDoctype =

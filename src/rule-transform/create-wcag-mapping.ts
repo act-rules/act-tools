@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import { createFile } from "../utils/create-file";
 import { RulePage, RuleFrontMatter } from "../types";
-import { getWcagCriterion } from "../act/get-wcag-criterion";
+import { getWcagCriterion } from "../act/get-accessibility-requirement";
 
 export type ActRulePage = {
   title: string;

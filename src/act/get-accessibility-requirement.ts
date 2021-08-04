@@ -1,5 +1,5 @@
-import { getWcagCriterion } from "./get-wcag-criterion";
-import { getWcagTechnique } from "./get-wcag-technique";
+import { getWcagCriterion } from "./accessibility-requirements/get-wcag-criterion";
+import { getWcagTechnique } from "./accessibility-requirements/get-wcag-technique";
 
 type AccessibilityDocuments = {
   [name: string]: {
@@ -73,3 +73,5 @@ export function getAccessibilityRequirement({
     };
   }
 }
+
+export { getWcagCriterion, getWcagTechnique };
