@@ -1,10 +1,13 @@
 import outdent from "outdent";
+import { RuleFrontMatter } from "src/types";
 import { Parent } from "unist";
 import { parseMarkdown } from "../../../utils/parse-page";
 import { getExamplesContent } from "../get-examples-content";
 
 describe("rule-content", () => {
   const q = "```";
+  const frontmatter = { id: "abc123" } as RuleFrontMatter;
+
   describe("get-examples-content", () => {
     it("Creates cleaned up examples", () => {
       const body = outdent`
@@ -24,9 +27,9 @@ describe("rule-content", () => {
         ${q}
       `;
       const markdownAST = parseMarkdown(body) as Parent;
-      const examples = getExamplesContent({ body, markdownAST });
+      const examples = getExamplesContent({ frontmatter, markdownAST, body });
       const href =
-        "/standards-guidelines/act/rules/testcases/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html";
+        "/standards-guidelines/act/rules/testcases/abc123/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html";
       expect(examples).toBe(outdent`
         ## Test Cases
 

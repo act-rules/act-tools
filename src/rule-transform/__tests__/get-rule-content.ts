@@ -26,7 +26,7 @@ describe("getRuleContent", () => {
   it("creates a complete rule page", () => {
     const rulePage = parsePage(outdent`
       ---
-      id: 123abc
+      id: abc123
       name: Hello world
       rule_type: atomic
       description: hello world
@@ -55,7 +55,7 @@ describe("getRuleContent", () => {
       [w3c]: https://w3.org 'W3C website'
     `) as RulePage;
     const taskforceMarkdown = getRuleContent(
-      { ...rulePage, filename: "123abc.md" },
+      { ...rulePage, filename: "abc123.md" },
       glossary,
       { matrix: true }
     );
@@ -64,15 +64,15 @@ describe("getRuleContent", () => {
       outdent`
       ---
       title: "Hello world"
-      permalink: /standards-guidelines/act/rules/123abc/
-      ref: /standards-guidelines/act/rules/123abc/
+      permalink: /standards-guidelines/act/rules/abc123/
+      ref: /standards-guidelines/act/rules/abc123/
       lang: en
       github:
         repository: w3c/wcag-act-rules
-        path: content/123abc.md
+        path: content/abc123.md
       proposed: false
       rule_meta:
-        id: 123abc
+        id: abc123
         name: "Hello world"
         rule_type: atomic
         description: |
@@ -101,7 +101,7 @@ describe("getRuleContent", () => {
 
       #### Passed Example 1
 
-      <a class="example-link" title="Passed Example 1" href="/standards-guidelines/act/rules/testcases/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html">Open in a new tab</a>
+      <a class="example-link" title="Passed Example 1" href="/standards-guidelines/act/rules/testcases/abc123/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html">Open in a new tab</a>
 
       ${q}html
       <img alt="" />
@@ -129,7 +129,7 @@ describe("getRuleContent", () => {
 
       World of the [ACT-rules community][]
       
-      {% include implementations/123abc.md %}
+      {% include implementations/abc123.md %}
       
       ## Acknowledgements
 

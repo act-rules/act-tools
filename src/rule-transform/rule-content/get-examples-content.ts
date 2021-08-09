@@ -1,14 +1,18 @@
+import { RuleFrontMatter } from "src/types";
 import { Parent } from "unist";
 import { getRuleExamples, Example } from "../../act/get-rule-examples";
 import { joinStrings } from "../../utils/index";
 
 export function getExamplesContent({
+  frontmatter,
   markdownAST,
   body,
 }: {
+  frontmatter: RuleFrontMatter;
   markdownAST: Parent;
   body: string;
 }): string {
+  const ruleId = frontmatter.id;
   const examples = getRuleExamples({ markdownAST, body });
   const exampleStrings: Record<string, string[]> = {
     passed: [],
@@ -19,7 +23,7 @@ export function getExamplesContent({
     const { title, description, language, rawCode, expected } = example;
     const exampleStr = joinStrings(
       `#### ${title}`,
-      getExternalLink(example),
+      getExternalLink(ruleId, example),
       description,
       ["```" + language, rawCode, "```"]
     );
@@ -49,8 +53,12 @@ function addDefaults(
   return exampleMap;
 }
 
-function getExternalLink({ title, testcaseId, language }: Example): string {
-  const href = `/standards-guidelines/act/rules/testcases/${testcaseId}.${language}`;
+function getExternalLink(
+  ruleId: string,
+  { title, testcaseId, language }: Example
+): string {
+  const base = "/standards-guidelines/act/rules/testcases";
+  const href = `${base}/${ruleId}/${testcaseId}.${language}`;
   return (
     '<a class="example-link" ' +
     `title="${title}" ` +
