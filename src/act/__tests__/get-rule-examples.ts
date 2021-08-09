@@ -9,7 +9,7 @@ describe("act", () => {
   const quotes = "```";
   describe("getRuleExamples", () => {
     it("returns examples", () => {
-      const code = '<img src="" />';
+      const rawCode = '<img src="" />';
       const title = "Passed Example 3";
       const description = "Some description";
       const language = "html";
@@ -17,7 +17,7 @@ describe("act", () => {
         ### ${title}
         ${"\n\n" + description + "\n\n"}
         ${quotes}${language}
-        ${code}
+        ${rawCode}
         ${quotes}
       `;
       const page = parseMarkdown(body) as Parent;
@@ -27,9 +27,10 @@ describe("act", () => {
           title,
           description,
           language,
+          rawCode,
           expected: "passed",
-          testcaseId: testCaseHash(code),
-          codeSnippet: addCodeTemplate(code, language, title),
+          testcaseId: testCaseHash(rawCode),
+          codeSnippet: addCodeTemplate(rawCode, language, title),
         },
       ]);
     });

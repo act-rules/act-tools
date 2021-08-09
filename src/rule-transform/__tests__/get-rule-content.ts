@@ -6,6 +6,7 @@ import { RulePage } from "../../types";
 import { getDate } from "../rule-content/get-frontmatter";
 
 describe("getRuleContent", () => {
+  const q = "```";
   const glossaryBase = {
     hello: outdent`
       Hello [world][]
@@ -43,6 +44,12 @@ describe("getRuleContent", () => {
       ---
 
       [hello][], [w3c][]
+
+      ## Passed Example 1
+
+      ${q}html
+      <img alt="" />
+      ${q}
 
       [hello]: #hello
       [w3c]: https://w3.org 'W3C website'
@@ -87,6 +94,26 @@ describe("getRuleContent", () => {
       ---
       
       [hello][], [w3c][]
+
+      ## Test Cases
+
+      ### Passed
+
+      #### Passed Example 1
+
+      <a class="example-link" title="Passed Example 1" href="/standards-guidelines/act/rules/testcases/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html">Open in a new tab</a>
+
+      ${q}html
+      <img alt="" />
+      ${q}
+
+      ### Failed
+
+      _There are no failed examples._
+
+      ### Inapplicable
+
+      _There are no inapplicable examples._
       
       ## Glossary
       

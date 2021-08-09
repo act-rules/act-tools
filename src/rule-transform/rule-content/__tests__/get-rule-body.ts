@@ -40,5 +40,53 @@ describe("rule-content", () => {
       const stripped = getRuleBody({ body, markdownAST });
       expect(stripped).toBe(content.trim());
     });
+
+    it("returns content without examples", () => {
+      const content = outdent`
+        ## Hello
+        Welcome to the [party][] [time][] in the [ACT Taskforce][]!
+
+        ## Shopping list
+        - cake
+        - chips
+        - party hats
+
+      `;
+      const examples = outdent`
+        ## Examples
+
+        ### Passed
+
+        ...
+      `; // blank line is intentional
+      const body = content + "\n" + examples;
+      const markdownAST = parseMarkdown(body) as Parent;
+
+      const stripped = getRuleBody({ body, markdownAST });
+      expect(stripped).toBe(content.trim());
+    });
+
+    it("removed individual test cases", () => {
+      const content = outdent`
+        ## Hello
+        Welcome to the [party][] [time][] in the [ACT Taskforce][]!
+
+        ## Shopping list
+        - cake
+        - chips
+        - party hats
+
+      `;
+      const examples = outdent`
+        ### Passed Example 1
+
+        ...
+      `; // blank line is intentional
+      const body = content + "\n" + examples;
+      const markdownAST = parseMarkdown(body) as Parent;
+
+      const stripped = getRuleBody({ body, markdownAST });
+      expect(stripped).toBe(content.trim());
+    });
   });
 });

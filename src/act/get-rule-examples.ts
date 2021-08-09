@@ -2,12 +2,13 @@ import { Node, Parent, Literal, Point } from "unist";
 import { addCodeTemplate } from "./examples/add-code-template";
 import { testCaseHash } from "./examples/test-case-hash";
 
-type Example = {
+export type Example = {
   title: string;
   expected: "passed" | "failed" | "inapplicable";
   description: string;
   testcaseId: string;
   codeSnippet: string;
+  rawCode: string;
   language: string;
 };
 
@@ -36,6 +37,7 @@ export function getRuleExamples({
       expected: getExpected(title),
       description: getText(body, headingPos?.end, codePos?.start).trim(),
       language: code.lang,
+      rawCode: code.value,
       codeSnippet: addCodeTemplate(code.value, code.lang, title),
       testcaseId: testCaseHash(code.value),
     });
