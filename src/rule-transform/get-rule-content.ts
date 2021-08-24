@@ -4,7 +4,6 @@ import { getRuleBody } from "./rule-content/get-rule-body";
 import { getExamplesContent } from "./rule-content/get-examples-content";
 import { getGlossary } from "./rule-content/get-glossary";
 import { getImplementations } from "./rule-content/get-implementations";
-import { getMdAcknowledgements } from "./rule-content/get-acknowledgements";
 import { getChangelog } from "./rule-content/get-changelog";
 import { getReferenceLinks } from "./rule-content/get-reference-links";
 import { getRuleDefinitions } from "../act/get-rule-definitions";
@@ -21,7 +20,6 @@ const sectionMethodsInOrder: RuleGenerator[] = [
   getExamplesContent,
   getGlossary,
   getImplementations,
-  getMdAcknowledgements,
   getChangelog,
   getReferenceLinks,
 ];

@@ -1,6 +1,8 @@
 import * as yaml from "js-yaml";
-import { getFrontmatter, getDate } from "../get-frontmatter";
+import { getFrontmatter } from "../get-frontmatter";
 import { RuleFrontMatter } from "../../../types";
+import { getFooter } from "../frontmatter/get-footer";
+import { getRuleMeta } from "../frontmatter/get-rule-meta";
 
 function stripDashes(str: string): string {
   return str.replace(/---/g, "");
@@ -58,30 +60,9 @@ describe("rule-content", () => {
           repository: `w3c/wcag-act-rules`,
           path: `content/${ruleData.filename}`,
         },
+        footer: getFooter(ruleData.frontmatter.acknowledgements) + "\n",
         proposed: true,
-        rule_meta: {
-          id: "abc123",
-          name: "hello world",
-          description: "Some description\n",
-          rule_type: "atomic",
-          scs_tested: [
-            {
-              num: "2.1.4",
-              handle: "Character Key Shortcuts",
-              level: "A",
-            },
-          ],
-          input_aspects: [
-            {
-              handle: "DOM Tree",
-              url: "https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom",
-            },
-          ],
-          last_modified: getDate(),
-          accessibility_requirements: {
-            "wcag21:2.1.4": sc214Requirement,
-          },
-        },
+        rule_meta: yaml.load(getRuleMeta(ruleData.frontmatter)),
       });
     });
 

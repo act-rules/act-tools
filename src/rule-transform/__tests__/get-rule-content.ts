@@ -1,9 +1,11 @@
 import outdent from "outdent";
+import moment from "moment";
 import { parsePage } from "../../utils/parse-page";
 import { createGlossary } from "../__test-utils";
 import { getRuleContent } from "../get-rule-content";
 import { RulePage } from "../../types";
-import { getDate } from "../rule-content/get-frontmatter";
+import { getFooter } from "../rule-content/frontmatter/get-footer";
+import { indent } from "../../utils/index";
 
 describe("getRuleContent", () => {
   const q = "```";
@@ -70,6 +72,8 @@ describe("getRuleContent", () => {
       github:
         repository: w3c/wcag-act-rules
         path: content/abc123.md
+      footer: |
+      ${indent(getFooter(rulePage.frontmatter.acknowledgements))}
       proposed: false
       rule_meta:
         id: abc123
@@ -86,7 +90,7 @@ describe("getRuleContent", () => {
         input_aspects:
           - handle: DOM Tree
             url: https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom
-        last_modified: ${getDate()}
+        last_modified: ${moment().format("MMMM Do, YYYY")}
         scs_tested:
           - handle: Name, Role, Value
             num: 4.1.2
@@ -130,15 +134,6 @@ describe("getRuleContent", () => {
       World of the [ACT-rules community][]
       
       {% include implementations/abc123.md %}
-      
-      ## Acknowledgements
-
-      This rule was written in the [ACT Rules community group](https://w3.org/community/act-r/), 
-      with the support of the EU-funded [WAI-Tools Project](https://www.w3.org/WAI/about/projects/wai-tools/).
-      
-      ### Authors
-      
-      - [Wilco Fiers](https://github.com/wilcofiers)
       
       ## Changelog
       
