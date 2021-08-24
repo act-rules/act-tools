@@ -40,7 +40,7 @@ describe("getRuleContent", () => {
           inapplicable: further testing needed
       input_aspects:
         - DOM Tree
-      acknowledgements:
+      acknowledgments:
         authors:
           - Wilco Fiers
       ---
@@ -73,7 +73,7 @@ describe("getRuleContent", () => {
         repository: w3c/wcag-act-rules
         path: content/abc123.md
       footer: |
-      ${indent(getFooter(rulePage.frontmatter.acknowledgements))}
+      ${indent(getFooter(rulePage.frontmatter.acknowledgments))}
       proposed: false
       rule_meta:
         id: abc123

@@ -24,7 +24,7 @@ export type RuleFrontMatterBase = {
   rule_type: "atomic" | "composite";
   description: string;
   accessibility_requirements?: Record<string, AccessibilityRequirement>;
-  acknowledgements?: Record<string, string[]>;
+  acknowledgments?: Record<string, string[]>;
 };
 
 export type AtomicRuleFrontmatter = RuleFrontMatterBase & {

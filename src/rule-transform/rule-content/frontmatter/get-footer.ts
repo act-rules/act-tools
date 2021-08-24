@@ -3,21 +3,19 @@ import { Contributor } from "../../../types";
 import { contributors } from "../../../data/index";
 
 export function getFooter(
-  acknowledgements: Record<string, string[]> = {}
+  acknowledgments: Record<string, string[]> = {}
 ): string {
   const date = moment().format("MMMM Do, YYYY");
   return (
     `<p><strong>Date:</strong> Updated ${date}</p>` +
-    getAuthorParagraph(acknowledgements) +
-    getSponsorParagraph(acknowledgements) +
-    getAssetsParagraph(acknowledgements)
+    getAuthorParagraph(acknowledgments) +
+    getSponsorParagraph(acknowledgments) +
+    getAssetsParagraph(acknowledgments)
   );
 }
 
-function getAuthorParagraph(
-  acknowledgements: Record<string, string[]>
-): string {
-  const { authors, previous_authors } = acknowledgements;
+function getAuthorParagraph(acknowledgments: Record<string, string[]>): string {
+  const { authors, previous_authors } = acknowledgments;
   if (!authors) {
     return "";
   }
@@ -29,13 +27,13 @@ function getAuthorParagraph(
 }
 
 function getSponsorParagraph(
-  acknowledgements: Record<string, string[]>
+  acknowledgments: Record<string, string[]>
 ): string {
   let paragraph =
     `\n<p>This rule was written in the ` +
     `<a href="https://w3.org/community/act-r/">ACT Rules community group</a>.`;
 
-  if (acknowledgements.funding?.some((s) => s.toLowerCase() === "wai-tools")) {
+  if (acknowledgments.funding?.some((s) => s.toLowerCase() === "wai-tools")) {
     paragraph +=
       ` It is written as part of the EU-funded ` +
       `<a href="https://www.w3.org/WAI/about/projects/wai-tools/">WAI-Tools Project</a>.`;
@@ -43,10 +41,8 @@ function getSponsorParagraph(
   return paragraph + "</p>";
 }
 
-function getAssetsParagraph(
-  acknowledgements: Record<string, string[]>
-): string {
-  const { assets } = acknowledgements;
+function getAssetsParagraph(acknowledgments: Record<string, string[]>): string {
+  const { assets } = acknowledgments;
   if (!assets) {
     return "";
   }
