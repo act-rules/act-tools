@@ -6,6 +6,6 @@ export const getImplementations = (
   options: Record<string, boolean | undefined>
 ): string => {
   return options.matrix
-    ? `{% include implementations/${frontmatter.id}.md %}`
+    ? `{% include_relative implementations/${frontmatter.id}.md %}`
     : "";
 };

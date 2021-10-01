@@ -20,7 +20,7 @@ export async function createMatrixFile(
 ): Promise<void> {
   const matrixFilePath = resolve(
     outDir,
-    "_includes",
+    "content",
     "implementations",
     `${id}.md`
   );

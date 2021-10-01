@@ -142,7 +142,7 @@ describe("getRuleContent", () => {
 
       World of the [ACT-rules community][]
       
-      {% include implementations/abc123.md %}
+      {% include_relative implementations/abc123.md %}
       
       ## Changelog
       

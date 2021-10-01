@@ -19,7 +19,7 @@ describe("rule-transform", () => {
     });
 
     it("does nothing if the file exists", async () => {
-      const dirName = `${tmpDir}/_includes/implementations`;
+      const dirName = `${tmpDir}/content/implementations`;
       const filePath = `${dirName}/abc123.md`;
       fs.mkdirSync(dirName, { recursive: true });
       fs.writeFileSync(filePath, "foo");
@@ -29,7 +29,7 @@ describe("rule-transform", () => {
     });
 
     it("creates a file if none exists", async () => {
-      const filePath = `${tmpDir}/_includes/implementations/abc123.md`;
+      const filePath = `${tmpDir}/content/implementations/abc123.md`;
       await createMatrixFile(tmpDir, "abc123");
       expect(fs.readFileSync(filePath, "utf8")).toBe(template);
     });
