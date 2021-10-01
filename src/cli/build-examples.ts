@@ -1,3 +1,4 @@
+#!/usr/bin/env ts-node
 import { Command } from "commander";
 import { buildExamples, BuildExampleOptions } from "../build-examples";
 

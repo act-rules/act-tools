@@ -6,5 +6,7 @@ module.exports = {
   rules: {
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/explicit-module-boundary-types": "error",
+    "@typescript-eslint/ban-types": "warn",
+    "@typescript-eslint/ban-ts-comment": "off"
   },
 };

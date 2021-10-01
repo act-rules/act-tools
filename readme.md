@@ -45,6 +45,41 @@ yarn build-examples \
   --ruleIds 5f99a7,6cfa84
 ```
 
+### Map an implementation
+
+The `map-implementation` takes the test results from an implementation and works out how that implementation maps to ACT.
+
+```sh
+yarn map-implementation \
+  --toolName "Acme Test Tool" \
+  --organisation "Acme Corp" \
+  --jsonReports "./acme-earl-report.json" \
+  --outDir "../implementations/" \
+  --testCaseJson "../wcag-act-rules/content/testcases.json"
+```
+
+This script outputs a file `implementations/acme-test-tool-mapping.json`, which looks something like this:
+
+```json
+{
+  "organisation": "Acme Corp",
+  "toolName": "Acme Test Tool",
+  "summary": {
+    "consistent": 20,
+    "partiallyConsistent": 1,
+    "inconsistent": 69,
+    "incomplete": 68
+  },
+  "actMapping": [{
+    "ruleId": "b5c3f8",
+    "ruleName": "HTML page has `lang` attribute",
+    "complete": false,
+    "consistency": "consistent",
+    "implementations": [{ ...details }]
+  }]
+}
+```
+
 ## Development
 
 The following commands are available for use in development:

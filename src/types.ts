@@ -54,6 +54,8 @@ export type AccessibilityRequirement = {
 
 export type Contributor = { name: string; url?: string };
 
+export type ExpectedOutcome = "passed" | "failed" | "inapplicable";
+
 export type TestCase = {
   ruleId: string;
   ruleName: string;
@@ -61,7 +63,7 @@ export type TestCase = {
   testcaseTitle: string;
   url: string;
   relativePath: string;
-  expected: string;
+  expected: ExpectedOutcome;
   rulePage: string;
   ruleAccessibilityRequirements: RuleFrontMatter["accessibility_requirements"];
 };
