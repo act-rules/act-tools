@@ -7,7 +7,7 @@ import { criteria } from "../../../data/index";
 
 export function getRuleMeta(frontmatter: RuleFrontMatter): string {
   const accRequirements = yaml.dump(frontmatter.accessibility_requirements);
-  const date = moment().format("MMMM Do, YYYY");
+  const date = moment().format("D MMMM YYYY");
   return outdent`
     id: ${frontmatter.id}
     name: "${frontmatter.name}"

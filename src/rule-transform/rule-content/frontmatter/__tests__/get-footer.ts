@@ -16,7 +16,7 @@ describe("getFooter", () => {
   it("returns the date", () => {
     const footer = getFooter({});
     expect(footer).toContain("Date:");
-    expect(footer).toContain(moment().format("MMMM Do, YYYY"));
+    expect(footer).toContain(moment().format("D MMMM YYYY"));
   });
 
   it("returns no authors if none is specified", () => {

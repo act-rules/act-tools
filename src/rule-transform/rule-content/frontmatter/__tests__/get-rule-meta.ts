@@ -48,7 +48,7 @@ describe("getRuleMeta", () => {
           url: "https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom",
         },
       ],
-      last_modified: moment().format("MMMM Do, YYYY"),
+      last_modified: moment().format("D MMMM YYYY"),
       accessibility_requirements: {
         "wcag21:2.1.4": sc214Requirement,
       },

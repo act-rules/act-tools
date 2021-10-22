@@ -5,7 +5,7 @@ import { contributors } from "../../../data/index";
 export function getFooter(
   acknowledgments: Record<string, string[]> = {}
 ): string {
-  const date = moment().format("MMMM Do, YYYY");
+  const date = moment().format("D MMMM YYYY");
   return (
     `<p><strong>Date:</strong> Updated ${date}</p>` +
     getAuthorParagraph(acknowledgments) +
