@@ -5,28 +5,30 @@ import { Command } from "commander";
 const program = new Command();
 program
   .usage("Usage: $0 --jsonReports ./reports/**.json [options]")
-  .option("-j, --jsonReports <filepath>", "Implementation report")
+  .option("-j, --jsonReports <filepath>", "Implementation report", (val) =>
+    Array.isArray(val) ? val : [val]
+  )
   .option(
-    "-t, --testcases <url>",
+    "-t, --testCaseJson <url>",
     "ACT Rules testcases",
     "https://act-rules.github.io/testcases.json"
   )
   .option(
     "-o, --output <filepath>",
     "Output directory for mapped results",
-    "./{tool}-mapping.json"
+    "./{name}-mapping.json"
   )
   .option(
-    "-O, --organization <name>",
+    "-v, --vendor <name>",
     "Organization, submitting the implementation report",
     "unknown"
   )
+  .option("-n, --name <name>", "Name of the implementation", "unknown")
   .option(
-    "-T, --toolName <name>",
-    "Tool which was used to generate the implementation report",
-    "unknown"
-  )
-  .option("-V, --toolVersion <version>", "Version of the tool", "latest");
+    "-V, --version <version.number>",
+    "Version of the implementation",
+    "latest"
+  );
 
 program.parse(process.argv);
 const options = program.opts<CliArgs>();

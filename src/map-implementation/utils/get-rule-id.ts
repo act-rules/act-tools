@@ -11,7 +11,7 @@ export function ruleIdFromSubject(
 }
 
 export function ruleIdFromUri(url: string): string {
-  const match = url.match(/\/([a-z0-9]{6})\/([a-z0-9]{40})\.[a-z]{3,4}/);
+  const match = url.match(/\/([a-z0-9]{6})\/([a-z0-9]{40})\.[a-z]{2,4}/);
   if (!match) {
     throw new Error(`Unable to find rule ID in ${url}`);
   }

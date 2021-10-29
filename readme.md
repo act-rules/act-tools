@@ -47,14 +47,14 @@ yarn build-examples \
 
 ### Map an implementation
 
-The `map-implementation` takes the test results from an implementation and works out how that implementation maps to ACT.
+The `map-implementation` tool takes the test results from an implementation and works out how that implementation maps to ACT.
 
 ```sh
 yarn map-implementation \
-  --toolName "Acme Test Tool" \
-  --organisation "Acme Corp" \
+  --name "Acme Test Tool" \
+  --vendor "Acme Corp" \
   --jsonReports "./acme-earl-report.json" \
-  --outDir "../implementations/" \
+  --output "../implementations/{organization}-{tool}.json" \
   --testCaseJson "../wcag-act-rules/content/testcases.json"
 ```
 
@@ -62,8 +62,8 @@ This script outputs a file `implementations/acme-test-tool-mapping.json`, which 
 
 ```json
 {
-  "organisation": "Acme Corp",
-  "toolName": "Acme Test Tool",
+  "vendor": "Acme Corp",
+  "name": "Acme Test Tool",
   "summary": {
     "consistent": 20,
     "partiallyConsistent": 1,
@@ -78,6 +78,17 @@ This script outputs a file `implementations/acme-test-tool-mapping.json`, which 
     "implementations": [{ ...details }]
   }]
 }
+```
+
+### Implementation Batch Update
+
+The `implementations-update` tool generates implementation tables for rule pages. It uses an `implementations.yml` file which describes all implementations that need to be included.
+
+```sh
+yarn implementations-update \
+  --implementations "../wcag-act-rules/implementations.yml" \
+  --testCaseJson "https://act-rules.github.io/testcases.json" \
+  --outDir "../wcag-act-rules/implementations/" \
 ```
 
 ## Development

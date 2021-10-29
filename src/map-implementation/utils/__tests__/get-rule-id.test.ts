@@ -51,6 +51,11 @@ describe("ruleIdFromSubject", () => {
     ).toBe("5f99a7");
   });
 
+  it("returns the rule ID from .js files", () => {
+    const uri = "/5f99a7/55f3ed0ec0f324514a0d223b737bc1e4c81593c7.js";
+    expect(ruleIdFromSubject(uri)).toBe("5f99a7");
+  });
+
   it("throws if the URI has no rule ID", () => {
     expect(() =>
       ruleIdFromSubject({

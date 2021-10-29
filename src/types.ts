@@ -76,3 +76,9 @@ export type TestCaseJson = {
   count: number;
   testcases: TestCase[];
 };
+
+export interface Implementation {
+  name: string;
+  vendor: string;
+  report: string;
+}

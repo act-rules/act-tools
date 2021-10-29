@@ -5,7 +5,7 @@ import { ruleIdFromSubject } from "./utils/get-rule-id";
 import { EarlAssertion } from "./earl/types";
 import {
   ImplementationSet,
-  ToolMetadata,
+  ImplementationBase,
   AssertionGroup,
   Consistency,
   TestCase,
@@ -14,12 +14,12 @@ import {
 } from "./types";
 import assert from "assert";
 
-export { loadJson } from "./load-json";
+export { loadJson } from "../utils/load-json";
 
 export async function actMapGenerator(
   jsonld: object | object[],
   { testcases }: { testcases: TestCase[] },
-  meta: ToolMetadata = {}
+  meta: ImplementationBase = {}
 ): Promise<ActImplementationMapping> {
   const assertions = await findAssertions(jsonld);
   const assertsByRule = groupAssertionsByRule(assertions);

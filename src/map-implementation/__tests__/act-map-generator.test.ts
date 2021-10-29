@@ -5,9 +5,9 @@ import { getImplementationSet } from "../get-implementation-set";
 describe("actMapGenerator", () => {
   it("includes all the `meta` props", async () => {
     const meta = {
-      organisation: "bar",
-      toolName: "baz",
-      toolVersion: "1.2.3",
+      vendor: "bar",
+      name: "baz",
+      version: "1.2.3",
     };
     const { testcases, earl } = testDataFromTables({
       testcaseIds: ["foo", "bar", "baz"],

@@ -3,30 +3,30 @@ import path from "path";
 import { promisify } from "util";
 import debug from "debug";
 import { actMapGenerator } from "./map-implementation/act-map-generator";
-import { loadJson } from "./map-implementation/load-json";
-import { ToolMetadata, TestCaseJson } from "./map-implementation/types";
+import { loadJson } from "./utils/load-json";
+import { ImplementationBase, TestCaseJson } from "./map-implementation/types";
 
 const writeFile = promisify(fs.writeFile);
 
-export type CliArgs = ToolMetadata & {
+export type CliArgs = ImplementationBase & {
   jsonReports: string[];
-  testcases: string;
+  testCaseJson: string;
   output: string;
 };
 
 export async function cliProgram({
-  organization,
-  toolName,
+  vendor,
+  name,
   jsonReports,
-  testcases,
+  testCaseJson,
   output,
-  toolVersion,
+  version,
 }: CliArgs): Promise<void> {
   output = output
-    .replace("{organization}", organization || "{organization}")
-    .replace("{tool}", toolName || "{tool}");
+    .replace("{vendor}", vendor || "{vendor}")
+    .replace("{name}", name || "{name}");
   const outputPath = path.resolve(process.cwd(), output);
-  const meta = { organization, toolName, toolVersion };
+  const meta = { vendor, name, version };
 
   // Load all the JSON files
   const jsonldFiles: object[] = [];
@@ -42,17 +42,17 @@ export async function cliProgram({
     })
   );
 
-  const testcaseFile = (await loadJson(testcases)) as TestCaseJson;
+  const testCaseFile = (await loadJson(testCaseJson)) as TestCaseJson;
 
   console.log("Loading files");
   const implementationMapping = await actMapGenerator(
     jsonldFiles,
-    testcaseFile,
+    testCaseFile,
     meta
   );
   const fileContent = JSON.stringify(implementationMapping, null, 2);
 
   // Save the report
   console.log(`Saved report to ${outputPath}`);
-  await writeFile(outputPath, fileContent);
+  await writeFile(outputPath, fileContent, "utf8");
 }

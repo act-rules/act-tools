@@ -14,6 +14,7 @@
     "transform-rule": "ts-node src/cli/rule-transform.ts",
     "build-examples": "ts-node src/cli/build-examples.ts",
     "map-implementation": "ts-node src/cli/map-implementation.ts",
+    "implementations-update": "ts-node src/cli/implementations-update.ts",
     "test": "jest",
     "prepare": "husky install"
   },

@@ -93,7 +93,7 @@ export function getImplementation(
 
 export function sameSource({ subject }: EarlAssertion, url: string): boolean {
   const source = sourceFromSubject(subject);
-  if (!source || !/\/([a-z0-9]{6})\/([a-z0-9]{40})\.[a-z]{3,4}/.test(source)) {
+  if (!source || !/\/([a-z0-9]{6})\/([a-z0-9]{40})\.[a-z]{2,4}/.test(source)) {
     throw new Error(`Assertion on '${source}' is not a test case`);
   }
   // The ending of URL is the same as source

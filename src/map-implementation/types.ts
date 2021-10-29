@@ -53,10 +53,10 @@ export type AssertionGroup = {
   [propName: string]: EarlAssertion[];
 };
 
-export interface ToolMetadata {
-  organization?: string;
-  toolName?: string;
-  toolVersion?: string;
+export interface ImplementationBase {
+  vendor?: string;
+  name?: string;
+  version?: string;
 }
 
 export interface MappingSummary {
@@ -66,7 +66,7 @@ export interface MappingSummary {
   incomplete: number;
 }
 
-export interface ActImplementationMapping extends ToolMetadata {
+export interface ActImplementationMapping extends ImplementationBase {
   summary: MappingSummary;
   actMapping: ImplementationSet[];
 }
