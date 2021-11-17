@@ -88,7 +88,8 @@ The `implementations-update` tool generates implementation tables for rule pages
 yarn implementations-update \
   --implementations "../wcag-act-rules/implementations.yml" \
   --testCaseJson "https://act-rules.github.io/testcases.json" \
-  --outDir "../wcag-act-rules/implementations/" \
+  --outDir "../wcag-act-rules/implementations/"
+  --tableFilePattern "../wcag-act-rules/content/implementations/{ruleId}.md"
 ```
 
 ## Development

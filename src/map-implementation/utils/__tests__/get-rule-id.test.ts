@@ -56,12 +56,11 @@ describe("ruleIdFromSubject", () => {
     expect(ruleIdFromSubject(uri)).toBe("5f99a7");
   });
 
-  it("throws if the URI has no rule ID", () => {
-    expect(() =>
-      ruleIdFromSubject({
-        "@type": "earl:TestSubject",
-        source: "foobar",
-      })
-    ).toThrow();
+  it("returns undefined if the URI has no rule ID", () => {
+    const subject = ruleIdFromSubject({
+      "@type": "earl:TestSubject",
+      source: "foobar",
+    });
+    expect(subject).toBeUndefined();
   });
 });

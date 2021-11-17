@@ -2,33 +2,62 @@ import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
 import { actMapGenerator } from "./map-implementation/act-map-generator";
-
 import { loadJson } from "./utils/load-json";
-import { TestCaseJson } from "./map-implementation/types";
+import {
+  ActImplementationMapping,
+  TestCaseJson,
+} from "./map-implementation/types";
 import { Implementation } from "./types";
-import { createFile } from "./utils";
+import { createFile, filenameEscape } from "./utils";
+import { createRuleImplementation } from "./matrix-update/create-rule-implementation";
 
 export interface CliArgs {
   testCaseJson: string;
   implementations: string;
   outDir: string;
+  tableFilePattern: string;
 }
 
 export async function cliProgram({
-  testCaseJson,
+  tableFilePattern,
+  testCaseJson: testCasePath,
   implementations: implementationPath,
   outDir,
 }: CliArgs): Promise<void> {
-  const testCases = (await loadJson(testCaseJson)) as TestCaseJson;
+  const testCaseJson = (await loadJson(testCasePath)) as TestCaseJson;
+  const implementationMappings = await createImplementationMappings(
+    implementationPath,
+    outDir,
+    testCaseJson
+  );
+
+  for (const ruleId of getRuleIds(testCaseJson)) {
+    const filePath = tableFilePattern.replace("{ruleId}", ruleId);
+    const fileText = createRuleImplementation(ruleId, implementationMappings);
+    await createFile(filePath, fileText);
+  }
+}
+
+async function createImplementationMappings(
+  implementationPath: string,
+  outDir: string,
+  testCasesJson: TestCaseJson
+): Promise<ActImplementationMapping[]> {
   const implementations = loadImplementations(implementationPath);
+  const implementationMappings: ActImplementationMapping[] = [];
 
   for (const { name, vendor, report } of implementations) {
     const jsonLd = await loadJson(report);
-    const mapping = await actMapGenerator(jsonLd, testCases, { name, vendor });
-    const filePath = path.resolve(outDir, `${name}.json`);
+    const mapping = await actMapGenerator(jsonLd, testCasesJson, {
+      name,
+      vendor,
+    });
+    const filePath = path.resolve(outDir, `${filenameEscape(name)}.json`);
     console.log(`Writing file ${filePath}`);
     await createFile(filePath, mapping);
+    implementationMappings.push(mapping);
   }
+  return implementationMappings;
 }
 
 function loadImplementations(implementationPath: string): Implementation[] {
@@ -45,4 +74,10 @@ function loadImplementations(implementationPath: string): Implementation[] {
     }
   });
   return implementations;
+}
+
+function getRuleIds({ testcases }: TestCaseJson): string[] {
+  const uniqueIds = new Set<string>();
+  testcases.forEach((testcase) => uniqueIds.add(testcase.ruleId));
+  return Array.from(uniqueIds);
 }

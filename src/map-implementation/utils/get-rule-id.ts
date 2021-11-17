@@ -6,7 +6,11 @@ export function ruleIdFromSubject(
 ): string | void {
   const source = sourceFromSubject(subject);
   if (source) {
-    return ruleIdFromUri(source);
+    try {
+      return ruleIdFromUri(source);
+    } catch {
+      /* void */
+    }
   }
 }
 

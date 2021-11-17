@@ -15,6 +15,11 @@ program
     "Implementations YAML file path",
     "./implementations.yml"
   )
+  .option(
+    "-p, --tableFilePattern <path>",
+    "Pattern for the filename of implementation tables",
+    "./implementations/{ruleId}.md"
+  )
   .option("-o, --outDir <dirname>", "Path to output dir");
 
 program.parse(process.argv);
