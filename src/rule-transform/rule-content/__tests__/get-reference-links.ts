@@ -21,7 +21,7 @@ describe("rule-content", () => {
     const page = outdent`
       [hello][], [w3c][]
 
-      [w3c]: https://w3.org 'W3C website'
+      [w3c]: https://w3.org 'W3C: website'
       [hello]: #hello
     `;
 
@@ -30,7 +30,7 @@ describe("rule-content", () => {
       const referenceLinks = getReferenceLinks(rulePage, []);
       expect(referenceLinks).toBe(outdent`
         [hello]: #hello
-        [w3c]: https://w3.org 'W3C website'
+        [w3c]: https://w3.org 'W3C: website'
       `);
     });
 
@@ -41,7 +41,7 @@ describe("rule-content", () => {
       expect(referenceLinks).toBe(outdent`
         [great]: https://w3.org/
         [hello]: #hello
-        [w3c]: https://w3.org 'W3C website'
+        [w3c]: https://w3.org 'W3C: website'
       `);
     });
 
@@ -51,7 +51,7 @@ describe("rule-content", () => {
       const referenceLinks = getReferenceLinks(rulePage, glossary);
       expect(referenceLinks).toBe(outdent`
         [hello]: #hello
-        [w3c]: https://w3.org 'W3C website'
+        [w3c]: https://w3.org 'W3C: website'
       `);
     });
   });

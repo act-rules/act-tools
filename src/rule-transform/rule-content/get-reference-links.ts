@@ -27,7 +27,11 @@ function getReferences(page: PageBase): Record<string, string> {
   }
   const lines = page.body.substr(offset).split("\n");
   lines.forEach((line) => {
-    const [key, url] = line.split(": ");
+    const index = line.indexOf(": ");
+    const key = line.substr(0, index);
+    const url = line.substr(index + 2);
+    // const [key, ...rest] = line.split(": ");
+    // const url = rest.join(': ')
     if (key.match(/^\[.+\]$/)) {
       references[key.toLocaleLowerCase()] = url || "";
     }
