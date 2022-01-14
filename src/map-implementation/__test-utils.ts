@@ -1,12 +1,8 @@
 import * as earlContext from "./earl/earl-context.json";
 import { EarlAssertion, EarlOutcome } from "./earl/types";
 import { getImplementation } from "./get-implementation";
-import {
-  ExpectedOutcome,
-  TestCase,
-  Implementation,
-  ActualOutcome,
-} from "./types.js";
+import { ExpectedOutcome, ActualOutcome } from "../types";
+import { TestCase, Implementation } from "./types.js";
 
 export type TestDataTable = {
   expected: ExpectedOutcome[];

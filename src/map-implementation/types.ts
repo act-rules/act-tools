@@ -1,6 +1,6 @@
 import { EarlAssertion } from "./earl/types";
 export { TestCaseJson, TestCase, ExpectedOutcome } from "../types";
-import { ExpectedOutcome } from "../types";
+import { ExpectedOutcome, ActualOutcome } from "../types";
 
 export type SatisfiedRequirement = "satisfied" | "further testing needed";
 
@@ -12,8 +12,6 @@ export interface AccessibilityRequirement {
   passed: SatisfiedRequirement;
   inapplicable: SatisfiedRequirement;
 }
-
-export type ActualOutcome = ExpectedOutcome | "cantTell" | "untested";
 
 export interface TestFindings {
   url: string;
@@ -69,4 +67,26 @@ export interface MappingSummary {
 export interface ActImplementationMapping extends ImplementationBase {
   summary: MappingSummary;
   actMapping: ImplementationSet[];
+}
+
+export type ConsistencyLevel = 'complete' | 'partial' | 'minimal' | null;
+
+export interface ActProcedureMapping {
+  procedureName: string
+  consistentRequirements: boolean
+  ruleId: string,
+  testResults: TestResult[]
+}
+
+export interface TestResult {
+  testcaseId: string,
+  expected: ExpectedOutcome
+  outcomes: ActualOutcome[]
+  automatic?: boolean
+}
+
+export type ProcedureCoverage = {
+  testCaseTotal: number,
+  covered: number,
+  automatic: number
 }

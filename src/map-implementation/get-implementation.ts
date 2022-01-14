@@ -3,12 +3,11 @@ import { sourceFromSubject } from "./utils/get-source";
 import debug from "debug";
 import {
   TestCase,
-  ExpectedOutcome,
-  ActualOutcome,
   Consistency,
   TestFindings,
   SemiImplementation,
 } from "./types";
+import { ExpectedOutcome, ActualOutcome } from '../types'
 
 type OutcomeMapping = {
   [propName in ExpectedOutcome]: ActualOutcome[];

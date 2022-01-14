@@ -55,6 +55,7 @@ export type AccessibilityRequirement = {
 export type Contributor = { name: string; url?: string };
 
 export type ExpectedOutcome = "passed" | "failed" | "inapplicable";
+export type ActualOutcome = ExpectedOutcome | "cantTell" | "untested";
 
 export type TestCase = {
   ruleId: string;
