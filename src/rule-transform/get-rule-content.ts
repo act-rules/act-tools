@@ -7,7 +7,6 @@ import { getImplementations } from "./rule-content/get-implementations";
 import { getChangelog } from "./rule-content/get-changelog";
 import { getReferenceLinks } from "./rule-content/get-reference-links";
 import { getRuleDefinitions } from "../act/get-rule-definitions";
-import { getTableOfContent } from "./rule-content/get-table-of-content";
 
 type RuleGenerator = (
   ruleData: RulePage,
@@ -17,7 +16,6 @@ type RuleGenerator = (
 
 const sectionMethodsInOrder: RuleGenerator[] = [
   getFrontmatter,
-  getTableOfContent,
   getRuleBody,
   getExamplesContent,
   getGlossary,
