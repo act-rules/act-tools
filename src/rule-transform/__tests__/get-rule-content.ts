@@ -73,7 +73,7 @@ describe("getRuleContent", () => {
         repository: w3c/wcag-act-rules
         path: content/abc123.md
       footer: |
-      ${indent(getFooter(rulePage.frontmatter.acknowledgments))}
+      ${indent(getFooter(rulePage.frontmatter))}
       proposed: false
       rule_meta:
         id: abc123

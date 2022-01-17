@@ -24,7 +24,7 @@ export const getFrontmatter = (
       repository: w3c/wcag-act-rules
       path: ${githubPath}
     footer: |
-    ${indent(getFooter(frontmatter.acknowledgments))}
+    ${indent(getFooter(frontmatter))}
     proposed: ${options?.proposed || false}
     rule_meta:
     ${indent(getRuleMeta(frontmatter))}

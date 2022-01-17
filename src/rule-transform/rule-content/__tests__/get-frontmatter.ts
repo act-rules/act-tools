@@ -60,7 +60,7 @@ describe("rule-content", () => {
           repository: `w3c/wcag-act-rules`,
           path: `content/${ruleData.filename}`,
         },
-        footer: getFooter(ruleData.frontmatter.acknowledgments) + "\n",
+        footer: getFooter(ruleData.frontmatter) + "\n",
         proposed: true,
         rule_meta: yaml.load(getRuleMeta(ruleData.frontmatter)),
       });

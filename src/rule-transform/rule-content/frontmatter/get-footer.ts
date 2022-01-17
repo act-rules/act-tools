@@ -1,17 +1,27 @@
 import moment from "moment";
-import { Contributor } from "../../../types";
+import { Contributor, RuleFrontMatter } from "../../../types";
 import { contributors } from "../../../data/index";
 
-export function getFooter(
-  acknowledgments: Record<string, string[]> = {}
-): string {
+type PartialFrontMatter = {
+  id?: string;
+  acknowledgments?: RuleFrontMatter["acknowledgments"];
+};
+
+export function getFooter({ acknowledgments, id }: PartialFrontMatter): string {
   const date = moment().format("D MMMM YYYY");
-  return (
-    `<p><strong>Date:</strong> Updated ${date}</p>` +
-    getAuthorParagraph(acknowledgments) +
-    getSponsorParagraph(acknowledgments) +
-    getAssetsParagraph(acknowledgments)
-  );
+  let footer =
+    `<p><strong>Date:</strong> Updated ${date}</p>\n` +
+    `<p><strong>Unique identifier for this rule:</strong> ${
+      id ?? "unknown"
+    }</p>`;
+  if (acknowledgments) {
+    footer +=
+      getAuthorParagraph(acknowledgments) +
+      getSponsorParagraph(acknowledgments) +
+      getAssetsParagraph(acknowledgments);
+  }
+
+  return footer;
 }
 
 function getAuthorParagraph(acknowledgments: Record<string, string[]>): string {
@@ -38,6 +48,9 @@ function getSponsorParagraph(
       ` It is written as part of the EU-funded ` +
       `<a href="https://www.w3.org/WAI/about/projects/wai-tools/">WAI-Tools Project</a>.`;
   }
+  paragraph +=
+    ` Implementations are part of the EU funded ` +
+    `<a href="https://www.w3.org/WAI/about/projects/wai-coop/">WAI-CooP Project</a>.`;
   return paragraph + "</p>";
 }
 
