@@ -1,12 +1,9 @@
 import { outdent } from "outdent";
 import moment from "moment";
-import * as yaml from "js-yaml";
 import { AccessibilityRequirement, RuleFrontMatter } from "../../../types";
-import { indent } from "../../../utils/index";
 import { criteria } from "../../../data/index";
 
 export function getRuleMeta(frontmatter: RuleFrontMatter): string {
-  const accRequirements = yaml.dump(frontmatter.accessibility_requirements);
   const date = moment().format("D MMMM YYYY");
   return outdent`
     id: ${frontmatter.id}
@@ -14,8 +11,6 @@ export function getRuleMeta(frontmatter: RuleFrontMatter): string {
     rule_type: ${frontmatter.rule_type}
     description: |
       ${frontmatter.description.trim()}
-    accessibility_requirements:
-    ${indent(accRequirements.trim())}
     ${getRuleInput(frontmatter)}
     last_modified: ${date}
     ${getSCsTested(frontmatter.accessibility_requirements || {})}

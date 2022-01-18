@@ -49,9 +49,6 @@ describe("getRuleMeta", () => {
         },
       ],
       last_modified: moment().format("D MMMM YYYY"),
-      accessibility_requirements: {
-        "wcag21:2.1.4": sc214Requirement,
-      },
     });
   });
 });

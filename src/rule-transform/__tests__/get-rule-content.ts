@@ -81,12 +81,6 @@ describe("getRuleContent", () => {
         rule_type: atomic
         description: |
           hello world
-        accessibility_requirements:
-          'wcag20:4.1.2':
-            forConformance: true
-            failed: not satisfied
-            passed: further testing needed
-            inapplicable: further testing needed
         input_aspects:
           - handle: DOM Tree
             url: https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom
@@ -98,6 +92,22 @@ describe("getRuleContent", () => {
       ---
       
       [hello][], [w3c][]
+
+      ## Accessibility Requirements Mapping
+
+      <ul class="act-requirements-list">
+        <li><details><summary>4.1.2 Name, Role, Value (Level A)</summary>
+          <ul>
+            <li><a href="https://www.w3.org/TR/WCAG21/#name-role-value">Learn more about 4.1.2 Name, Role, Value</a></li>
+            <li><strong>Required for conformance</strong> to WCAG 2.0 and later on level A and higher.</li>
+            <li>Outcome mapping: <ul>
+              <li>Any <code>failed</code> outcomes: success criterion is not satisfied</li>
+              <li>All <code>passed</code> outcomes: success criterion needs further testing</li>
+              <li>An <code>inapplicable</code> outcome: success criterion needs further testing</li>
+            </ul></li>
+          </ul>
+        </details></li>
+      </ul>
 
       ## Test Cases
 
