@@ -42,12 +42,6 @@ describe("getRuleMeta", () => {
           level: "A",
         },
       ],
-      input_aspects: [
-        {
-          handle: "DOM Tree",
-          url: "https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom",
-        },
-      ],
       last_modified: moment().format("D MMMM YYYY"),
     });
   });

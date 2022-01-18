@@ -59,7 +59,8 @@ describe("getRuleContent", () => {
     const taskforceMarkdown = getRuleContent(
       { ...rulePage, filename: "abc123.md" },
       glossary,
-      { matrix: true }
+      { matrix: true },
+      []
     );
 
     expect(taskforceMarkdown).toBe(
@@ -81,9 +82,6 @@ describe("getRuleContent", () => {
         rule_type: atomic
         description: |
           hello world
-        input_aspects:
-          - handle: DOM Tree
-            url: https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom
         last_modified: ${moment().format("D MMMM YYYY")}
         scs_tested:
           - handle: Name, Role, Value
@@ -108,6 +106,12 @@ describe("getRuleContent", () => {
           </ul>
         </details></li>
       </ul>
+
+      ## Input Aspects
+
+      The following aspects are required in using this rule.
+
+      - [DOM Tree](https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom)
 
       ## Test Cases
 

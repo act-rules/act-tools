@@ -8,17 +8,20 @@ import { getChangelog } from "./rule-content/get-changelog";
 import { getReferenceLinks } from "./rule-content/get-reference-links";
 import { getRuleDefinitions } from "../act/get-rule-definitions";
 import { getRequirementsMap } from "./rule-content/get-requirements-map";
+import { getInput } from "./rule-content/get-input";
 
 type RuleGenerator = (
   ruleData: RulePage,
   glossary: DefinitionPage[],
-  options: Record<string, boolean | undefined>
+  options: Record<string, boolean | undefined>,
+  rulesData: RulePage[]
 ) => string;
 
 const sectionMethodsInOrder: RuleGenerator[] = [
   getFrontmatter,
   getRuleBody,
   getRequirementsMap,
+  getInput,
   getExamplesContent,
   getGlossary,
   getImplementations,
@@ -29,11 +32,12 @@ const sectionMethodsInOrder: RuleGenerator[] = [
 export const getRuleContent: RuleGenerator = (
   ruleData,
   glossary,
-  options = {}
+  options = {},
+  rulesData
 ) => {
   const ruleDefinitions = getRuleDefinitions(ruleData, glossary);
   const rulePageSections = sectionMethodsInOrder.map((createContent) => {
-    return createContent(ruleData, ruleDefinitions, options);
+    return createContent(ruleData, ruleDefinitions, options, rulesData);
   });
   return rulePageSections.join("\n\n") + "\n";
 };

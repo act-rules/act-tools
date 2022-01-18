@@ -1,6 +1,6 @@
 import * as path from "path";
 import { getRulePages, getDefinitionPages } from "./utils/get-page-data";
-import { createFile } from "./utils/create-file";
+import { createFile, ruleUrl } from "./utils";
 import { createMatrixFile } from "./rule-transform/create-matrix-file";
 import { getRuleContent } from "./rule-transform/get-rule-content";
 import { DefinitionPage, RulePage } from "./types";
@@ -28,7 +28,12 @@ export async function ruleTransform({
   const glossary = getDefinitionPages(glossaryDir);
 
   for (const ruleData of rulesData) {
-    const { filepath, content } = buildTfRuleFile(ruleData, glossary, options);
+    const { filepath, content } = buildTfRuleFile(
+      ruleData,
+      glossary,
+      options,
+      rulesData
+    );
     const absolutePath = path.resolve(outDir, "content", filepath);
     await createFile(absolutePath, content);
     console.log(`Updated ${ruleLink(ruleData)}`);
@@ -45,18 +50,15 @@ export async function ruleTransform({
 function buildTfRuleFile(
   ruleData: RulePage,
   glossary: DefinitionPage[],
-  options: Record<string, boolean | undefined>
+  options: Record<string, boolean | undefined>,
+  rulesData: RulePage[]
 ) {
   return {
     filepath: ruleData.filename,
-    content: getRuleContent(ruleData, glossary, options),
+    content: getRuleContent(ruleData, glossary, options, rulesData),
   };
 }
 
 function ruleLink({ frontmatter, filename }: RulePage) {
   return `[${frontmatter.name}](${ruleUrl(filename)})`;
-}
-
-function ruleUrl(filename: string): string {
-  return `/standards-guidelines/act/rules/${filename.replace(".md", "")}/`;
 }
