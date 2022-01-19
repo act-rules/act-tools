@@ -3,15 +3,18 @@ import { Parent } from "unist";
 import { getRuleExamples, Example } from "../../act/get-rule-examples";
 import { joinStrings } from "../../utils/index";
 
-export function getExamplesContent({
-  frontmatter,
-  markdownAST,
-  body,
-}: {
+type RulePage = {
   frontmatter: RuleFrontMatter;
   markdownAST: Parent;
   body: string;
-}): string {
+};
+type Options = Record<string, boolean | undefined>;
+
+export function getExamplesContent(
+  { frontmatter, markdownAST, body }: RulePage,
+  _?: unknown,
+  options: Options = {}
+): string {
   const ruleId = frontmatter.id;
   const examples = getRuleExamples({ markdownAST, body });
   const exampleStrings: Record<string, string[]> = {
@@ -21,12 +24,14 @@ export function getExamplesContent({
   };
   examples.forEach((example) => {
     const { title, description, language, rawCode, expected } = example;
-    const exampleStr = joinStrings(
-      `#### ${title}`,
-      getExternalLink(ruleId, example),
-      description,
-      ["```" + language, rawCode, "```"]
-    );
+    const externalLink = !options.noExampleLinks
+      ? getExternalLink(ruleId, example)
+      : "";
+    const exampleStr = joinStrings(`#### ${title}`, externalLink, description, [
+      "```" + language,
+      rawCode,
+      "```",
+    ]);
     exampleStrings[expected].push(exampleStr);
   });
 

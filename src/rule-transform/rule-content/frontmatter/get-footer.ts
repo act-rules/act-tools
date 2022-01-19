@@ -11,9 +11,7 @@ export function getFooter({ acknowledgments, id }: PartialFrontMatter): string {
   const date = moment().format("D MMMM YYYY");
   let footer =
     `<p><strong>Date:</strong> Updated ${date}</p>\n` +
-    `<p><strong>Unique identifier for this rule:</strong> ${
-      id ?? "unknown"
-    }</p>`;
+    `<p><strong>Rule Identifier:</strong> ${id ?? "unknown"}</p>`;
   if (acknowledgments) {
     footer +=
       getAuthorParagraph(acknowledgments) +

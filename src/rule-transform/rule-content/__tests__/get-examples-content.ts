@@ -60,5 +60,55 @@ describe("rule-content", () => {
         _There are no inapplicable examples._
       `);
     });
+
+    it("Leaves out links with noExampleLinks", () => {
+      const body = outdent`
+        ## Exampllse
+
+        ### Passes
+        ##### Pass Example 1
+        ${q}html
+        <img alt="" />
+        ${q}
+        
+        ### Failure Test Cases
+        ##### Failed Example 2
+        Some problem description
+        ${q}html
+        <img alt="" />
+        ${q}
+      `;
+      const markdownAST = parseMarkdown(body) as Parent;
+      const examples = getExamplesContent(
+        { frontmatter, markdownAST, body },
+        null,
+        { noExampleLinks: true }
+      );
+      expect(examples).toBe(outdent`
+        ## Test Cases
+
+        ### Passed
+
+        #### Pass Example 1
+
+        ${q}html
+        <img alt="" />
+        ${q}
+
+        ### Failed
+
+        #### Failed Example 2
+
+        Some problem description
+
+        ${q}html
+        <img alt="" />
+        ${q}
+
+        ### Inapplicable
+
+        _There are no inapplicable examples._
+      `);
+    });
   });
 });
