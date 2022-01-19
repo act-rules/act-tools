@@ -33,6 +33,20 @@ describe("getInput", () => {
         "- [DOM Tree](https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom)"
       );
     });
+
+    it("does not link unknown input aspects", () => {
+      const input = getInput({
+        filename,
+        frontmatter: {
+          ...defaultMatter,
+          input_aspects: ["Fizzbuzz", "DOM Tree"],
+        },
+      });
+      expect(input).toContain("- Fizzbuzz (no link available)");
+      expect(input).toContain(
+        "- [DOM Tree](https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom)"
+      );
+    });
   });
 
   describe("getInputRules", () => {
@@ -81,6 +95,25 @@ describe("getInput", () => {
       );
       expect(input).toContain(
         "- [XYZ Rule](/standards-guidelines/act/rules/bar-xyz789/)"
+      );
+    });
+
+    it("does not link to unknown rule IDs", () => {
+      const input = getInput(
+        {
+          filename,
+          frontmatter: {
+            ...defaultMatter,
+            input_rules: ["unknown", "abc123"],
+          },
+        },
+        null,
+        null,
+        dummyRules
+      );
+      expect(input).toContain("- unknown (no link available)");
+      expect(input).toContain(
+        "- [ABC Rule](/standards-guidelines/act/rules/foo-abc123/)"
       );
     });
   });

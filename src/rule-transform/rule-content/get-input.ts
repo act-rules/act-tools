@@ -25,9 +25,12 @@ function getInputAspects(inputAspects: string[]) {
     The following aspects are required in using this rule.
 
     ${inputAspects
-      .map(
-        (inputAspect) => `- [${inputAspect}](${getInputAspectUrl(inputAspect)})`
-      )
+      .map((inputAspect) => {
+        const url = getInputAspectUrl(inputAspect);
+        return url
+          ? `- [${inputAspect}](${url})`
+          : `- ${inputAspect} (no link available)`;
+      })
       .join("\n")}
   `;
 }
@@ -49,7 +52,7 @@ function getInputRuleUrl(ruleId: string, rulesData: RulePage[]) {
     ({ frontmatter }) => frontmatter.id === ruleId
   );
   if (!ruleData) {
-    return "";
+    return `${ruleId} (no link available)`;
   }
   return `[${ruleData.frontmatter.name}](${ruleUrl(ruleData.filename)})`;
 }

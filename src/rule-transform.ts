@@ -12,6 +12,7 @@ export type RuleTransformOptions = Partial<{
   outDir: string;
   ruleIds: string[];
   proposed: boolean;
+  noExampleLinks: boolean;
   matrix: boolean;
 }>;
 
@@ -21,9 +22,10 @@ export async function ruleTransform({
   ruleIds = [],
   outDir = ".",
   proposed = false,
+  noExampleLinks = false,
   matrix = true,
 }: RuleTransformOptions): Promise<void> {
-  const options = { proposed, matrix };
+  const options = { proposed, matrix, noExampleLinks };
   const rulesData = getRulePages(rulesDir, ruleIds);
   const glossary = getDefinitionPages(glossaryDir);
 
