@@ -51,7 +51,8 @@ function accRequirementItems(
     : `Not required for conformance to any W3C accessibility recommendation.`;
 
   return outdent`
-    <li><details><summary>${title}</summary>
+    <li><details>
+      <summary><span>${title}</span></summary>
       <ul>
         <li><a href="${url}">Learn more about ${shortTitle}</a></li>
         <li>${requiredText}</li>

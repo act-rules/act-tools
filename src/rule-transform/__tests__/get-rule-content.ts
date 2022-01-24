@@ -94,7 +94,8 @@ describe("getRuleContent", () => {
       ## Accessibility Requirements Mapping
 
       <ul class="act-requirements-list">
-        <li><details><summary>4.1.2 Name, Role, Value (Level A)</summary>
+        <li><details>
+          <summary><span>4.1.2 Name, Role, Value (Level A)</span></summary>
           <ul>
             <li><a href="https://www.w3.org/TR/WCAG21/#name-role-value">Learn more about 4.1.2 Name, Role, Value</a></li>
             <li><strong>Required for conformance</strong> to WCAG 2.0 and later on level A and higher.</li>
