@@ -56,11 +56,12 @@ describe("rule-content", () => {
         permalink: `/standards-guidelines/act/rules/${filenameNoExt}/`,
         ref: `/standards-guidelines/act/rules/${filenameNoExt}/`,
         lang: "en",
+        feedbackmail: "public-wcag-act@w3.org",
         github: {
           repository: `w3c/wcag-act-rules`,
           path: `content/${ruleData.filename}`,
         },
-        footer: getFooter(ruleData.frontmatter) + "\n",
+        footer: getFooter(ruleData.frontmatter, true) + "\n",
         proposed: true,
         rule_meta: yaml.load(getRuleMeta(ruleData.frontmatter)),
       });

@@ -73,8 +73,9 @@ describe("getRuleContent", () => {
       github:
         repository: w3c/wcag-act-rules
         path: content/abc123.md
+      feedbackmail: public-wcag-act@w3.org
       footer: |
-      ${indent(getFooter(rulePage.frontmatter))}
+      ${indent(getFooter(rulePage.frontmatter, false))}
       proposed: false
       rule_meta:
         id: abc123

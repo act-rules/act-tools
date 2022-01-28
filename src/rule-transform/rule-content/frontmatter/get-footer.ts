@@ -7,38 +7,39 @@ type PartialFrontMatter = {
   acknowledgments?: RuleFrontMatter["acknowledgments"];
 };
 
-export function getFooter({ acknowledgments, id }: PartialFrontMatter): string {
+export function getFooter(
+  { acknowledgments, id }: PartialFrontMatter,
+  proposed?: boolean
+): string {
   const date = moment().format("D MMMM YYYY");
-  let footer =
+  return (
+    `<p><strong>Rule Identifier:</strong> ${id ?? "unknown"}</p>\n` +
     `<p><strong>Date:</strong> Updated ${date}</p>\n` +
-    `<p><strong>Rule Identifier:</strong> ${id ?? "unknown"}</p>`;
-  if (acknowledgments) {
-    footer +=
-      getAuthorParagraph(acknowledgments) +
-      getSponsorParagraph(acknowledgments) +
-      getAssetsParagraph(acknowledgments);
-  }
-
-  return footer;
+    getAuthorParagraph(acknowledgments || {}) +
+    getSponsorParagraph(acknowledgments || {}, proposed) +
+    getAssetsParagraph(acknowledgments || {})
+  ).trim();
 }
 
 function getAuthorParagraph(acknowledgments: Record<string, string[]>): string {
   const { authors, previous_authors } = acknowledgments;
+  const contributors = `Contributors: <a href="https://www.w3.org/community/act-r/participants">Participants of the ACT Rules Community Group (CG)</a>.`;
   if (!authors) {
-    return "";
+    return `<p>${contributors}</p>\n`;
   }
-  let paragraph = `\n<p><strong>Authors:</strong> ${getAuthors(authors)}.`;
+  let paragraph = `<p><strong>Authors:</strong> ${getAuthors(authors)}. `;
   if (previous_authors) {
-    paragraph += ` <em>Previous Authors:</em> ${getAuthors(previous_authors)}.`;
+    paragraph += `Previous Authors: ${getAuthors(previous_authors)}. `;
   }
-  return paragraph + "</p>";
+  return paragraph + `${contributors}</p>\n`;
 }
 
 function getSponsorParagraph(
-  acknowledgments: Record<string, string[]>
+  acknowledgments: Record<string, string[]>,
+  proposed?: boolean
 ): string {
   let paragraph =
-    `\n<p>This rule was written in the ` +
+    `<p>This rule was written in the ` +
     `<a href="https://w3.org/community/act-r/">ACT Rules community group</a>.`;
 
   if (acknowledgments.funding?.some((s) => s.toLowerCase() === "wai-tools")) {
@@ -49,7 +50,13 @@ function getSponsorParagraph(
   paragraph +=
     ` Implementations are part of the EU funded ` +
     `<a href="https://www.w3.org/WAI/about/projects/wai-coop/">WAI-CooP Project</a>.`;
-  return paragraph + "</p>";
+
+  const agLink = `<a href="https://www.w3.org/groups/wg/ag">AG WG</a>`;
+  paragraph += proposed
+    ? ` It will be reviewed by the Accessibility Guidelines Working Group (${agLink}).`
+    : ` It was approved and published by the Accessibility Guidelines Working Group (${agLink}).`;
+
+  return paragraph + "</p>\n";
 }
 
 function getAssetsParagraph(acknowledgments: Record<string, string[]>): string {
@@ -60,7 +67,7 @@ function getAssetsParagraph(acknowledgments: Record<string, string[]>): string {
   return (
     `\n<p><strong>Assets:</strong> ` +
     `test cases use assets from the following sources: ` +
-    `${assets.join(". ")}.</p>`
+    `${assets.join(". ")}.</p>\n`
   );
 }
 

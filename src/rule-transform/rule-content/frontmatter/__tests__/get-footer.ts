@@ -13,6 +13,12 @@ describe("getFooter", () => {
     }
   });
 
+  it("always returns contributors", () => {
+    const footer = getFooter({});
+    expect(footer).toContain("Contributors:");
+    expect(footer).toContain("Participants of the ACT Rules Community Group");
+  });
+
   it("returns the date", () => {
     const footer = getFooter({});
     expect(footer).toContain("Date:");
@@ -84,5 +90,23 @@ describe("getFooter", () => {
     expect(footer2).toContain("Assets:");
     expect(footer2).toContain("Hello");
     expect(footer2).toContain("World");
+  });
+
+  it("includes a link to AGWG", () => {
+    const footer1 = getFooter({});
+    expect(footer1).toContain(`href="https://www.w3.org/groups/wg/ag"`);
+  });
+
+  const agwg = `Accessibility Guidelines Working Group`;
+  it("shows to be reviewed by AG for proposed rules", () => {
+    const footer1 = getFooter({}, true);
+    expect(footer1).toContain(`will be reviewed by the ${agwg}`);
+    expect(footer1).not.toContain(`approved and published by the ${agwg}`);
+  });
+
+  it("shows approved by AG for non-proposed rules", () => {
+    const footer1 = getFooter({}, false);
+    expect(footer1).not.toContain(`will be reviewed by the ${agwg}`);
+    expect(footer1).toContain(`approved and published by the ${agwg}`);
   });
 });
