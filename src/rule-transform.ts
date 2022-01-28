@@ -44,8 +44,8 @@ export async function ruleTransform({
     }
   }
 
-  const wcagMappingPath = path.resolve(outDir, "wcagmapping.json");
-  createWcagMapping(wcagMappingPath, rulesData);
+  const wcagMappingPath = path.resolve(outDir, "wcag-mapping.json");
+  await createWcagMapping(wcagMappingPath, rulesData);
   console.log(`Updated ${wcagMappingPath}`);
 }
 
