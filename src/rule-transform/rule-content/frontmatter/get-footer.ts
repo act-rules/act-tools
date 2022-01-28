@@ -1,6 +1,7 @@
 import moment from "moment";
 import { Contributor, RuleFrontMatter } from "../../../types";
 import { contributors } from "../../../data/index";
+import { markdownToHtml } from "../../../utils";
 
 type PartialFrontMatter = {
   id?: string;
@@ -59,15 +60,19 @@ function getSponsorParagraph(
   return paragraph + "</p>\n";
 }
 
-function getAssetsParagraph(acknowledgments: Record<string, string[]>): string {
+function getAssetsParagraph(
+  acknowledgments: Record<string, string[] | undefined>
+): string {
   const { assets } = acknowledgments;
   if (!assets) {
     return "";
   }
   return (
-    `\n<p><strong>Assets:</strong> ` +
-    `test cases use assets from the following sources: ` +
-    `${assets.join(". ")}.</p>\n`
+    "\n" +
+    markdownToHtml(
+      `**Assets:** Test cases use assets from the following sources: ` +
+        assets.join("; ")
+    )
   );
 }
 
