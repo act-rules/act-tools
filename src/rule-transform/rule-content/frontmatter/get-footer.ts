@@ -41,7 +41,7 @@ function getSponsorParagraph(
 ): string {
   let paragraph =
     `<p>This rule was written in the ` +
-    `<a href="https://w3.org/community/act-r/">ACT Rules community group</a>.`;
+    `<a href="https://w3.org/community/act-r/">ACT Rules Community Group</a>.`;
 
   if (acknowledgments.funding?.some((s) => s.toLowerCase() === "wai-tools")) {
     paragraph +=
