@@ -22,7 +22,10 @@
   "ts-node": {
     "files": true
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
   "exclude": [
     "**/__tests__/**/*",
     "**/__test-utils.ts"
