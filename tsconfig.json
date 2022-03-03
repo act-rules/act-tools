@@ -24,7 +24,7 @@
   },
   "include": ["src/**/*"],
   "exclude": [
-    "__tests__/**/*",
-    "__test-utils.ts"
+    "**/__tests__/**/*",
+    "**/__test-utils.ts"
   ]
 }
