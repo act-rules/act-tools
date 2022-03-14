@@ -47,19 +47,19 @@ describe("rule-content", () => {
     });
 
     it("has the appropriate data in the yaml", () => {
-      const frontmatter = getFrontmatter(ruleData, [], { proposed: true });
-      const frontmatterData = stripDashes(frontmatter);
+      const frontmatterStr = getFrontmatter(ruleData, [], { proposed: true });
+      const frontmatterData = stripDashes(frontmatterStr);
       const data = yaml.load(frontmatterData);
 
       expect(data).toEqual({
         title: ruleData.frontmatter.name,
-        permalink: `/standards-guidelines/act/rules/${filenameNoExt}/`,
-        ref: `/standards-guidelines/act/rules/${filenameNoExt}/`,
+        permalink: `/standards-guidelines/act/rules/${frontmatter.id}/proposed/`,
+        ref: `/standards-guidelines/act/rules/${frontmatter.id}/proposed/`,
         lang: "en",
         feedbackmail: "public-wcag-act@w3.org",
         github: {
           repository: `w3c/wcag-act-rules`,
-          path: `content/${ruleData.filename}`,
+          path: `content/rules/${frontmatter.id}/proposed.md`,
         },
         footer: getFooter(ruleData.frontmatter, true) + "\n",
         proposed: true,
@@ -70,7 +70,6 @@ describe("rule-content", () => {
     it("does not include markdown in the title", () => {
       const name = "`*Hello*` **world, welcome** to _ACT_taskforce_ **";
       const frontmatterStr = getFrontmatter({
-        filename: `${filenameNoExt}.md`,
         frontmatter: { ...frontmatter, name },
       });
       const frontmatterData = stripDashes(frontmatterStr);

@@ -1,6 +1,6 @@
 import outdent from "outdent";
-import { RuleFrontMatter } from "src/types";
 import { Parent } from "unist";
+import { RuleFrontMatter } from "../../../types";
 import { parseMarkdown } from "../../../utils/parse-page";
 import { getExamplesContent } from "../get-examples-content";
 
@@ -29,7 +29,7 @@ describe("rule-content", () => {
       const markdownAST = parseMarkdown(body) as Parent;
       const examples = getExamplesContent({ frontmatter, markdownAST, body });
       const href =
-        "/standards-guidelines/act/rules/testcases/abc123/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html";
+        "/content-assets/wcag-act-rules/testcases/abc123/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html";
       expect(examples).toBe(outdent`
         ## Test Cases
 

@@ -62,7 +62,7 @@ function getExternalLink(
   ruleId: string,
   { title, testcaseId, language }: Example
 ): string {
-  const base = "/standards-guidelines/act/rules/testcases";
+  const base = "/content-assets/wcag-act-rules/testcases";
   const href = `${base}/${ruleId}/${testcaseId}.${language}`;
   return (
     '<a class="example-link" ' +

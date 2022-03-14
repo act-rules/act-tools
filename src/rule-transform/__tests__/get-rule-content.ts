@@ -72,7 +72,7 @@ describe("getRuleContent", () => {
       lang: en
       github:
         repository: w3c/wcag-act-rules
-        path: content/abc123.md
+        path: content/rules/abc123/index.md
       feedbackmail: public-wcag-act@w3.org
       footer: |
       ${indent(getFooter(rulePage.frontmatter, false))}
@@ -121,7 +121,7 @@ describe("getRuleContent", () => {
 
       #### Passed Example 1
 
-      <a class="example-link" title="Passed Example 1" href="/standards-guidelines/act/rules/testcases/abc123/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html">Open in a new tab</a>
+      <a class="example-link" title="Passed Example 1" href="/content-assets/wcag-act-rules/testcases/abc123/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html">Open in a new tab</a>
 
       ${q}html
       <img alt="" />
@@ -149,7 +149,7 @@ describe("getRuleContent", () => {
 
       World of the [ACT-rules community][]
       
-      {% include_relative implementations/abc123.md %}
+      {% include_relative _implementation-approved.md %}
       
       ## Changelog
       

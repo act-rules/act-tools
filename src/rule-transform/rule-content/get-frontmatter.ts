@@ -7,13 +7,17 @@ import { getRuleMeta } from "./frontmatter/get-rule-meta";
 import { indent } from "../../utils/index";
 
 export const getFrontmatter = (
-  { filename, frontmatter }: { filename: string; frontmatter: RuleFrontMatter },
+  { frontmatter }: { frontmatter: RuleFrontMatter },
   _?: unknown,
   options?: Record<string, boolean | undefined>
 ): string => {
-  const permalink =
-    "/standards-guidelines/act/rules/" + filename.replace(".md", "");
-  const githubPath = `content/${filename}`;
+  const proposed = options?.proposed;
+  const filePath = frontmatter.id + (proposed ? `/proposed` : ``);
+  const permalink = "/standards-guidelines/act/rules/" + filePath;
+  const githubPath = `content/rules/${frontmatter.id}/${
+    proposed ? "proposed" : "index"
+  }.md`;
+
   return outdent`
     ---
     title: "${stripMarkdownFromStr(frontmatter.name)}"

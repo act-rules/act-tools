@@ -16,13 +16,15 @@ export const template = outdent`
 
 export async function createMatrixFile(
   outDir: string,
-  id: string
+  id: string,
+  proposed?: boolean
 ): Promise<void> {
   const matrixFilePath = resolve(
     outDir,
     "content",
-    "implementations",
-    `${id}.md`
+    "rules",
+    id,
+    `_implementation-${proposed ? `proposed` : `approved`}.md`
   );
   if (!existsSync(matrixFilePath)) {
     await createFile(matrixFilePath, template);

@@ -1,11 +1,10 @@
-import { RuleFrontMatter } from "../../types";
-
 export const getImplementations = (
-  { frontmatter }: { frontmatter: RuleFrontMatter },
   _: unknown,
+  _1: unknown,
   options: Record<string, boolean | undefined>
 ): string => {
+  const type = options?.proposed ? `proposed` : `approved`;
   return options.matrix
-    ? `{% include_relative implementations/${frontmatter.id}.md %}`
+    ? `{% include_relative _implementation-${type}.md %}`
     : "";
 };

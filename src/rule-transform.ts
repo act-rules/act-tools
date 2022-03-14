@@ -1,6 +1,6 @@
 import * as path from "path";
 import { getRulePages, getDefinitionPages } from "./utils/get-page-data";
-import { createFile, ruleUrl } from "./utils";
+import { createFile } from "./utils";
 import { createMatrixFile } from "./rule-transform/create-matrix-file";
 import { getRuleContent } from "./rule-transform/get-rule-content";
 import { DefinitionPage, RulePage } from "./types";
@@ -30,17 +30,15 @@ export async function ruleTransform({
   const glossary = getDefinitionPages(glossaryDir);
 
   for (const ruleData of rulesData) {
-    const { filepath, content } = buildTfRuleFile(
-      ruleData,
-      glossary,
-      options,
-      rulesData
-    );
-    const absolutePath = path.resolve(outDir, "content", filepath);
+    const { content } = buildTfRuleFile(ruleData, glossary, options, rulesData);
+    const ruleId = ruleData.frontmatter.id;
+    const fileName = path.join(ruleId, `${proposed ? "proposed" : "index"}.md`);
+    const absolutePath = path.resolve(outDir, "content", "rules", fileName);
     await createFile(absolutePath, content);
-    console.log(`Updated ${ruleLink(ruleData)}`);
+    console.log(`Updated ${absolutePath}`);
+
     if (options.matrix) {
-      await createMatrixFile(outDir, ruleData.frontmatter?.id);
+      await createMatrixFile(outDir, ruleData.frontmatter?.id, proposed);
     }
   }
 
@@ -59,8 +57,4 @@ function buildTfRuleFile(
     filepath: ruleData.filename,
     content: getRuleContent(ruleData, glossary, options, rulesData),
   };
-}
-
-function ruleLink({ frontmatter, filename }: RulePage) {
-  return `[${frontmatter.name}](${ruleUrl(filename)})`;
 }
