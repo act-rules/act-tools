@@ -1,6 +1,7 @@
 import * as path from "path";
 import { createFile } from "./utils/create-file";
 import { getRulePages } from "./utils/get-page-data";
+import { copySync } from "fs-extra";
 import {
   extractTestCases,
   TestCaseData,
@@ -12,7 +13,7 @@ export type BuildExampleOptions = Partial<{
   outDir: string;
   ruleIds: string[];
   baseUrl: string;
-  testCaseJson: string;
+  testAssetsDir?: string;
 }>;
 
 export async function buildExamples({
@@ -20,10 +21,11 @@ export async function buildExamples({
   ruleIds,
   outDir = ".",
   baseUrl = "https://act-rules.github.io",
-  testCaseJson,
+  testAssetsDir,
 }: BuildExampleOptions): Promise<void> {
   const rulesData = getRulePages(rulesDir, ruleIds);
   const testCaseData: TestCaseData[] = [];
+  const assetsPath = path.resolve(outDir, "content-assets", "wcag-act-rules");
   for (const ruleData of rulesData) {
     const extractedCases = extractTestCases(ruleData, { baseUrl });
     testCaseData.push(...extractedCases);
@@ -31,7 +33,7 @@ export async function buildExamples({
 
   // Create testcase files
   for (const { codeSnippet, filePath } of testCaseData) {
-    const testCasePath = path.resolve(outDir, "content", filePath);
+    const testCasePath = path.resolve(assetsPath, filePath);
     await createFile(testCasePath, codeSnippet);
   }
   console.log(
@@ -42,8 +44,14 @@ export async function buildExamples({
   );
 
   // Write testcases.json
-  if (testCaseJson) {
-    await updateTestCaseJson(testCaseJson, baseUrl, testCaseData, ruleIds);
-    console.log(`Updated ${testCaseJson}`);
+  const testCasesJson = path.resolve(assetsPath, "testcases.json");
+  await updateTestCaseJson(testCasesJson, baseUrl, testCaseData, ruleIds);
+  console.log(`Updated ${testCasesJson}`);
+
+  // Copy test assets
+  if (testAssetsDir) {
+    const targetDir = path.resolve(assetsPath, "test-assets");
+    copySync(testAssetsDir, targetDir);
+    console.log(`Copied test assets to  ${targetDir}`);
   }
 }

@@ -8,8 +8,8 @@ program
     val.split(",")
   )
   .option("-r, --rulesDir <dirname>", "Path to _rules directory")
+  .option("-t, --testAssetsDir <dirname>", "Path to test-assets dir")
   .option("-o, --outDir <dirname>", "Path to output dir")
-  .option("-t, --testCaseJson <filepath>", "Path to testcase.json")
   .option(
     "--baseUrl <url>",
     "URL of the site where test cases are save",
