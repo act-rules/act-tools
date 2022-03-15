@@ -1,10 +1,12 @@
 import * as path from "path";
+import { pathExistsSync, readFileSync } from "fs-extra";
 import { getRulePages, getDefinitionPages } from "./utils/get-page-data";
 import { createFile } from "./utils";
 import { createMatrixFile } from "./rule-transform/create-matrix-file";
 import { getRuleContent } from "./rule-transform/get-rule-content";
 import { DefinitionPage, RulePage } from "./types";
 import { createWcagMapping } from "./rule-transform/create-wcag-mapping";
+import { isEqualExcludingDates } from "./utils/is-equal-excluding-dates";
 
 export type RuleTransformOptions = Partial<{
   rulesDir: string;
@@ -34,8 +36,7 @@ export async function ruleTransform({
     const ruleId = ruleData.frontmatter.id;
     const fileName = path.join(ruleId, `${proposed ? "proposed" : "index"}.md`);
     const absolutePath = path.resolve(outDir, "content", "rules", fileName);
-    await createFile(absolutePath, content);
-    console.log(`Updated ${absolutePath}`);
+    saveRuleFileIfChanged(absolutePath, content);
 
     if (options.matrix) {
       await createMatrixFile(outDir, ruleData.frontmatter?.id, proposed);
@@ -57,4 +58,22 @@ function buildTfRuleFile(
     filepath: ruleData.filename,
     content: getRuleContent(ruleData, glossary, options, rulesData),
   };
+}
+
+async function saveRuleFileIfChanged(
+  absolutePath: string,
+  newContent: string
+): Promise<void> {
+  let contentChanged = true;
+  if (pathExistsSync(absolutePath)) {
+    const currentContent = readFileSync(absolutePath, "utf8");
+    contentChanged = !isEqualExcludingDates(currentContent, newContent);
+  }
+
+  if (contentChanged) {
+    await createFile(absolutePath, newContent);
+    console.log(`Updated ${absolutePath}`);
+  } else {
+    console.log(`Skipped ${absolutePath}, no changes`);
+  }
 }
