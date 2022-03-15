@@ -3,7 +3,7 @@ import { createFile } from "../utils/create-file";
 import { RulePage, RuleFrontMatter } from "../types";
 import { getWcagCriterion } from "../act/get-accessibility-requirement";
 
-export type ActRulePage = {
+export type ActWcagMap = {
   title: string;
   permalink: string;
   successCriteria: string[];
@@ -12,7 +12,7 @@ export type ActRulePage = {
 };
 
 export type WcagMapping = {
-  "act-rules": ActRulePage[];
+  "act-rules": ActWcagMap[];
 };
 
 export async function createWcagMapping(
@@ -31,23 +31,31 @@ export async function createWcagMapping(
     return updateWcagMapping(actRulePages, rulePage, { proposed });
   }, wcagMapping["act-rules"]);
 
+  wcagMapping["act-rules"].sort(wcagMappingSort);
+
   await createFile(wcagMappingPath, wcagMapping);
 
   return wcagMapping;
 }
 
 export function updateWcagMapping(
-  wcagMapping: ActRulePage[],
-  { frontmatter, filename }: RulePage,
+  wcagMapping: ActWcagMap[],
+  { frontmatter }: RulePage,
   { proposed }: { proposed: boolean }
-): ActRulePage[] {
+): ActWcagMap[] {
   const { id } = frontmatter;
-  wcagMapping = wcagMapping.filter(({ permalink }) => !permalink.includes(id));
-  const { successCriteria, wcagTechniques } = getRequirements(frontmatter);
+  const currentItem = wcagMapping.findIndex(({ permalink }) =>
+    permalink.includes(`/${id}`)
+  );
+  if (currentItem >= 0) {
+    proposed = wcagMapping[currentItem].proposed === false ? false : proposed;
+    wcagMapping.splice(currentItem, 1);
+  }
 
+  const { successCriteria, wcagTechniques } = getRequirements(frontmatter);
   wcagMapping.push({
     title: frontmatter.name.replace(/`/gi, ""),
-    permalink: ruleUrl(filename),
+    permalink: ruleUrl(frontmatter.id, proposed),
     successCriteria,
     wcagTechniques,
     proposed,
@@ -77,6 +85,18 @@ export function getRequirements({
   return { successCriteria, wcagTechniques };
 }
 
-function ruleUrl(filename: string): string {
-  return `/standards-guidelines/act/rules/${filename.replace(".md", "")}/`;
+function ruleUrl(ruleId: string, proposed: boolean): string {
+  return `/standards-guidelines/act/rules/${ruleId}/${
+    proposed ? "proposed/" : ""
+  }`;
+}
+
+function wcagMappingSort(mapA: ActWcagMap, mapB: ActWcagMap): number {
+  if (mapA.proposed === false && mapB.proposed !== false) {
+    return -1;
+  }
+  if (mapA.proposed !== false && mapB.proposed === false) {
+    return 1;
+  }
+  return mapA.title.toLowerCase() > mapB.title.toLowerCase() ? 1 : -1;
 }

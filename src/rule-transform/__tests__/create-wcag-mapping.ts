@@ -21,7 +21,7 @@ function getRulePage(metadata = ""): RulePage {
 
     Hello World
   `);
-  return { ...page, filename: "123abc.md" } as RulePage;
+  return { ...page, filename: "some-rule-123abc.md" } as RulePage;
 }
 
 describe("rule-transform", () => {
@@ -70,7 +70,7 @@ describe("rule-transform", () => {
         "act-rules": [
           {
             title: "Hello world",
-            permalink: "/standards-guidelines/act/rules/123abc/",
+            permalink: "/standards-guidelines/act/rules/123abc/proposed/",
             successCriteria: ["non-text-content", "language-of-page"],
             wcagTechniques: [],
             proposed: true,
@@ -97,7 +97,7 @@ describe("rule-transform", () => {
         "act-rules": [
           {
             title: "Hello world",
-            permalink: "/standards-guidelines/act/rules/123abc/",
+            permalink: "/standards-guidelines/act/rules/123abc/proposed/",
             successCriteria: ["non-text-content"],
             wcagTechniques: ["G123", "H42"],
             proposed: true,
@@ -117,7 +117,7 @@ describe("rule-transform", () => {
         "act-rules": [
           {
             title: "Hello world",
-            permalink: "/standards-guidelines/act/rules/123abc/",
+            permalink: "/standards-guidelines/act/rules/123abc/proposed/",
             successCriteria: [],
             wcagTechniques: [],
             proposed: true,
@@ -177,7 +177,7 @@ describe("rule-transform", () => {
               permalink: "/standards-guidelines/act/rules/123abc/",
               successCriteria: [],
               wcagTechniques: [],
-              proposed: true,
+              proposed: false,
             },
           ],
         })
@@ -222,6 +222,41 @@ describe("rule-transform", () => {
           },
         },
       ]);
+    });
+
+    it("keeps proposed:false on a rule", async () => {
+      const filePath = "./.tmp/wcag-mapping.json";
+      fs.writeFileSync(
+        filePath,
+        JSON.stringify({
+          "act-rules": [
+            {
+              title: "Hello Mars",
+              permalink: "/standards-guidelines/act/rules/123abc/",
+              successCriteria: [],
+              wcagTechniques: [],
+              proposed: false,
+            },
+          ],
+        })
+      );
+
+      const rulePage = getRulePage();
+      createFile.mock();
+      const mapping = await createWcagMapping(filePath, [rulePage], {
+        proposed: true,
+      });
+      expect(mapping).toEqual({
+        "act-rules": [
+          {
+            title: "Hello world",
+            permalink: "/standards-guidelines/act/rules/123abc/",
+            successCriteria: [],
+            wcagTechniques: [],
+            proposed: false,
+          },
+        ],
+      });
     });
   });
 });
