@@ -21,7 +21,7 @@ export type RuleTransformOptions = Partial<{
 export async function ruleTransform({
   rulesDir = ".",
   glossaryDir = ".",
-  ruleIds = [],
+  ruleIds,
   outDir = ".",
   proposed = false,
   noExampleLinks = false,
