@@ -10,7 +10,8 @@ export type TestCaseData = {
 export function extractTestCases(
   { frontmatter, markdownAST, body }: RulePage,
   baseUrl = "https://www.w3.org/WAI/content-assets/wcag-act-rules/",
-  pageUrl = "https://www.w3.org/WAI/standards-guidelines/act/rules/"
+  pageUrl = "https://www.w3.org/WAI/standards-guidelines/act/rules/",
+  proposed = false
 ): TestCaseData[] {
   const {
     id: ruleId,
@@ -35,9 +36,8 @@ export function extractTestCases(
         testcaseTitle: title,
         relativePath: filePath,
         url: baseUrl + filePath,
-        rulePage: pageUrl + ruleId,
+        rulePage: pageUrl + ruleId + (proposed ? `/proposed/` : `/`),
       };
-
       return { codeSnippet, filePath, metadata };
     }
   );

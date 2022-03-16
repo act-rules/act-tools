@@ -9,11 +9,17 @@ program
   )
   .option("-r, --rulesDir <dirname>", "Path to _rules directory")
   .option("-t, --testAssetsDir <dirname>", "Path to test-assets dir")
+  .option("-p, --proposed", "Add test cases as 'proposed'")
   .option("-o, --outDir <dirname>", "Path to output dir")
   .option(
     "--baseUrl <url>",
     "URL of the site where test cases are save",
-    "https://act-rules.github.io"
+    "https://www.w3.org/WAI/content-assets/wcag-act-rules/"
+  )
+  .option(
+    "--pageUrl <url>",
+    "URL of the site where rule pages are save",
+    "https://www.w3.org/WAI/standards-guidelines/act/rules/"
   );
 
 program.parse(process.argv);

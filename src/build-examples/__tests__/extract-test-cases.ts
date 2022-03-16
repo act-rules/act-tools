@@ -31,7 +31,32 @@ describe("build-examples", () => {
         relativePath: filePath,
         ruleAccessibilityRequirements: undefined,
         ruleName: undefined,
-        rulePage: pageUrl + ruleId,
+        rulePage: pageUrl + ruleId + "/",
+        testcaseTitle: "Passed Example 1",
+        url: baseUrl + filePath,
+      });
+    });
+
+    it("can report proposed rules", () => {
+      const filePath = `testcases/${ruleId}/${testcaseId}.html`;
+      const testCases = extractTestCases(ruleData, baseUrl, pageUrl, true);
+      expect(testCases).toHaveLength(3);
+
+      expect(testCases[0].filePath).toBe(filePath);
+      expect(testCases[0].codeSnippet).toBe(outdent`
+        <!DOCTYPE html>
+        <html>
+          <p>hello world</p>
+        </html>
+      `);
+      expect(testCases[0].metadata).toEqual({
+        ruleId,
+        testcaseId,
+        expected: "passed",
+        relativePath: filePath,
+        ruleAccessibilityRequirements: undefined,
+        ruleName: undefined,
+        rulePage: pageUrl + ruleId + "/proposed/",
         testcaseTitle: "Passed Example 1",
         url: baseUrl + filePath,
       });
