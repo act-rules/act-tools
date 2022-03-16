@@ -5,7 +5,7 @@ import { TestCaseData } from "./extract-test-cases";
 
 export async function updateTestCaseJson(
   testCaseJsonPath: string,
-  baseUrl: string,
+  pageUrl: string,
   testCaseData: TestCaseData[],
   ruleIds?: string[]
 ): Promise<TestCaseJson> {
@@ -19,8 +19,8 @@ export async function updateTestCaseJson(
   } catch {}
 
   testCasesJson ??= {
-    name: "ACT-Rules Community test cases",
-    website: baseUrl,
+    name: "ACT Task Force test cases",
+    website: pageUrl,
     license: "https://act-rules.github.io/pages/license/",
     description: "Accessibility conformance testing rules for HTML",
     count: 0,

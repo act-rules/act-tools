@@ -9,9 +9,10 @@ describe("build-examples", () => {
   describe("update-test-case-json", () => {
     const jsonPath = path.resolve(__dirname, "./assets/mock-testcases.json");
     const rulesDir = path.resolve(__dirname, "./assets/");
-    const baseUrl = "https://act-rules.github.io";
+    const baseUrl = "https://act-rules.github.io/";
+    const pageUrl = "https://act-rules.github.io/rules/";
     const ruleData = getRulePages(rulesDir, ["abc123"])[0];
-    const testCases = extractTestCases(ruleData, { baseUrl });
+    const testCases = extractTestCases(ruleData, baseUrl, pageUrl);
 
     afterEach(() => {
       createFile.resetMock();

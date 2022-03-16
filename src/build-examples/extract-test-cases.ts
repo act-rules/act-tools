@@ -9,7 +9,8 @@ export type TestCaseData = {
 
 export function extractTestCases(
   { frontmatter, markdownAST, body }: RulePage,
-  { baseUrl = "https://act-rules.github.io" }: { baseUrl: string }
+  baseUrl = "https://www.w3.org/WAI/content-assets/wcag-act-rules/",
+  pageUrl = "https://www.w3.org/WAI/standards-guidelines/act/rules/"
 ): TestCaseData[] {
   const {
     id: ruleId,
@@ -33,8 +34,8 @@ export function extractTestCases(
         testcaseId,
         testcaseTitle: title,
         relativePath: filePath,
-        url: `${baseUrl}/${filePath}`,
-        rulePage: `${baseUrl}/rules/${ruleId}`,
+        url: baseUrl + filePath,
+        rulePage: pageUrl + ruleId,
       };
 
       return { codeSnippet, filePath, metadata };

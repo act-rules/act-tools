@@ -62,11 +62,11 @@ function getExternalLink(
   ruleId: string,
   { title, testcaseId, language }: Example
 ): string {
-  const base = "/content-assets/wcag-act-rules/testcases";
+  const base = "https://w3.org/WAI/content-assets/wcag-act-rules/testcases";
   const href = `${base}/${ruleId}/${testcaseId}.${language}`;
   return (
     '<a class="example-link" ' +
     `title="${title}" ` +
-    `href="${href}">Open in a new tab</a>`
+    `href="${href}">Open in a new tab</a> `
   );
 }

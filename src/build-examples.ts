@@ -13,6 +13,7 @@ export type BuildExampleOptions = Partial<{
   outDir: string;
   ruleIds: string[];
   baseUrl: string;
+  pageUrl: string;
   testAssetsDir?: string;
 }>;
 
@@ -20,14 +21,15 @@ export async function buildExamples({
   rulesDir = ".",
   ruleIds,
   outDir = ".",
-  baseUrl = "https://act-rules.github.io",
+  baseUrl = "https://www.w3.org/WAI/content-assets/wcag-act-rules/",
+  pageUrl = "https://www.w3.org/WAI/standards-guidelines/act/rules/",
   testAssetsDir,
 }: BuildExampleOptions): Promise<void> {
   const rulesData = getRulePages(rulesDir, ruleIds);
   const testCaseData: TestCaseData[] = [];
   const assetsPath = path.resolve(outDir, "content-assets", "wcag-act-rules");
   for (const ruleData of rulesData) {
-    const extractedCases = extractTestCases(ruleData, { baseUrl });
+    const extractedCases = extractTestCases(ruleData, baseUrl, pageUrl);
     testCaseData.push(...extractedCases);
   }
 
@@ -45,7 +47,7 @@ export async function buildExamples({
 
   // Write testcases.json
   const testCasesJson = path.resolve(assetsPath, "testcases.json");
-  await updateTestCaseJson(testCasesJson, baseUrl, testCaseData, ruleIds);
+  await updateTestCaseJson(testCasesJson, pageUrl, testCaseData, ruleIds);
   console.log(`Updated ${testCasesJson}`);
 
   // Copy test assets
