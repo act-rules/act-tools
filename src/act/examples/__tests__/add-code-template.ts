@@ -66,5 +66,17 @@ describe("build-examples", () => {
         </html>
       `);
     });
+
+    it("updates the URL to test-assets", () => {
+      const input = outdent`
+        <img src="/test-assets/img.png" />
+        <script>
+          img.src= '/test-assets/w3c.png'
+        </script>
+      `;
+      const snippet = addCodeTemplate(input, "html", "title", "/WAI");
+      expect(snippet).toContain(`src="/WAI/test-assets/img.png"`);
+      expect(snippet).toContain(`img.src= '/WAI/test-assets/w3c.png'`);
+    });
   });
 });

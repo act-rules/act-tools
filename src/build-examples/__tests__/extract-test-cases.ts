@@ -10,7 +10,7 @@ describe("build-examples", () => {
     const pageUrl = "https://act-rules.github.io/rules/";
     const ruleId = "abc123";
     const ruleData = getRulePages(rulesDir, [ruleId])[0];
-    const testcaseId = "0d9b8f03360c4eb9a9fa11cc07e7cc9e78192403";
+    const testcaseId = "8d5356fac10c2a57a5d97d934e786e756e12a232";
 
     it("extracts test cases from rule data", () => {
       const filePath = `testcases/${ruleId}/${testcaseId}.html`;
@@ -21,7 +21,7 @@ describe("build-examples", () => {
       expect(testCases[0].codeSnippet).toBe(outdent`
         <!DOCTYPE html>
         <html>
-          <p>hello world</p>
+          <img src="/WAI/content-assets/wcag-act-rules/test-assets/alt.jpg" alt="">
         </html>
       `);
       expect(testCases[0].metadata).toEqual({
@@ -46,7 +46,7 @@ describe("build-examples", () => {
       expect(testCases[0].codeSnippet).toBe(outdent`
         <!DOCTYPE html>
         <html>
-          <p>hello world</p>
+          <img src="/WAI/content-assets/wcag-act-rules/test-assets/alt.jpg" alt="">
         </html>
       `);
       expect(testCases[0].metadata).toEqual({

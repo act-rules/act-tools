@@ -8,8 +8,15 @@ const xhtmlDoctype =
 export function addCodeTemplate(
   code: string,
   lang: string,
-  title: string
+  title: string,
+  assetsBase = "/WAI/content-assets/wcag-act-rules"
 ): string {
+  if (assetsBase) {
+    code = code
+      .replace(/"\/test-assets\//g, `"${assetsBase}/test-assets/`)
+      .replace(/'\/test-assets\//g, `'${assetsBase}/test-assets/`);
+  }
+
   if (["html", "xhtml"].includes(lang) === false) {
     return code;
   }
