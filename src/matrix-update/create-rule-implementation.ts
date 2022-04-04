@@ -14,8 +14,8 @@ export function createRuleImplementation(
   implementationMappings: ActImplementationReport[]
 ): string {
   const rows: Array<string[]> = [];
-  implementationMappings.forEach(({ name, procedureSets }) => {
-    const procedureSet = procedureSets.find(
+  implementationMappings.forEach(({ name, actRuleMapping }) => {
+    const procedureSet = actRuleMapping.find(
       (procedureSet) => procedureSet.ruleId === ruleId
     );
     if (

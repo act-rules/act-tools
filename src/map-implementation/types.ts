@@ -95,7 +95,7 @@ export interface ActImplementationReport extends ActImplementationMeta {
     inconsistent: number;
     untested: number;
   };
-  procedureSets: ActProcedureSet[];
+  actRuleMapping: ActProcedureSet[];
 }
 
 export interface ActProcedureSet extends PartialActProcedureSet {

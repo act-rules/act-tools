@@ -18,7 +18,7 @@ export async function getActImplementationReport(
   const actAssertions = await earlToActAssertions(earlReport);
   console.log(`Found ${actAssertions.length} assertions`);
 
-  const procedureSets: ActProcedureSet[] = [];
+  const actRuleMapping: ActProcedureSet[] = [];
   for (const ruleGroup of groupByRule(testCases, actAssertions)) {
     const { ruleId, ruleName, ruleTestCases, ruleAssertions } = ruleGroup;
     const procedureMappings = getRuleProcedureMapping(
@@ -26,11 +26,11 @@ export async function getActImplementationReport(
       ruleAssertions
     );
     const procedureSet = findProcedureSet(procedureMappings);
-    procedureSets.push({ ruleId, ruleName, ...procedureSet });
+    actRuleMapping.push({ ruleId, ruleName, ...procedureSet });
   }
 
-  const consistency = getSummary(procedureSets);
-  return { ...metaData, consistency, procedureSets };
+  const consistency = getSummary(actRuleMapping);
+  return { ...metaData, consistency, actRuleMapping };
 }
 
 function getSummary(

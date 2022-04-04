@@ -7,7 +7,7 @@ describe("getActImplementationReport", () => {
     const mapping = await getActImplementationReport(data.earlReport, [
       data.testCase,
     ]);
-    expect(mapping["procedureSets"]).toEqual([
+    expect(mapping["actRuleMapping"]).toEqual([
       {
         ruleId: data.ruleId,
         ruleName: data.ruleName,
@@ -34,6 +34,4 @@ describe("getActImplementationReport", () => {
       },
     ]);
   });
-
-  it.todo("returns a summary");
 });
