@@ -1,7 +1,7 @@
 import path from "path";
-import { EarlTest } from "../earl/types";
+import { EarlTest } from "../types";
 
-export function implementationIdFromTest(
+export function procedureNameFromTest(
   testCriterion?: EarlTest | string
 ): string {
   if (typeof testCriterion === "string") {

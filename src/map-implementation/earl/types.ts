@@ -1,3 +1,5 @@
+import { ExpectedOutcome } from "../types";
+
 export type ComplexSource = { "@id"?: string };
 
 export type EarlTestSubject = {
@@ -31,11 +33,11 @@ export type EarlOutcome =
 
 export type EarlTestResult = {
   "@type"?: "earl:TestResult";
-  outcome?: EarlOutcome;
+  outcome?: EarlOutcome | ExpectedOutcome;
 };
 
 export type EarlAssertion = {
-  "@type"?: "earl:Assertion";
+  "@type"?: "earl:Assertion" | "Assertion";
   "@id"?: string;
   subject?: EarlTestSubject | string;
   test?: EarlTest | string;

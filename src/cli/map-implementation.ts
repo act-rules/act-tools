@@ -5,9 +5,7 @@ import { Command } from "commander";
 const program = new Command();
 program
   .usage("Usage: $0 --jsonReports ./reports/**.json [options]")
-  .option("-j, --jsonReports <filepath>", "Implementation report", (val) =>
-    Array.isArray(val) ? val : [val]
-  )
+  .option("-j, --jsonReport <filepath>", "Implementation report Url")
   .option(
     "-t, --testCaseJson <url>",
     "ACT Rules testcases",

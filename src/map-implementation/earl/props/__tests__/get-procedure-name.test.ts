@@ -1,19 +1,16 @@
-import {
-  implementationIdFromTest,
-  getFileName,
-} from "../get-implementation-id";
+import { procedureNameFromTest, getFileName } from "../get-procedure-name";
 
-describe("implementationIdFromTest", () => {
+describe("procedureNameFromTest", () => {
   it("returns the implementation ID if it is a string", () => {
     const implementationId = "foo";
-    expect(implementationIdFromTest(implementationId)).toBe(implementationId);
+    expect(procedureNameFromTest(implementationId)).toBe(implementationId);
   });
 
   it("returns the implementation ID from `title` over `@id`", () => {
     const title = "foo";
     const id = "bar";
     expect(
-      implementationIdFromTest({
+      procedureNameFromTest({
         "@type": "earl:TestCriterion",
         "@id": id,
         title,
@@ -24,7 +21,7 @@ describe("implementationIdFromTest", () => {
   it("returns the rule ID from title", () => {
     const id = "foo/bar.html";
     expect(
-      implementationIdFromTest({
+      procedureNameFromTest({
         "@type": "earl:TestCriterion",
         "@id": id,
       })
@@ -33,16 +30,14 @@ describe("implementationIdFromTest", () => {
 
   it("throws if its not passed a string or object", () => {
     // @ts-expect-error
-    expect(() => implementationIdFromTest(123)).toThrow();
+    expect(() => procedureNameFromTest(123)).toThrow();
     // @ts-expect-error
-    expect(() => implementationIdFromTest(true)).toThrow();
-    // @ts-expect-error
-    expect(() => implementationIdFromTest(null)).toThrow();
+    expect(() => procedureNameFromTest(true)).toThrow();
   });
 
   it("throws if there is no implementation ID", () => {
     expect(() =>
-      implementationIdFromTest({
+      procedureNameFromTest({
         "@type": "earl:TestCriterion",
       })
     ).toThrow();

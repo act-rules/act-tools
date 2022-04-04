@@ -1,5 +1,6 @@
 {
   "@context": {
+    "@vocab": "http://www.w3.org/ns/earl#",
     "earl": "http://www.w3.org/ns/earl#",
     "WCAG": "https://www.w3.org/TR/WCAG/#",
     "cnt": "http://www.w3.org/2011/content#",
@@ -28,8 +29,7 @@
       "@id": "http://www.w3.org/TR/WCAG-EM/#testcase"
     },
     "outcome": {
-      "@id": "earl:outcome",
-      "@type": "@vocab"
+      "@type": "@id"
     },
     "passed": {
       "@id": "earl:passed"
@@ -50,8 +50,7 @@
       "@id": "earl:subject"
     },
     "mode": {
-      "@id": "earl:mode",
-      "@type": "@vocab"
+      "@type": "@id"
     },
     "automatic": {
       "@id": "earl:automatic"
@@ -85,9 +84,6 @@
     },
     "title": {
       "@id": "dct:title"
-    },
-    "assertions": {
-      "@reverse": "earl:subject"
     },
     "expression": {
       "@id": "ptr:expression"

@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
-import { actMapGenerator } from "./map-implementation/act-map-generator";
+import { getActImplementationReport } from "./map-implementation/get-act-implementation-report";
 import { loadJson } from "./utils/load-json";
 import {
-  ActImplementationMapping,
+  ActImplementationReport,
   TestCaseJson,
 } from "./map-implementation/types";
 import { Implementation } from "./types";
@@ -42,16 +42,20 @@ async function createImplementationMappings(
   implementationPath: string,
   outDir: string,
   testCasesJson: TestCaseJson
-): Promise<ActImplementationMapping[]> {
+): Promise<ActImplementationReport[]> {
   const implementations = loadImplementations(implementationPath);
-  const implementationMappings: ActImplementationMapping[] = [];
+  const implementationMappings: ActImplementationReport[] = [];
 
   for (const { name, vendor, report } of implementations) {
     const jsonLd = await loadJson(report);
-    const mapping = await actMapGenerator(jsonLd, testCasesJson, {
-      name,
-      vendor,
-    });
+    const mapping = await getActImplementationReport(
+      jsonLd,
+      testCasesJson.testcases,
+      {
+        name,
+        vendor,
+      }
+    );
     const filePath = path.resolve(outDir, `${filenameEscape(name)}.json`);
     console.log(`Writing file ${filePath}`);
     await createFile(filePath, mapping);

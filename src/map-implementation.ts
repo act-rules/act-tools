@@ -1,15 +1,14 @@
 import fs from "fs";
 import path from "path";
 import { promisify } from "util";
-import debug from "debug";
-import { actMapGenerator } from "./map-implementation/act-map-generator";
+import { getActImplementationReport } from "./map-implementation/get-act-implementation-report";
 import { loadJson } from "./utils/load-json";
 import { ImplementationBase, TestCaseJson } from "./map-implementation/types";
 
 const writeFile = promisify(fs.writeFile);
 
 export type CliArgs = ImplementationBase & {
-  jsonReports: string[];
+  jsonReport: string;
   testCaseJson: string;
   output: string;
 };
@@ -17,7 +16,7 @@ export type CliArgs = ImplementationBase & {
 export async function cliProgram({
   vendor,
   name,
-  jsonReports,
+  jsonReport,
   testCaseJson,
   output,
   version,
@@ -28,29 +27,16 @@ export async function cliProgram({
   const outputPath = path.resolve(process.cwd(), output);
   const meta = { vendor, name, version };
 
-  // Load all the JSON files
-  const jsonldFiles: object[] = [];
-  await Promise.all(
-    jsonReports.map(async (report) => {
-      try {
-        jsonldFiles.push(await loadJson(report));
-      } catch (error) {
-        debug("loadJson")(
-          `Unable to load '${report}', received error:\n${error}`
-        );
-      }
-    })
-  );
-
-  const testCaseFile = (await loadJson(testCaseJson)) as TestCaseJson;
+  const earlReportFile = await loadJson(jsonReport);
+  const testCaseFile = await loadJson<TestCaseJson>(testCaseJson);
 
   console.log("Loading files");
-  const implementationMapping = await actMapGenerator(
-    jsonldFiles,
-    testCaseFile,
+  const implementationReport = await getActImplementationReport(
+    earlReportFile,
+    testCaseFile.testcases,
     meta
   );
-  const fileContent = JSON.stringify(implementationMapping, null, 2);
+  const fileContent = JSON.stringify(implementationReport, null, 2);
 
   // Save the report
   console.log(`Saved report to ${outputPath}`);

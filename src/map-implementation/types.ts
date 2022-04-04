@@ -1,6 +1,14 @@
 import { EarlAssertion } from "./earl/types";
-export { TestCaseJson, TestCase, ExpectedOutcome } from "../types";
 import { ExpectedOutcome, ActualOutcome } from "../types";
+
+export {
+  TestCaseJson,
+  TestCase,
+  ExpectedOutcome,
+  ActualOutcome,
+} from "../types";
+
+export type ConsistencyLevel = "complete" | "partial" | "minimal" | null;
 
 export type SatisfiedRequirement = "satisfied" | "further testing needed";
 
@@ -64,29 +72,58 @@ export interface MappingSummary {
   incomplete: number;
 }
 
-export interface ActImplementationMapping extends ImplementationBase {
-  summary: MappingSummary;
-  actMapping: ImplementationSet[];
+export interface ActAssertion {
+  ruleId: string;
+  testCaseId: string;
+  testCaseUrl: string;
+  outcome: ActualOutcome;
+  automatic: boolean;
+  procedureName: string;
 }
 
-export type ConsistencyLevel = 'complete' | 'partial' | 'minimal' | null;
+export interface ActImplementationMeta {
+  name?: string;
+  vendor?: string;
+  version?: string;
+}
+
+export interface ActImplementationReport extends ActImplementationMeta {
+  consistency: {
+    complete: number;
+    partial: number;
+    minimal: number;
+    inconsistent: number;
+    untested: number;
+  };
+  procedureSets: ActProcedureSet[];
+}
+
+export interface ActProcedureSet extends PartialActProcedureSet {
+  ruleId: string;
+  ruleName: string;
+}
+
+export interface PartialActProcedureSet {
+  procedureSetName?: string;
+  consistency: ConsistencyLevel | null;
+  coverage: ProcedureCoverage | null;
+  procedures: ActProcedureMapping[];
+}
 
 export interface ActProcedureMapping {
-  procedureName: string
-  consistentRequirements: boolean
-  ruleId: string,
-  testResults: TestResult[]
+  procedureName: string;
+  consistentRequirements: boolean;
+  testResults: TestResult[];
 }
 
 export interface TestResult {
-  testcaseId: string,
-  expected: ExpectedOutcome
-  outcomes: ActualOutcome[]
-  automatic?: boolean
+  testcaseId: string;
+  expected: ExpectedOutcome;
+  outcomes: ActualOutcome[];
+  automatic?: boolean;
 }
 
 export type ProcedureCoverage = {
-  testCaseTotal: number,
-  covered: number,
-  automatic: number
-}
+  testCaseTotal: number;
+  covered: number;
+};

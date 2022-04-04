@@ -5,7 +5,8 @@ import fs from "fs";
 
 const readFile = promisify(fs.readFile);
 
-export async function loadJson(filePath: string): Promise<object> {
+// eslint-disable @typescript-eslint/ban-types
+export async function loadJson<T = Object>(filePath: string): Promise<T> {
   if (/^https?:\/\//.test(filePath)) {
     debug("load:request")(`fetching ${filePath}`);
     return await request({ uri: filePath, json: true });
