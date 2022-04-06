@@ -11,22 +11,22 @@ describe("getActImplementationReport", () => {
       {
         ruleId: data.ruleId,
         ruleName: data.ruleName,
-        procedureSetName: data.procedureName,
+        procedureNames: [data.procedureName],
         consistency: "complete",
         coverage: {
           covered: 1,
           testCaseTotal: 1,
         },
-        procedures: [
+        testCaseResults: [
           {
-            consistentRequirements: true,
-            procedureName: data.procedureName,
-            testResults: [
+            testcaseId: data.testcaseId,
+            testCaseName: data.testCaseName,
+            testCaseUrl: data.testCaseUrl,
+            expected: data.expected,
+            procedureResults: [
               {
-                automatic: true,
-                expected: data.expected,
                 outcomes: [data.expected],
-                testcaseId: data.testcaseId,
+                procedureName: data.procedureName,
               },
             ],
           },

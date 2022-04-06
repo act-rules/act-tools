@@ -9,6 +9,7 @@ import {
   TestResult,
   PartialActProcedureSet,
 } from "../types";
+import { getTestCaseResults } from "./get-test-case-results";
 
 export function findProcedureSet(
   procedureMappings: ActProcedureMapping[]
@@ -29,13 +30,15 @@ export function findProcedureSet(
   // Combine the procedures, to grab the combined name, consistency, coverage
   const procedures = procedureSet.map(({ mapping }) => mapping);
   const combinedProcedure = combineProcedureSet(procedures);
-  const procedureSetName = combinedProcedure.procedureName;
+  const procedureNames = procedures.map(({ procedureName }) => procedureName);
   const coverage = getCoverage(combinedProcedure);
+  const testCaseResults = getTestCaseResults(procedures);
+
   // Work out if the set is complete, even if all procedures are partials
   if (consistency === "partial") {
     consistency = getConsistency(combinedProcedure);
   }
-  return { procedureSetName, consistency, coverage, procedures };
+  return { procedureNames, consistency, coverage, testCaseResults };
 }
 
 type ProcedureScore = {
@@ -56,6 +59,7 @@ const consistencyLevels: ConsistencyLevel[] = [
   "minimal",
   null,
 ];
+
 function findConsistency(
   consistencyA: ConsistencyLevel,
   { consistency: consistencyB }: ProcedureScore
@@ -103,7 +107,7 @@ function combineTestResults(
   testResult: TestResult,
   procedureSet: ActProcedureMapping[]
 ): TestResult {
-  const { testcaseId, expected } = testResult;
+  const { testcaseId, expected, testCaseName, testCaseUrl } = testResult;
   const outcomes: ActualOutcome[] = [];
   const testcaseResults: TestResult[] = [];
   procedureSet.forEach((procedure) => {
@@ -115,14 +119,21 @@ function combineTestResults(
   });
   testcaseResults.forEach((result) => outcomes.push(...result.outcomes));
   const automatic = testcaseResults.every(({ automatic }) => automatic);
-  return { testcaseId, expected, outcomes, automatic };
+  return {
+    testcaseId,
+    testCaseName,
+    testCaseUrl,
+    expected,
+    outcomes,
+    automatic,
+  };
 }
 
 function emptyProcedureSet(): PartialActProcedureSet {
   return {
-    procedureSetName: "",
+    procedureNames: [],
     consistency: null,
     coverage: null,
-    procedures: [],
+    testCaseResults: [],
   };
 }

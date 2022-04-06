@@ -104,10 +104,21 @@ export interface ActProcedureSet extends PartialActProcedureSet {
 }
 
 export interface PartialActProcedureSet {
-  procedureSetName?: string;
+  procedureNames: string[];
   consistency: ConsistencyLevel | null;
   coverage: ProcedureCoverage | null;
-  procedures: ActProcedureMapping[];
+  testCaseResults: TestCaseResult[];
+}
+
+export interface TestCaseResult {
+  testCaseName: string;
+  testcaseId: string;
+  testCaseUrl: string;
+  expected: string;
+  procedureResults: {
+    procedureName: string;
+    outcomes: ActualOutcome[];
+  }[];
 }
 
 export interface ActProcedureMapping {
@@ -118,6 +129,8 @@ export interface ActProcedureMapping {
 
 export interface TestResult {
   testcaseId: string;
+  testCaseName: string;
+  testCaseUrl: string;
   expected: ExpectedOutcome;
   outcomes: ActualOutcome[];
   automatic?: boolean;

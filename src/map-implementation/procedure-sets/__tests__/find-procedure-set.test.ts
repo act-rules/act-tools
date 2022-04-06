@@ -1,5 +1,7 @@
 import { findProcedureSet } from "../find-procedure-set";
 import { ActProcedureMapping, TestResult } from "../../types";
+import { getTestCaseResults } from "../get-test-case-results";
+import { toTestResult } from "../../__test-utils__";
 
 describe("findProcedureSet", () => {
   const procedureDefaults = {
@@ -7,36 +9,36 @@ describe("findProcedureSet", () => {
     ruleId: "abc123",
     consistentRequirements: true,
   };
-  const correctPass: TestResult = {
+  const correctPass: TestResult = toTestResult({
     testcaseId: "p/p",
     expected: "passed",
     outcomes: ["passed"],
-  };
-  const correctFail: TestResult = {
+  });
+  const correctFail: TestResult = toTestResult({
     testcaseId: "f/f",
     expected: "failed",
     outcomes: ["failed"],
-  };
-  const correctInapplicable: TestResult = {
+  });
+  const correctInapplicable: TestResult = toTestResult({
     testcaseId: "na/na",
     expected: "inapplicable",
     outcomes: ["inapplicable"],
-  };
-  const falseNegativeFail: TestResult = {
+  });
+  const falseNegativeFail: TestResult = toTestResult({
     testcaseId: "f/p",
     expected: "failed",
     outcomes: ["passed"],
-  };
-  const cantTellPass: TestResult = {
+  });
+  const cantTellPass: TestResult = toTestResult({
     testcaseId: "p/ct",
     expected: "passed",
     outcomes: ["cantTell"],
-  };
-  const falsePositivePass: TestResult = {
+  });
+  const falsePositivePass: TestResult = toTestResult({
     testcaseId: "f/p",
     expected: "passed",
     outcomes: ["failed"],
-  };
+  });
   const completeProcedure1: ActProcedureMapping = {
     ...procedureDefaults,
     testResults: [correctPass, correctFail, correctInapplicable],
@@ -66,17 +68,19 @@ describe("findProcedureSet", () => {
   it("returns an empty set when no procedures are given", () => {
     const procedureSet = findProcedureSet([]);
     expect(procedureSet).toEqual({
-      procedureSetName: "",
+      procedureNames: [],
       consistency: null,
       coverage: null,
-      procedures: [],
+      testCaseResults: [],
     });
   });
 
   it("reports inconsistent results if nothing better exists", () => {
     const procedureSet = findProcedureSet([inconsistentProcedure]);
     expect(procedureSet).toHaveProperty("consistency", null);
-    expect(procedureSet.procedures).toEqual([inconsistentProcedure]);
+    expect(procedureSet.testCaseResults).toEqual(
+      getTestCaseResults([inconsistentProcedure])
+    );
   });
 
   it("reports minimal over inconsistent", () => {
@@ -85,7 +89,9 @@ describe("findProcedureSet", () => {
       inconsistentProcedure,
     ]);
     expect(procedureSet).toHaveProperty("consistency", "minimal");
-    expect(procedureSet.procedures).toEqual([minimalProcedure]);
+    expect(procedureSet.testCaseResults).toEqual(
+      getTestCaseResults([minimalProcedure])
+    );
   });
 
   it("reports partial over minimal or inconsistent", () => {
@@ -96,10 +102,9 @@ describe("findProcedureSet", () => {
       inconsistentProcedure,
     ]);
     expect(procedureSet).toHaveProperty("consistency", "partial");
-    expect(procedureSet.procedures).toEqual([
-      partialProcedure1,
-      partialProcedure2,
-    ]);
+    expect(procedureSet.testCaseResults).toEqual(
+      getTestCaseResults([partialProcedure1, partialProcedure2])
+    );
   });
 
   it("reports complete consistency over partial, minimal or inconsistent", () => {
@@ -112,10 +117,6 @@ describe("findProcedureSet", () => {
       inconsistentProcedure,
     ]);
     expect(procedureSet).toHaveProperty("consistency", "complete");
-    expect(procedureSet.procedures).toEqual([
-      completeProcedure1,
-      completeProcedure2,
-    ]);
   });
 
   describe("combining partials", () => {

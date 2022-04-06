@@ -7,6 +7,8 @@ export function getTestResult(
 ): TestResult {
   const testResult: TestResult = {
     testcaseId: ruleTestCase.testcaseId,
+    testCaseName: ruleTestCase.testcaseTitle,
+    testCaseUrl: ruleTestCase.url,
     expected: ruleTestCase.expected,
     outcomes: [],
     automatic: true,

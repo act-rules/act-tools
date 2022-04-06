@@ -36,28 +36,25 @@ export async function getActImplementationReport(
 function getSummary(
   procedureSets: ActProcedureSet[]
 ): ActImplementationReport["consistency"] {
-  const consistency = {
-    complete: 0,
-    partial: 0,
-    minimal: 0,
-    inconsistent: 0,
-    untested: 0,
-  };
-
+  let complete = 0;
+  let partial = 0;
+  let minimal = 0;
+  let inconsistent = 0;
+  let untested = 0;
   procedureSets.forEach((procedureSet) => {
-    if (procedureSet.consistency === "complete") {
-      consistency.complete++;
+    if (procedureSet.procedureNames.length === 0) {
+      untested++;
+    } else if (procedureSet.consistency === "complete") {
+      complete++;
     } else if (procedureSet.consistency === "partial") {
-      consistency.partial++;
+      partial++;
     } else if (procedureSet.consistency === "minimal") {
-      consistency.minimal++;
-    } else if (procedureSet.procedures.length > 0) {
-      consistency.inconsistent++;
+      minimal++;
     } else {
-      consistency.untested++;
+      inconsistent++;
     }
   });
-  return consistency;
+  return { complete, partial, minimal, inconsistent, untested };
 }
 
 type RuleGroup = {

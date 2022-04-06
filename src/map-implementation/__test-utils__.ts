@@ -1,10 +1,18 @@
-import { ActAssertion, ExpectedOutcome, TestCase } from "./types";
+import {
+  ActAssertion,
+  ActProcedureMapping,
+  ActualOutcome,
+  ExpectedOutcome,
+  TestCase,
+  TestResult,
+} from "./types";
 import { EarlAssertion } from "./earl/types";
-import earlContext from "../map-implementation/earl/earl-context.json";
+import earlContext from "./earl/earl-context.json";
 
 export type TestData = {
   ruleId: string;
   testcaseId: string;
+  testCaseName: string;
   ruleName: string;
   procedureName: string;
   testCaseUrl: string;
@@ -13,6 +21,8 @@ export type TestData = {
   testCase: TestCase;
   expected: ExpectedOutcome;
   actAssertion: ActAssertion;
+  outcomes: ActualOutcome[];
+  procedure: ActProcedureMapping;
 };
 
 export function getTestData(input: Partial<TestData> = {}): TestData {
@@ -21,6 +31,7 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
   const expected: ExpectedOutcome = input.expected ?? "failed";
   const procedureName = input.procedureName ?? "procedure-a";
   const testcaseId = input.testcaseId ?? randomStr(40);
+  const testCaseName = `${expected} example X`;
   const testCaseUrl =
     input.testCaseUrl ??
     `https://act-rules.github.io/testcases/${ruleId}/${testcaseId}.html`;
@@ -41,7 +52,7 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     ruleName,
     expected,
     url: testCaseUrl,
-    testcaseTitle: `${expected} example 1`,
+    testcaseTitle: testCaseName,
     relativePath: `/${ruleId}/${testcaseId}.html`,
     rulePage: `http://act-rules.github.io/rules/${ruleId}}`,
     ruleAccessibilityRequirements: {},
@@ -54,10 +65,20 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     automatic: true,
     procedureName,
   };
+  const outcomes = [expected];
+  const automatic = true;
+  const procedure: ActProcedureMapping = {
+    procedureName,
+    consistentRequirements: true,
+    testResults: [
+      { testcaseId, testCaseName, expected, outcomes, automatic, testCaseUrl },
+    ],
+  };
   return {
     ruleId,
     actAssertion,
     testcaseId,
+    testCaseName,
     testCaseUrl,
     earlReport,
     assertion,
@@ -65,7 +86,24 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     ruleName,
     expected,
     procedureName,
+    outcomes,
+    procedure,
   };
+}
+
+export function toTestResult(partial: Partial<TestResult>): TestResult {
+  return {
+    testcaseId: randomStr(40),
+    testCaseName: "Passed example 1",
+    testCaseUrl: "",
+    expected: "passed",
+    outcomes: [partial.expected ?? "passed"],
+    ...partial,
+  };
+}
+
+export function toTestResults(partials: Partial<TestResult>[]): TestResult[] {
+  return partials.map(toTestResult);
 }
 
 export function randomStr(

@@ -1,4 +1,5 @@
 import { getConsistency } from "../get-consistency";
+import { toTestResults } from "../../__test-utils__";
 
 describe("getConsistency", () => {
   const procedureDefaults = {
@@ -12,18 +13,16 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "passed",
               outcomes: ["passed", "failed", "inapplicable"],
             },
             {
-              testcaseId: "2",
               expected: "passed",
               outcomes: ["passed", "inapplicable"],
             },
-          ],
+          ]),
         })
       ).toBeNull();
     });
@@ -32,18 +31,13 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
+            { expected: "inapplicable", outcomes: ["passed", "inapplicable"] },
             {
-              testcaseId: "1",
-              expected: "inapplicable",
-              outcomes: ["passed", "inapplicable"],
-            },
-            {
-              testcaseId: "2",
               expected: "inapplicable",
               outcomes: ["passed", "failed", "inapplicable"],
             },
-          ],
+          ]),
         })
       ).toBeNull();
     });
@@ -52,23 +46,11 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
-            {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["inapplicable"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["inapplicable"],
-            },
-            {
-              testcaseId: "3",
-              expected: "inapplicable",
-              outcomes: ["inapplicable"],
-            },
-          ],
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["inapplicable"] },
+            { expected: "failed", outcomes: ["inapplicable"] },
+            { expected: "inapplicable", outcomes: ["inapplicable"] },
+          ]),
         })
       ).toBeNull();
     });
@@ -77,23 +59,14 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["cantTell", "untested"] },
+            { expected: "failed", outcomes: ["cantTell"] },
             {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["cantTell", "untested"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["cantTell"],
-            },
-            {
-              testcaseId: "3",
               expected: "inapplicable",
               outcomes: ["untested", "cantTell", "untested"],
             },
-          ],
+          ]),
         })
       ).toBeNull();
     });
@@ -102,28 +75,12 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
-            {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["passed"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["cantTell"],
-            },
-            {
-              testcaseId: "3",
-              expected: "inapplicable",
-              outcomes: ["cantTell"],
-            },
-            {
-              testcaseId: "4",
-              expected: "inapplicable",
-              outcomes: ["inapplicable"],
-            },
-          ],
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["passed"] },
+            { expected: "failed", outcomes: ["cantTell"] },
+            { expected: "inapplicable", outcomes: ["cantTell"] },
+            { expected: "inapplicable", outcomes: ["inapplicable"] },
+          ]),
         })
       ).toBeNull();
     });
@@ -134,23 +91,11 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
-            {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["passed"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["failed"],
-            },
-            {
-              testcaseId: "3",
-              expected: "inapplicable",
-              outcomes: ["inapplicable"],
-            },
-          ],
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["passed"] },
+            { expected: "failed", outcomes: ["failed"] },
+            { expected: "inapplicable", outcomes: ["inapplicable"] },
+          ]),
         })
       ).toBe("complete");
     });
@@ -159,28 +104,12 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
-            {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["passed"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["passed", "failed"],
-            },
-            {
-              testcaseId: "3",
-              expected: "failed",
-              outcomes: ["failed", "passed"],
-            },
-            {
-              testcaseId: "4",
-              expected: "inapplicable",
-              outcomes: ["inapplicable"],
-            },
-          ],
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["passed"] },
+            { expected: "failed", outcomes: ["passed", "failed"] },
+            { expected: "failed", outcomes: ["failed", "passed"] },
+            { expected: "inapplicable", outcomes: ["inapplicable"] },
+          ]),
         })
       ).toBe("complete");
     });
@@ -189,23 +118,20 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "passed",
               outcomes: ["cantTell"],
             },
             {
-              testcaseId: "2",
               expected: "failed",
               outcomes: ["failed", "cantTell"],
             },
             {
-              testcaseId: "3",
               expected: "inapplicable",
               outcomes: ["inapplicable", "cantTell"],
             },
-          ],
+          ]),
         })
       ).toBe("complete");
     });
@@ -217,23 +143,20 @@ describe("getConsistency", () => {
         getConsistency({
           ...procedureDefaults,
           consistentRequirements: false,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "passed",
               outcomes: ["passed"],
             },
             {
-              testcaseId: "2",
               expected: "failed",
               outcomes: ["failed"],
             },
             {
-              testcaseId: "3",
               expected: "inapplicable",
               outcomes: ["inapplicable"],
             },
-          ],
+          ]),
         })
       ).toBe("partial");
     });
@@ -242,28 +165,24 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "passed",
               outcomes: ["passed"],
             },
             {
-              testcaseId: "2",
               expected: "failed",
               outcomes: ["failed"],
             },
             {
-              testcaseId: "2",
               expected: "failed",
-              outcomes: ["passed"], // False negative
+              outcomes: ["passed"],
             },
             {
-              testcaseId: "4",
               expected: "inapplicable",
               outcomes: ["inapplicable"],
             },
-          ],
+          ]),
         })
       ).toBe("partial");
     });
@@ -272,23 +191,14 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "passed",
               outcomes: ["passed"],
             },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["failed", "untested"],
-            },
-            {
-              testcaseId: "3",
-              expected: "inapplicable",
-              outcomes: ["inapplicable"],
-            },
-          ],
+            { expected: "failed", outcomes: ["failed", "untested"] },
+            { expected: "inapplicable", outcomes: ["inapplicable"] },
+          ]),
         })
       ).toBe("partial");
     });
@@ -297,23 +207,11 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
-            {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: [],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["failed"],
-            },
-            {
-              testcaseId: "3",
-              expected: "inapplicable",
-              outcomes: ["inapplicable"],
-            },
-          ],
+          testResults: toTestResults([
+            { expected: "passed", outcomes: [] },
+            { expected: "failed", outcomes: ["failed"] },
+            { expected: "inapplicable", outcomes: ["inapplicable"] },
+          ]),
         })
       ).toBe("partial");
     });
@@ -322,23 +220,14 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["cantTell", "passed"] },
+            { expected: "failed", outcomes: ["cantTell", "failed"] },
             {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["cantTell", "passed"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["cantTell", "failed"],
-            },
-            {
-              testcaseId: "3",
               expected: "inapplicable",
               outcomes: ["untested", "inapplicable", "cantTell"],
             },
-          ],
+          ]),
         })
       ).toBe("partial");
     });
@@ -349,23 +238,11 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
-            {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["cantTell"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["passed"],
-            },
-            {
-              testcaseId: "3",
-              expected: "inapplicable",
-              outcomes: ["inapplicable"],
-            },
-          ],
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["cantTell"] },
+            { expected: "failed", outcomes: ["passed"] },
+            { expected: "inapplicable", outcomes: ["inapplicable"] },
+          ]),
         })
       ).toBe("minimal");
     });
@@ -374,23 +251,11 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
-            {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["passed"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["cantTell"],
-            },
-            {
-              testcaseId: "3",
-              expected: "inapplicable",
-              outcomes: ["inapplicable"],
-            },
-          ],
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["passed"] },
+            { expected: "failed", outcomes: ["cantTell"] },
+            { expected: "inapplicable", outcomes: ["inapplicable"] },
+          ]),
         })
       ).toBe("minimal");
     });
@@ -399,23 +264,11 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          testResults: [
-            {
-              testcaseId: "1",
-              expected: "passed",
-              outcomes: ["passed"],
-            },
-            {
-              testcaseId: "2",
-              expected: "failed",
-              outcomes: ["cantTell"],
-            },
-            {
-              testcaseId: "3",
-              expected: "inapplicable",
-              outcomes: ["cantTell"],
-            },
-          ],
+          testResults: toTestResults([
+            { expected: "passed", outcomes: ["passed"] },
+            { expected: "failed", outcomes: ["cantTell"] },
+            { expected: "inapplicable", outcomes: ["cantTell"] },
+          ]),
         })
       ).toBeNull();
     });

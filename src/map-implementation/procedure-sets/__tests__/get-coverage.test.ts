@@ -1,3 +1,4 @@
+import { toTestResults } from "../../__test-utils__";
 import { getCoverage } from "../get-coverage";
 
 describe("getCoverage", () => {
@@ -11,18 +12,16 @@ describe("getCoverage", () => {
     expect(
       getCoverage({
         ...procedureDefaults,
-        testResults: [
+        testResults: toTestResults([
           {
-            testcaseId: "1",
             expected: "passed",
             outcomes: ["passed", "failed", "inapplicable"],
           },
           {
-            testcaseId: "2",
             expected: "passed",
             outcomes: ["passed", "inapplicable"],
           },
-        ],
+        ]),
       })
     ).toHaveProperty("testCaseTotal", 2);
   });
@@ -32,18 +31,16 @@ describe("getCoverage", () => {
       expect(
         getCoverage({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "failed",
               outcomes: ["passed", "failed", "inapplicable"],
             },
             {
-              testcaseId: "2",
               expected: "passed",
               outcomes: ["passed", "inapplicable"],
             },
-          ],
+          ]),
         })
       ).toHaveProperty("covered", 2);
     });
@@ -52,23 +49,20 @@ describe("getCoverage", () => {
       expect(
         getCoverage({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "passed",
               outcomes: ["passed", "cantTell", "inapplicable"],
             },
             {
-              testcaseId: "2",
               expected: "failed",
               outcomes: ["failed", "inapplicable"],
             },
             {
-              testcaseId: "3",
               expected: "inapplicable",
               outcomes: ["passed", "inapplicable", "cantTell"],
             },
-          ],
+          ]),
         })
       ).toHaveProperty("covered", 1);
     });
@@ -77,23 +71,20 @@ describe("getCoverage", () => {
       expect(
         getCoverage({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "passed",
               outcomes: ["passed", "untested", "inapplicable"],
             },
             {
-              testcaseId: "2",
               expected: "failed",
               outcomes: ["failed", "inapplicable"],
             },
             {
-              testcaseId: "3",
               expected: "inapplicable",
               outcomes: ["passed", "inapplicable", "untested"],
             },
-          ],
+          ]),
         })
       ).toHaveProperty("covered", 1);
     });
@@ -102,23 +93,20 @@ describe("getCoverage", () => {
       expect(
         getCoverage({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "failed",
               outcomes: ["inapplicable"],
             },
             {
-              testcaseId: "2",
               expected: "failed",
               outcomes: ["passed"],
             },
             {
-              testcaseId: "3",
               expected: "failed",
               outcomes: ["passed", "failed"],
             },
-          ],
+          ]),
         })
       ).toHaveProperty("covered", 1);
     });
@@ -127,23 +115,20 @@ describe("getCoverage", () => {
       expect(
         getCoverage({
           ...procedureDefaults,
-          testResults: [
+          testResults: toTestResults([
             {
-              testcaseId: "1",
               expected: "passed",
               outcomes: ["passed", "failed"],
             },
             {
-              testcaseId: "2",
               expected: "inapplicable",
               outcomes: ["inapplicable", "failed"],
             },
             {
-              testcaseId: "3",
               expected: "failed",
               outcomes: ["passed", "failed"],
             },
-          ],
+          ]),
         })
       ).toHaveProperty("covered", 1);
     });
