@@ -20,12 +20,17 @@ export async function getActImplementationReport(
 
   const actRuleMapping: ActProcedureSet[] = [];
   for (const ruleGroup of groupByRule(testCases, actAssertions)) {
-    const { ruleId, ruleName, ruleTestCases, ruleAssertions } = ruleGroup;
+    // Work out how each procedure maps to a rule
     const procedureMappings = getRuleProcedureMapping(
-      ruleTestCases,
-      ruleAssertions
+      ruleGroup.ruleTestCases,
+      ruleGroup.ruleAssertions
     );
-    const procedureSet = findProcedureSet(procedureMappings);
+    // Work out what set of procedures gets the highest consistency to the rule
+    const procedureSet = findProcedureSet(
+      procedureMappings,
+      ruleGroup.ruleAccessibilityRequirements
+    );
+    const { ruleId, ruleName } = ruleGroup;
     actRuleMapping.push({ ruleId, ruleName, ...procedureSet });
   }
 
@@ -62,6 +67,7 @@ type RuleGroup = {
   ruleName: string;
   ruleTestCases: TestCase[];
   ruleAssertions: ActAssertion[];
+  ruleAccessibilityRequirements: TestCase["ruleAccessibilityRequirements"];
 };
 
 function groupByRule(
@@ -71,6 +77,10 @@ function groupByRule(
   const ruleIds = Array.from(getUniqueRuleIds(testCases));
   const ruleGroups = ruleIds.map((ruleId): RuleGroup => {
     const ruleName = findRuleName(testCases, ruleId);
+    const ruleAccessibilityRequirements = findRuleRequirements(
+      testCases,
+      ruleId
+    );
     const ruleTestCases = testCases.filter(
       (testCase) => testCase.ruleId === ruleId
     );
@@ -79,7 +89,13 @@ function groupByRule(
         (testCase) => testCase.testcaseId === actAssertions.testCaseId
       )
     );
-    return { ruleId, ruleName, ruleTestCases, ruleAssertions };
+    return {
+      ruleId,
+      ruleName,
+      ruleTestCases,
+      ruleAssertions,
+      ruleAccessibilityRequirements,
+    };
   });
 
   // Sort by group name
@@ -99,4 +115,13 @@ function findRuleName(testCases: TestCase[], ruleId: string): string {
   const ruleTestCase = testCases.find((testCase) => testCase.ruleId === ruleId);
   assert(ruleTestCase, `Unable to find test case with ruleId ${ruleId}`);
   return ruleTestCase.ruleName;
+}
+
+function findRuleRequirements(
+  testCases: TestCase[],
+  ruleId: string
+): TestCase["ruleAccessibilityRequirements"] {
+  const ruleTestCase = testCases.find((testCase) => testCase.ruleId === ruleId);
+  assert(ruleTestCase, `Unable to find test case with ruleId ${ruleId}`);
+  return ruleTestCase.ruleAccessibilityRequirements;
 }

@@ -8,6 +8,7 @@ import {
   testCaseIdFromUri,
   getOutcome,
   procedureNameFromTest,
+  getTestRequirement,
 } from "./props";
 
 export async function earlToActAssertions(
@@ -37,18 +38,14 @@ export function convertAssertion(
     if (!testCaseUrl || !outcome) {
       return;
     }
-    const ruleId = ruleIdFromUri(testCaseUrl);
-    const testCaseId = testCaseIdFromUri(testCaseUrl);
-    const procedureName = procedureNameFromTest(earlAssertion.test);
-
-    // TODO: Pull test mode if one is set
     return {
-      ruleId,
-      testCaseId,
+      ruleId: ruleIdFromUri(testCaseUrl),
+      testCaseId: testCaseIdFromUri(testCaseUrl),
       testCaseUrl,
       outcome,
       automatic,
-      procedureName,
+      procedureName: procedureNameFromTest(earlAssertion.test),
+      accessibilityRequirements: getTestRequirement(earlAssertion.test),
     };
   } catch {
     return;

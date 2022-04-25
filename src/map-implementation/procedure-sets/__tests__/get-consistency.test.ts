@@ -5,7 +5,7 @@ describe("getConsistency", () => {
   const procedureDefaults = {
     procedureName: "abc123",
     ruleId: "abc123",
-    consistentRequirements: true,
+    failedRequirements: [],
   };
 
   describe("consistency: null", () => {
@@ -142,7 +142,7 @@ describe("getConsistency", () => {
       expect(
         getConsistency({
           ...procedureDefaults,
-          consistentRequirements: false,
+          failedRequirements: ["WCAG2:reflow"],
           testResults: toTestResults([
             {
               expected: "passed",

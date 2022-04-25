@@ -23,6 +23,7 @@ export type TestData = {
   actAssertion: ActAssertion;
   outcomes: ActualOutcome[];
   procedure: ActProcedureMapping;
+  failedRequirements: string[];
 };
 
 export function getTestData(input: Partial<TestData> = {}): TestData {
@@ -31,13 +32,16 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
   const expected: ExpectedOutcome = input.expected ?? "failed";
   const procedureName = input.procedureName ?? "procedure-a";
   const testcaseId = input.testcaseId ?? randomStr(40);
+  const failedRequirements = input.failedRequirements ?? [
+    "WCAG2:name-role-value",
+  ];
   const testCaseName = `${expected} example X`;
   const testCaseUrl =
     input.testCaseUrl ??
     `https://act-rules.github.io/testcases/${ruleId}/${testcaseId}.html`;
   const assertion: EarlAssertion = input.assertion ?? {
     "@type": "Assertion",
-    test: { title: procedureName },
+    test: { title: procedureName, isPartOf: failedRequirements },
     subject: { source: testCaseUrl },
     result: { outcome: `earl:${expected}` },
   };
@@ -55,7 +59,13 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     testcaseTitle: testCaseName,
     relativePath: `/${ruleId}/${testcaseId}.html`,
     rulePage: `http://act-rules.github.io/rules/${ruleId}}`,
-    ruleAccessibilityRequirements: {},
+    ruleAccessibilityRequirements: {
+      "wcag20:4.1.2": {
+        failed: "not satisfied",
+        passed: "further testing needed",
+        inapplicable: "further testing needed",
+      },
+    },
   };
   const actAssertion: ActAssertion = {
     ruleId,
@@ -64,15 +74,22 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     outcome: expected,
     automatic: true,
     procedureName,
+    accessibilityRequirements: failedRequirements,
   };
   const outcomes = [expected];
   const automatic = true;
+  const testResult = {
+    testcaseId,
+    testCaseName,
+    expected,
+    outcomes,
+    automatic,
+    testCaseUrl,
+  };
   const procedure: ActProcedureMapping = {
     procedureName,
-    consistentRequirements: true,
-    testResults: [
-      { testcaseId, testCaseName, expected, outcomes, automatic, testCaseUrl },
-    ],
+    failedRequirements,
+    testResults: [testResult],
   };
   return {
     ruleId,
@@ -88,6 +105,7 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     procedureName,
     outcomes,
     procedure,
+    failedRequirements,
   };
 }
 

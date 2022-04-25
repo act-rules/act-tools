@@ -1,14 +1,20 @@
-import { ActProcedureMapping, ConsistencyLevel, TestResult } from "../types";
+import {
+  ActProcedureMapping,
+  ConsistencyLevel,
+  TestResult,
+  AccessibilityRequirement,
+} from "../types";
+import { mapsAllRequirements } from "./accessibility-requirements";
 
-export function getConsistency({
-  testResults,
-  consistentRequirements,
-}: ActProcedureMapping): ConsistencyLevel {
+export function getConsistency(
+  { testResults, failedRequirements }: ActProcedureMapping,
+  ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
+): ConsistencyLevel {
   if (hasFalsePositives(testResults)) {
     return null;
   }
   if (
-    consistentRequirements &&
+    mapsAllRequirements(failedRequirements, ruleAccessibilityRequirements) &&
     noUntested(testResults) &&
     noFalseNegatives(testResults) &&
     hasTruePositives(testResults)

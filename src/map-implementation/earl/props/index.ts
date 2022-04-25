@@ -6,3 +6,4 @@ export {
 } from "./get-rule-id";
 export { sourceFromSubject } from "./get-source";
 export { getOutcome } from "./get-outcome";
+export { getTestRequirement } from "./get-test-requirement";

@@ -5,7 +5,7 @@ describe("getCoverage", () => {
   const procedureDefaults = {
     procedureName: "abc123",
     ruleId: "abc123",
-    consistentRequirements: true,
+    failedRequirements: [],
   };
 
   it("returns testCaseTotal", () => {

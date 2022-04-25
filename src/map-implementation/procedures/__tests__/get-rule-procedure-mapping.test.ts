@@ -5,20 +5,22 @@ import { ActAssertion } from "../../types";
 
 describe("getRuleProcedureMapping", () => {
   it("returns a procedure mapping for a single procedure", () => {
-    const { testCase, actAssertion, procedureName } = getTestData();
+    const { testCase, actAssertion, procedureName, failedRequirements } =
+      getTestData();
     const mappings = getRuleProcedureMapping([testCase], [actAssertion]);
     const testResult = getTestResult(testCase, [actAssertion]);
     expect(mappings).toEqual([
       {
         procedureName,
-        consistentRequirements: true,
+        failedRequirements,
         testResults: [testResult],
       },
     ]);
   });
 
   it("returns a single procedure mapping for a procedure with multiple assertions", () => {
-    const { testCase, actAssertion, procedureName } = getTestData();
+    const { testCase, actAssertion, procedureName, failedRequirements } =
+      getTestData();
     const assertions: ActAssertion[] = [
       actAssertion,
       { ...actAssertion, outcome: "passed" },
@@ -29,14 +31,14 @@ describe("getRuleProcedureMapping", () => {
     expect(mappings).toEqual([
       {
         procedureName,
-        consistentRequirements: true,
+        failedRequirements,
         testResults: [testResult],
       },
     ]);
   });
 
   it("returns a procedure mapping for each procedure", () => {
-    const { testCase, actAssertion } = getTestData();
+    const { testCase, actAssertion, failedRequirements } = getTestData();
     const assertion2 = { ...actAssertion, procedureName: "other procedure" };
     const mappings = getRuleProcedureMapping(
       [testCase],
@@ -46,19 +48,20 @@ describe("getRuleProcedureMapping", () => {
     expect(mappings).toEqual([
       {
         procedureName: actAssertion.procedureName,
-        consistentRequirements: true,
+        failedRequirements,
         testResults: [getTestResult(testCase, [actAssertion])],
       },
       {
         procedureName: assertion2.procedureName,
-        consistentRequirements: true,
+        failedRequirements,
         testResults: [getTestResult(testCase, [assertion2])],
       },
     ]);
   });
 
   it("returns a test result for each test case", () => {
-    const { testCase, actAssertion, procedureName } = getTestData();
+    const { testCase, actAssertion, procedureName, failedRequirements } =
+      getTestData();
     const testCaseId2 = randomStr(60);
     const testCases = [testCase, { ...testCase, testcaseId: testCaseId2 }];
     const assertion2 = { ...actAssertion, testCaseId: testCaseId2 };
@@ -70,7 +73,7 @@ describe("getRuleProcedureMapping", () => {
     expect(mappings).toEqual([
       {
         procedureName,
-        consistentRequirements: true,
+        failedRequirements,
         testResults: [
           getTestResult(testCases[0], [actAssertion]),
           getTestResult(testCases[1], [assertion2]),
@@ -79,5 +82,10 @@ describe("getRuleProcedureMapping", () => {
     ]);
   });
 
-  it.todo("reports consistency with the accessibility requirement");
+  it("reports failed requirements", () => {
+    const failedRequirements = ["WCAG2:info-and-relationships"];
+    const { testCase, actAssertion } = getTestData({ failedRequirements });
+    const mapping = getRuleProcedureMapping([testCase], [actAssertion])[0];
+    expect(mapping.failedRequirements).toEqual(failedRequirements);
+  });
 });

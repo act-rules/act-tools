@@ -6,6 +6,7 @@ export {
   TestCase,
   ExpectedOutcome,
   ActualOutcome,
+  AccessibilityRequirement,
 } from "../types";
 
 export type ConsistencyLevel = "complete" | "partial" | "minimal" | null;
@@ -13,13 +14,6 @@ export type ConsistencyLevel = "complete" | "partial" | "minimal" | null;
 export type SatisfiedRequirement = "satisfied" | "further testing needed";
 
 export type UnsatisfiedRequirement = "not satisfied";
-
-export interface AccessibilityRequirement {
-  forConformance: boolean;
-  failed: UnsatisfiedRequirement;
-  passed: SatisfiedRequirement;
-  inapplicable: SatisfiedRequirement;
-}
 
 export interface TestFindings {
   url: string;
@@ -79,6 +73,7 @@ export interface ActAssertion {
   outcome: ActualOutcome;
   automatic: boolean;
   procedureName: string;
+  accessibilityRequirements?: string[];
 }
 
 export interface ActImplementationMeta {
@@ -106,6 +101,10 @@ export interface ActProcedureSet extends PartialActProcedureSet {
 export interface PartialActProcedureSet {
   procedureNames: string[];
   consistency: ConsistencyLevel | null;
+  accessibilityRequirements?: {
+    expected: string[];
+    reported: string[];
+  };
   coverage: ProcedureCoverage | null;
   testCaseResults: TestCaseResult[];
 }
@@ -123,7 +122,7 @@ export interface TestCaseResult {
 
 export interface ActProcedureMapping {
   procedureName: string;
-  consistentRequirements: boolean;
+  failedRequirements: string[];
   testResults: TestResult[];
 }
 

@@ -6,6 +6,7 @@ export type Criterion = {
   num: string;
   handle: string;
   level: string;
+  scId: string;
 };
 
 export const contributors: Contributor[] = contributorsJson;

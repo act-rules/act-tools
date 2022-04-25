@@ -7,7 +7,7 @@ describe("findProcedureSet", () => {
   const procedureDefaults = {
     procedureName: "abc123",
     ruleId: "abc123",
-    consistentRequirements: true,
+    failedRequirements: [],
   };
   const correctPass: TestResult = toTestResult({
     testcaseId: "p/p",
@@ -53,7 +53,7 @@ describe("findProcedureSet", () => {
   };
   const partialProcedure2: ActProcedureMapping = {
     ...procedureDefaults,
-    consistentRequirements: false,
+    failedRequirements: ["WCAG2:foo"],
     testResults: [correctPass, correctFail],
   };
   const minimalProcedure: ActProcedureMapping = {
@@ -151,7 +151,7 @@ describe("findProcedureSet", () => {
         },
         {
           ...procedureDefaults,
-          consistentRequirements: false,
+          failedRequirements: ["WCAG2:whatever"],
           testResults: [
             { ...falseNegativeFail, testcaseId: "fail1" },
             { ...correctFail, testcaseId: "fail2" },

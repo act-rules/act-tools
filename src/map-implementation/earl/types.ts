@@ -10,13 +10,16 @@ export type EarlTestSubject = {
   title?: string;
 };
 
-type EarlTestCriterion = {
+export type TestPart = { "@id": string } | string;
+
+export type EarlTestCriterion = {
   "@type"?: "earl:TestCriterion";
   "@id"?: string;
   title?: string;
+  isPartOf?: TestPart[] | TestPart;
 };
 
-type EarlTestRequirement = {
+export type EarlTestRequirement = {
   "@type"?: "earl:TestRequirement";
   "@id"?: string;
   title?: string;

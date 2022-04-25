@@ -17,10 +17,10 @@ export function getRuleProcedureMapping(
   const assertionGroups = groupAssertionsByProcedure(ruleAssertions);
   for (const [procedureName, procedureAssertions] of assertionGroups) {
     const testResults = getTestResults(ruleTestCases, procedureAssertions);
-    const consistentRequirements = true; // Assumed true for now
+    const failedRequirements = getFailedRequirements(procedureAssertions);
     procedureMappings.push({
       procedureName,
-      consistentRequirements,
+      failedRequirements,
       testResults,
     });
   }
@@ -51,4 +51,18 @@ export function groupAssertionsByProcedure(
     assertionGroup[actAssertions.procedureName].push(actAssertions);
   });
   return Object.entries(assertionGroup);
+}
+
+export function getFailedRequirements(actAssertions: ActAssertion[]): string[] {
+  const failedRequirements: string[] = [];
+  for (const actAssertion of actAssertions) {
+    if (actAssertion.outcome === "failed") {
+      actAssertion.accessibilityRequirements?.forEach((requirement) => {
+        if (!failedRequirements.includes(requirement)) {
+          failedRequirements.push(requirement);
+        }
+      });
+    }
+  }
+  return failedRequirements;
 }

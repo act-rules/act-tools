@@ -10,7 +10,14 @@ describe("earlToActAssertions", () => {
   const testCaseId = "6c3ac31577c3cb2d968fc26c4075dd533b5513fc";
   const testCaseUrl = `https://act-rules.github.io/testcases/${ruleId}/${testCaseId}.html`;
   const automatic = true;
-  const sharedProps = { ruleId, testCaseId, testCaseUrl, automatic };
+  const accessibilityRequirements: string[] = [];
+  const sharedProps = {
+    ruleId,
+    testCaseId,
+    testCaseUrl,
+    automatic,
+    accessibilityRequirements,
+  };
 
   it("extracts normalized assertions", async () => {
     const actAssertions = await earlToActAssertions({
@@ -79,6 +86,32 @@ describe("earlToActAssertions", () => {
         ...sharedProps,
         procedureName: "procedure-b",
         outcome: "passed",
+      },
+    ]);
+  });
+
+  it("returns accessibility requirements", async () => {
+    const actAssertions = await earlToActAssertions({
+      "@context": earlContext["@context"],
+      "@graph": [
+        {
+          "@type": "Assertion",
+          test: {
+            title: "procedure-a",
+            "dct:isPartOf": "https://www.w3.org/TR/WCAG21/#name-role-value",
+          },
+          subject: { source: testCaseUrl },
+          result: { outcome: "earl:failed" },
+        },
+      ],
+    });
+
+    expect(actAssertions).toEqual([
+      {
+        ...sharedProps,
+        procedureName: "procedure-a",
+        outcome: "failed",
+        accessibilityRequirements: ["WCAG2:name-role-value"],
       },
     ]);
   });

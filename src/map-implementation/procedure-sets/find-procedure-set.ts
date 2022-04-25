@@ -1,5 +1,5 @@
 import assert from "assert";
-import { ActualOutcome } from "../../types";
+import { AccessibilityRequirement, ActualOutcome } from "../../types";
 import { getConsistency } from "./get-consistency";
 import { getCoverage } from "./get-coverage";
 import {
@@ -10,9 +10,11 @@ import {
   PartialActProcedureSet,
 } from "../types";
 import { getTestCaseResults } from "./get-test-case-results";
+import { getRequirementUris } from "./accessibility-requirements";
 
 export function findProcedureSet(
-  procedureMappings: ActProcedureMapping[]
+  procedureMappings: ActProcedureMapping[],
+  ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
 ): PartialActProcedureSet {
   if (procedureMappings.length === 0) {
     return emptyProcedureSet();
@@ -20,25 +22,37 @@ export function findProcedureSet(
 
   // For each procedure work out consistency & coverage
   // So we can filter on the highest consistency, and sort by coverage
-  const procedureScores = procedureMappings.map(getProcedureScore);
-  let consistency = procedureScores.reduce(findConsistency, null);
-  const procedureSet = procedureScores.filter(
-    (score) => score.consistency === consistency
+  const procedureScores = procedureMappings.map((procedureMapping) =>
+    getProcedureScore(procedureMapping, ruleAccessibilityRequirements)
   );
+  let consistency = procedureScores.reduce(findConsistency, null);
+  const procedureSet = procedureScores.filter((score) => {
+    return score.consistency === consistency;
+  });
   procedureSet.sort(sortByCoverage);
 
   // Combine the procedures, to grab the combined name, consistency, coverage
   const procedures = procedureSet.map(({ mapping }) => mapping);
   const combinedProcedure = combineProcedureSet(procedures);
-  const procedureNames = procedures.map(({ procedureName }) => procedureName);
-  const coverage = getCoverage(combinedProcedure);
-  const testCaseResults = getTestCaseResults(procedures);
 
   // Work out if the set is complete, even if all procedures are partials
   if (consistency === "partial") {
-    consistency = getConsistency(combinedProcedure);
+    consistency = getConsistency(
+      combinedProcedure,
+      ruleAccessibilityRequirements
+    );
   }
-  return { procedureNames, consistency, coverage, testCaseResults };
+
+  return {
+    procedureNames: procedures.map(({ procedureName }) => procedureName),
+    consistency,
+    accessibilityRequirements: {
+      expected: getRequirementUris(ruleAccessibilityRequirements),
+      reported: combinedProcedure.failedRequirements,
+    },
+    coverage: getCoverage(combinedProcedure),
+    testCaseResults: getTestCaseResults(procedures),
+  };
 }
 
 type ProcedureScore = {
@@ -47,8 +61,11 @@ type ProcedureScore = {
   consistency: ConsistencyLevel;
 };
 
-function getProcedureScore(mapping: ActProcedureMapping): ProcedureScore {
-  const consistency = getConsistency(mapping);
+function getProcedureScore(
+  mapping: ActProcedureMapping,
+  ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
+): ProcedureScore {
+  const consistency = getConsistency(mapping, ruleAccessibilityRequirements);
   const coverage = getCoverage(mapping);
   return { consistency, coverage, mapping };
 }
@@ -90,17 +107,14 @@ function combineProcedureSet(
   const procedureName = procedureSet
     .map(({ procedureName }) => procedureName)
     .join("+");
-  const consistentRequirements = procedureSet.every(
-    ({ consistentRequirements }) => {
-      return consistentRequirements === true;
-    }
-  );
+
+  const failedRequirements = getUniqueFailedRequirements(procedureSet);
   const testResults = procedureSet[0].testResults.map(
     (testResult): TestResult => {
       return combineTestResults(testResult, procedureSet);
     }
   );
-  return { procedureName, consistentRequirements, testResults };
+  return { procedureName, failedRequirements, testResults };
 }
 
 function combineTestResults(
@@ -136,4 +150,18 @@ function emptyProcedureSet(): PartialActProcedureSet {
     coverage: null,
     testCaseResults: [],
   };
+}
+
+function getUniqueFailedRequirements(
+  procedureSet: ActProcedureMapping[]
+): string[] {
+  const failedRequirements: string[] = [];
+  procedureSet.forEach((procedure) => {
+    for (const failedRequirement of procedure.failedRequirements) {
+      if (!failedRequirements.includes(failedRequirement)) {
+        failedRequirements.push(failedRequirement);
+      }
+    }
+  });
+  return failedRequirements;
 }

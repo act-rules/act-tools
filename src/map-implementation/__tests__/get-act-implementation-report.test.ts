@@ -17,6 +17,10 @@ describe("getActImplementationReport", () => {
           covered: 1,
           testCaseTotal: 1,
         },
+        accessibilityRequirements: {
+          expected: data.failedRequirements,
+          reported: data.failedRequirements,
+        },
         testCaseResults: [
           {
             testcaseId: data.testcaseId,
