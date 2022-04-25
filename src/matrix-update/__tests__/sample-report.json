@@ -1,142 +1,45 @@
 {
   "name": "Acme Corp Test Tool",
   "vendor": "Test Tool",
-  "summary": {
-    "consistent": 1,
-    "partiallyConsistent": 0,
+  "consistency": {
+    "complete": 1,
+    "partial": 0,
+    "minimal": 0,
     "inconsistent": 0,
-    "incomplete": 1
+    "untested": 0
   },
-  "actMapping": [
+  "procedureSets": [
     {
       "ruleId": "abc123",
-      "ruleName": "Example",
-      "complete": false,
-      "consistency": "consistent",
-      "implementations": [
+      "ruleName": "My ABCs",
+      "procedureSetName": "abc-rule",
+      "consistency": "complete",
+      "coverage": {
+        "covered": 3,
+        "testCaseTotal": 3
+      },
+      "procedures": [
         {
-          "implementationId": "example-rule",
-          "complete": false,
-          "consistency": "consistent",
-          "findings": [
+          "procedureName": "abc-rule",
+          "consistentRequirements": true,
+          "testResults": [
             {
-              "url": "https://act-rules.github.io/testcases/abc123/95935dc40a7a9d307aa385102365364fc866845f.html",
-              "testcase": "Passed Example 1",
+              "testcaseId": "4240276511703c9bfa881ac80f7c0af5c92c97cc",
               "expected": "passed",
-              "actual": "passed",
-              "correct": true
+              "outcomes": ["passed"],
+              "automatic": true
             },
             {
-              "url": "https://act-rules.github.io/testcases/abc123/770a924ca441324dd186a5a58d705af40393504a.html",
-              "testcase": "Passed Example 2",
-              "expected": "passed",
-              "actual": "passed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/a332f002fb7a207cc9739fe4fb9538adfc0d6ede.html",
-              "testcase": "Passed Example 3",
-              "expected": "passed",
-              "actual": "passed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/0e280108dbf0bd9a9f7790c0b1ad55d67de653ff.html",
-              "testcase": "Passed Example 4",
-              "expected": "passed",
-              "actual": "passed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/55660f4bda3d09bcb71301ab8c592d5108a3a03e.html",
-              "testcase": "Passed Example 5",
-              "expected": "passed",
-              "actual": "passed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/3b85f76d3bb6a9266944e3d90c8ffe0fda73df02.html",
-              "testcase": "Passed Example 6",
-              "expected": "passed",
-              "actual": "passed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/e324dcb57f827bee2cba21d3569f7c26ce95c092.html",
-              "testcase": "Passed Example 7",
-              "expected": "passed",
-              "actual": "passed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/b88ccd4e62da6d3999cadbb5ee82cbc45d74aea9.html",
-              "testcase": "Failed Example 1",
+              "testcaseId": "f91d77e96c069380252b674faaf08eecab375503",
               "expected": "failed",
-              "actual": "failed",
-              "correct": true
+              "outcomes": ["failed"],
+              "automatic": true
             },
             {
-              "url": "https://act-rules.github.io/testcases/abc123/2cdab52387d512235f9436b643790d557af98994.html",
-              "testcase": "Failed Example 2",
-              "expected": "failed",
-              "actual": "failed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/99ac6ead86e4807f2e84d715619295a7b4600187.html",
-              "testcase": "Failed Example 3",
-              "expected": "failed",
-              "actual": "failed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/769ced9081ad29edae23727078f6fde475906222.html",
-              "testcase": "Failed Example 4",
-              "expected": "failed",
-              "actual": "failed",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/dd67d60b965d8304888ade8e4619de6b08e705ca.html",
-              "testcase": "Failed Example 5",
-              "expected": "failed",
-              "actual": "untested",
-              "correct": false
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/3251186b0dde2577c5bd3c8760ff60416051d6a4.html",
-              "testcase": "Inapplicable Example 1",
+              "testcaseId": "fec2c81ca23a9647c00ccd1fb5e74d06841ed6fa",
               "expected": "inapplicable",
-              "actual": "inapplicable",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/45f7495ab9a98fdba22655c1c5c3f61adce0a3b7.html",
-              "testcase": "Inapplicable Example 2",
-              "expected": "inapplicable",
-              "actual": "inapplicable",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/abfff53dac0f85dab8d6f30a1f4d89d25efa0219.html",
-              "testcase": "Inapplicable Example 3",
-              "expected": "inapplicable",
-              "actual": "inapplicable",
-              "correct": true
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/577ffff2ede7faace8ac10e77e14e3bbb442fbd5.html",
-              "testcase": "Inapplicable Example 4",
-              "expected": "inapplicable",
-              "actual": "untested",
-              "correct": false
-            },
-            {
-              "url": "https://act-rules.github.io/testcases/abc123/6f944bcb8ab65f381d1c080f639de43242efb7f5.html",
-              "testcase": "Inapplicable Example 5",
-              "expected": "inapplicable",
-              "actual": "untested",
-              "correct": false
+              "outcomes": ["inapplicable"],
+              "automatic": true
             }
           ]
         }

@@ -1,25 +1,33 @@
 import markdownTable from "markdown-table";
 import { outdent } from "outdent";
-import { ActImplementationMapping } from "../map-implementation/types";
+import {
+  ActImplementationReport,
+  ActProcedureSet,
+} from "../map-implementation/types";
 import { filenameEscape } from "../utils";
 
 const urlBase = `https://act-rules.github.io/implementation/`;
-const headings = ["Implementation", "Consistency", "Complete", "Report"];
+const headings = ["Implementation", "Consistency", "Coverage", "Report"];
 
 export function createRuleImplementation(
   ruleId: string,
-  implementationMappings: ActImplementationMapping[]
+  implementationMappings: ActImplementationReport[]
 ): string {
   const rows: Array<string[]> = [];
-  implementationMappings.forEach(({ name, actMapping }) => {
-    const procedureSet = actMapping.find(
+  implementationMappings.forEach(({ name, actRuleMapping }) => {
+    const procedureSet = actRuleMapping.find(
       (procedureSet) => procedureSet.ruleId === ruleId
     );
-    if (procedureSet && procedureSet.consistency !== "inconsistent" && name) {
+    if (
+      procedureSet?.consistency &&
+      procedureSet.consistency !== "complete" &&
+      name
+    ) {
       rows.push([
         name,
         procedureSet.consistency,
-        procedureSet.complete ? "yes" : "no",
+        coverage(procedureSet),
+        procedureSet ? "yes" : "no",
         `[View report](${urlBase}${filenameEscape(name)}#id-${
           procedureSet.ruleId
         })`,
@@ -49,3 +57,10 @@ const noTableContent = () => outdent`
   [ACT Implementations page](https://act-rules.github.io/pages/implementations/overview/) 
   for details.
 `;
+
+function coverage(procedureSet: ActProcedureSet): string {
+  if (!procedureSet.coverage) {
+    return "";
+  }
+  return `${procedureSet.coverage.covered} / ${procedureSet.coverage.testCaseTotal}`;
+}

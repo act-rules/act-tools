@@ -23,7 +23,7 @@ describe("findAssertions", () => {
     ]);
     expect(assertions.length).toBe(2);
     assertions.forEach((assertion) =>
-      expect(assertion["@type"]).toBe("earl:Assertion")
+      expect(assertion["@type"]).toBe("Assertion")
     );
     const ids = assertions.map((a) => a["@id"]);
     expect(ids).toContain(id1);
@@ -46,7 +46,7 @@ describe("findAssertions", () => {
 
     expect(assertions.length).toBe(2);
     assertions.forEach((assertion) =>
-      expect(assertion["@type"]).toBe("earl:Assertion")
+      expect(assertion["@type"]).toBe("Assertion")
     );
     const ids = assertions.map((a) => a["@id"]);
     expect(ids).toContain(id1);

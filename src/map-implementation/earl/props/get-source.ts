@@ -1,4 +1,4 @@
-import { EarlTestSubject } from "../earl/types";
+import { EarlTestSubject } from "../types";
 
 export function sourceFromSubject(
   subject?: EarlTestSubject | string

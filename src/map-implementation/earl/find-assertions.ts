@@ -1,10 +1,10 @@
 import { frame as jsonldFrame } from "jsonld";
-import * as earlContext from "./earl-context.json";
+import earlContext from "./earl-context.json";
 import { AssertionGraph, EarlAssertion } from "./types";
 import debug from "debug";
 
 const assertionFrame = {
-  ...earlContext,
+  "@context": earlContext["@context"],
   "@type": "earl:Assertion",
 };
 
@@ -32,7 +32,6 @@ export async function findAssertions(
       debug("findAssertions")(`Unable to frame JSON file. Got error:\n${e}`);
     }
   }
-
   /**
    * Extrapolate `@graph` object from each report
    */
