@@ -1,20 +1,27 @@
 import { readFileSync } from "fs";
 import { createFile } from "../utils/create-file";
-import { TestCaseJson } from "../types";
+import { TestCase, TestCaseJson } from "../types";
 import { TestCaseData } from "./extract-test-cases";
 
 export async function updateTestCaseJson(
   testCaseJsonPath: string,
   pageUrl: string,
-  testCaseData: TestCaseData[],
-  ruleIds?: string[]
+  testCaseData: TestCaseData[]
 ): Promise<TestCaseJson> {
   let testCasesJson: TestCaseJson;
+  let approvedTestCases: TestCase[] = [];
+  const approvedRules = new Set<string>();
   try {
-    if (ruleIds && ruleIds.length) {
-      const str = readFileSync(testCaseJsonPath, "utf8");
-      testCasesJson = JSON.parse(str) as TestCaseJson;
-    }
+    const str = readFileSync(testCaseJsonPath, "utf8");
+    testCasesJson = JSON.parse(str) as TestCaseJson;
+    console.log(testCasesJson.testcases.length);
+    approvedTestCases = testCasesJson.testcases.filter((testcase) => {
+      if (!testcase.isApproved) {
+        return false;
+      }
+      approvedRules.add(testcase.ruleId);
+      return true;
+    });
     // eslint-disable-next-line no-empty
   } catch {}
 
@@ -27,12 +34,13 @@ export async function updateTestCaseJson(
     testcases: [],
   };
 
-  const newTestCases = testCaseData.map(({ metadata }) => metadata);
-  const filteredTestCases = testCasesJson.testcases.filter((testcase) => {
-    return !ruleIds || !ruleIds.includes(testcase.ruleId);
-  });
+  const newTestCases = testCaseData
+    .map(({ metadata }) => metadata)
+    // TEMPORARY; Until we can track approved and proposed test cases
+    // of the same rule separately, only include approved test cases
+    .filter((testcase) => !approvedRules.has(testcase.ruleId));
 
-  testCasesJson.testcases = filteredTestCases.concat(newTestCases);
+  testCasesJson.testcases = approvedTestCases.concat(newTestCases);
   testCasesJson.count = testCasesJson.testcases.length;
 
   await createFile(testCaseJsonPath, testCasesJson);
