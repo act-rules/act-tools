@@ -54,7 +54,7 @@ export async function buildExamples({
 
   // Write testcases.json
   const testCasesJson = path.resolve(assetsPath, "testcases.json");
-  await updateTestCaseJson(testCasesJson, pageUrl, testCaseData, ruleIds);
+  await updateTestCaseJson(testCasesJson, pageUrl, testCaseData);
   console.log(`Updated ${testCasesJson}`);
 
   // Copy test assets
