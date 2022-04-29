@@ -16,7 +16,7 @@ export async function updateTestCaseJson(
     testCasesJson = JSON.parse(str) as TestCaseJson;
     console.log(testCasesJson.testcases.length);
     approvedTestCases = testCasesJson.testcases.filter((testcase) => {
-      if (!testcase.isApproved) {
+      if (!testcase.approved) {
         return false;
       }
       approvedRules.add(testcase.ruleId);

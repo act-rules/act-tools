@@ -30,28 +30,6 @@ describe("build-examples", () => {
       expect(update.testcases.length).toBe(3);
     });
 
-    it("add test cases for an unknown rule", () => {
-      createFile.mock();
-      updateTestCaseJson(jsonPath, baseUrl, testCases, ["new123"]);
-      const calls = createFile.calls();
-      expect(calls).toHaveLength(1);
-      expect(calls[0].path).toBe(jsonPath);
-
-      const update = calls[0].content as TestCaseJson;
-      expect(update.count).toBe(5);
-      expect(update.testcases.length).toBe(5);
-    });
-
-    it("overrides test cases of a known rule", () => {
-      createFile.mock();
-      updateTestCaseJson(jsonPath, baseUrl, testCases, ["abc123"]);
-      const calls = createFile.calls();
-      expect(calls).toHaveLength(1);
-      expect(calls[0].path).toBe(jsonPath);
-
-      const update = calls[0].content as TestCaseJson;
-      expect(update.count).toBe(4);
-      expect(update.testcases.length).toBe(4);
-    });
+    it.todo("does not override approved test cases");
   });
 });

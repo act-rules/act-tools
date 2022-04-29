@@ -67,7 +67,7 @@ export type TestCase = {
   expected: ExpectedOutcome;
   rulePage: string;
   ruleAccessibilityRequirements: RuleFrontMatter["accessibility_requirements"];
-  isApproved?: boolean;
+  approved?: boolean;
 };
 
 export type TestCaseJson = {
