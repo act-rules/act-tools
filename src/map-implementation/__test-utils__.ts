@@ -55,6 +55,7 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     testcaseId,
     ruleName,
     expected,
+    approved: true,
     url: testCaseUrl,
     testcaseTitle: testCaseName,
     relativePath: `/${ruleId}/${testcaseId}.html`,

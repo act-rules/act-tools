@@ -5,6 +5,8 @@ import {
   ActProcedureSet,
   TestCase,
   ActImplementationMeta,
+  RuleStats,
+  PartialActProcedureSet,
 } from "./types";
 import { getRuleProcedureMapping } from "./procedures/get-rule-procedure-mapping";
 import { findProcedureSet } from "./procedure-sets/find-procedure-set";
@@ -15,6 +17,9 @@ export async function getActImplementationReport(
   testCases: TestCase[],
   metaData: ActImplementationMeta = {}
 ): Promise<ActImplementationReport> {
+  const approvedRules = emptyRuleStats();
+  const proposedRules = emptyRuleStats();
+
   const actAssertions = await earlToActAssertions(earlReport);
   console.log(`Found ${actAssertions.length} assertions`);
 
@@ -30,41 +35,18 @@ export async function getActImplementationReport(
       procedureMappings,
       ruleGroup.ruleAccessibilityRequirements
     );
-    const { ruleId, ruleName } = ruleGroup;
+    const { ruleId, ruleName, approved } = ruleGroup;
     actRuleMapping.push({ ruleId, ruleName, ...procedureSet });
+    updateRuleStats(procedureSet, approved ? approvedRules : proposedRules);
   }
 
-  const consistency = getSummary(actRuleMapping);
-  return { ...metaData, consistency, actRuleMapping };
-}
-
-function getSummary(
-  procedureSets: ActProcedureSet[]
-): ActImplementationReport["consistency"] {
-  let complete = 0;
-  let partial = 0;
-  let minimal = 0;
-  let inconsistent = 0;
-  let untested = 0;
-  procedureSets.forEach((procedureSet) => {
-    if (procedureSet.procedureNames.length === 0) {
-      untested++;
-    } else if (procedureSet.consistency === "complete") {
-      complete++;
-    } else if (procedureSet.consistency === "partial") {
-      partial++;
-    } else if (procedureSet.consistency === "minimal") {
-      minimal++;
-    } else {
-      inconsistent++;
-    }
-  });
-  return { complete, partial, minimal, inconsistent, untested };
+  return { ...metaData, approvedRules, proposedRules, actRuleMapping };
 }
 
 type RuleGroup = {
   ruleId: string;
   ruleName: string;
+  approved: boolean;
   ruleTestCases: TestCase[];
   ruleAssertions: ActAssertion[];
   ruleAccessibilityRequirements: TestCase["ruleAccessibilityRequirements"];
@@ -84,13 +66,16 @@ function groupByRule(
     const ruleTestCases = testCases.filter(
       (testCase) => testCase.ruleId === ruleId
     );
+
+    const approved = ruleTestCases.some(({ approved }) => approved);
     const ruleAssertions = actAssertions.filter((actAssertions) =>
-      ruleTestCases.some(
-        (testCase) => testCase.testcaseId === actAssertions.testCaseId
-      )
+      ruleTestCases.some((testCase) => {
+        return testCase.testcaseId === actAssertions.testCaseId;
+      })
     );
     return {
       ruleId,
+      approved,
       ruleName,
       ruleTestCases,
       ruleAssertions,
@@ -124,4 +109,27 @@ function findRuleRequirements(
   const ruleTestCase = testCases.find((testCase) => testCase.ruleId === ruleId);
   assert(ruleTestCase, `Unable to find test case with ruleId ${ruleId}`);
   return ruleTestCase.ruleAccessibilityRequirements;
+}
+
+function updateRuleStats(
+  procedureSet: PartialActProcedureSet,
+  ruleStats: RuleStats
+) {
+  if (procedureSet.consistency) {
+    ruleStats[procedureSet.consistency]++;
+  } else if (procedureSet.procedureNames.length) {
+    ruleStats.inconsistent++;
+  } else {
+    ruleStats.untested++;
+  }
+}
+
+function emptyRuleStats(): RuleStats {
+  return {
+    complete: 0,
+    partial: 0,
+    minimal: 0,
+    inconsistent: 0,
+    untested: 0,
+  };
 }

@@ -9,7 +9,9 @@ export {
   AccessibilityRequirement,
 } from "../types";
 
-export type ConsistencyLevel = "complete" | "partial" | "minimal" | null;
+export type ConsistencyTypes = "complete" | "partial" | "minimal";
+
+export type ConsistencyLevel = ConsistencyTypes | null;
 
 export type SatisfiedRequirement = "satisfied" | "further testing needed";
 
@@ -82,14 +84,14 @@ export interface ActImplementationMeta {
   version?: string;
 }
 
+export type RuleStats = Record<
+  ConsistencyTypes | "inconsistent" | "untested",
+  number
+>;
+
 export interface ActImplementationReport extends ActImplementationMeta {
-  consistency: {
-    complete: number;
-    partial: number;
-    minimal: number;
-    inconsistent: number;
-    untested: number;
-  };
+  approvedRules: RuleStats;
+  proposedRules: RuleStats;
   actRuleMapping: ActProcedureSet[];
 }
 
