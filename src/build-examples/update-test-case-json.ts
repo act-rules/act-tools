@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import { createFile } from "../utils/create-file";
-import { TestCase, TestCaseJson } from "../types";
+import { TestCaseJson } from "../types";
 import { TestCaseData } from "./extract-test-cases";
 
 export async function updateTestCaseJson(
@@ -9,40 +9,35 @@ export async function updateTestCaseJson(
   testCaseData: TestCaseData[]
 ): Promise<TestCaseJson> {
   let testCasesJson: TestCaseJson;
-  let approvedTestCases: TestCase[] = [];
-  const approvedRules = new Set<string>();
   try {
     const str = readFileSync(testCaseJsonPath, "utf8");
     testCasesJson = JSON.parse(str) as TestCaseJson;
-    console.log(testCasesJson.testcases.length);
-    approvedTestCases = testCasesJson.testcases.filter((testcase) => {
-      if (!testcase.approved) {
-        return false;
-      }
-      approvedRules.add(testcase.ruleId);
-      return true;
+    testCasesJson.testcases = testCasesJson.testcases.filter((testcase) => {
+      return testcase.approved;
     });
-    // eslint-disable-next-line no-empty
-  } catch {}
+  } catch {
+    testCasesJson = {
+      name: "ACT Task Force test cases",
+      website: pageUrl,
+      license: "https://act-rules.github.io/pages/license/",
+      description: "Accessibility conformance testing rules for HTML",
+      count: 0,
+      testcases: [],
+    };
+  }
 
-  testCasesJson ??= {
-    name: "ACT Task Force test cases",
-    website: pageUrl,
-    license: "https://act-rules.github.io/pages/license/",
-    description: "Accessibility conformance testing rules for HTML",
-    count: 0,
-    testcases: [],
-  };
+  testCaseData.forEach(({ metadata: testcase }) => {
+    const isExistingTestCase = testCasesJson.testcases.some(
+      ({ testcaseId, ruleId }) =>
+        testcaseId === testcase.testcaseId && ruleId === testcase.ruleId
+    );
 
-  const newTestCases = testCaseData
-    .map(({ metadata }) => metadata)
-    // TEMPORARY; Until we can track approved and proposed test cases
-    // of the same rule separately, only include approved test cases
-    .filter((testcase) => !approvedRules.has(testcase.ruleId));
+    if (!isExistingTestCase) {
+      testCasesJson.testcases.push(testcase);
+    }
+  });
 
-  testCasesJson.testcases = approvedTestCases.concat(newTestCases);
   testCasesJson.count = testCasesJson.testcases.length;
-
   await createFile(testCaseJsonPath, testCasesJson);
   return testCasesJson;
 }
