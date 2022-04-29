@@ -7,6 +7,9 @@ export function getTestRequirement(
     if (Array.isArray(test.isPartOf)) {
       return test.isPartOf.map(getTestUrl);
     }
+    if (typeof test.isPartOf === "object" && "@set" in test.isPartOf) {
+      return test.isPartOf["@set"].map(getTestUrl);
+    }
     if (typeof test.isPartOf !== "undefined") {
       return [getTestUrl(test.isPartOf)];
     }
@@ -21,5 +24,5 @@ function getTestUrl(testPart: TestPart): string {
 }
 
 function applyWcagNamespace(url: string): string {
-  return url.replace(/https?:\/\/www\.w3\.org\/TR\/WCAG2\d\/#/g, "WCAG2:");
+  return url.replace(/https?:\/\/www\.w3\.org\/TR\/WCAG(2\d?)?\/#/g, "WCAG2:");
 }

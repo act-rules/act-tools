@@ -5,24 +5,21 @@ export function getTestCaseResults(
 ): TestCaseResult[] {
   const testCaseResults: TestCaseResult[] = [];
   procedures.forEach(({ procedureName, testResults }) => {
-    testResults.forEach(
-      (
-        { testcaseId, testCaseName, expected, outcomes, testCaseUrl },
-        index
-      ) => {
-        testCaseResults[index] ??= {
-          testcaseId,
-          testCaseName,
-          testCaseUrl,
-          expected,
-          procedureResults: [],
-        };
-        testCaseResults[index].procedureResults.push({
-          procedureName,
-          outcomes,
-        });
-      }
-    );
+    testResults.forEach((testResult, index) => {
+      testCaseResults[index] ??= {
+        testcaseId: testResult.testcaseId,
+        testCaseName: testResult.testCaseName,
+        testCaseUrl: testResult.testCaseUrl,
+        testCaseApproved: !!testResult.testCaseApproved,
+        expected: testResult.expected,
+        procedureResults: [],
+      };
+
+      testCaseResults[index].procedureResults.push({
+        procedureName,
+        outcomes: testResult.outcomes,
+      });
+    });
   });
   return testCaseResults;
 }

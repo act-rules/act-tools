@@ -13,6 +13,8 @@ export type TestData = {
   ruleId: string;
   testcaseId: string;
   testCaseName: string;
+  testCaseApproved: boolean;
+  testResult: TestResult;
   ruleName: string;
   procedureName: string;
   testCaseUrl: string;
@@ -32,6 +34,7 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
   const expected: ExpectedOutcome = input.expected ?? "failed";
   const procedureName = input.procedureName ?? "procedure-a";
   const testcaseId = input.testcaseId ?? randomStr(40);
+  const testCaseApproved = input.testCaseApproved ?? true;
   const failedRequirements = input.failedRequirements ?? [
     "WCAG2:name-role-value",
   ];
@@ -55,7 +58,7 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     testcaseId,
     ruleName,
     expected,
-    approved: true,
+    approved: testCaseApproved,
     url: testCaseUrl,
     testcaseTitle: testCaseName,
     relativePath: `/${ruleId}/${testcaseId}.html`,
@@ -79,9 +82,10 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
   };
   const outcomes = [expected];
   const automatic = true;
-  const testResult = {
+  const testResult: TestResult = {
     testcaseId,
     testCaseName,
+    testCaseApproved,
     expected,
     outcomes,
     automatic,
@@ -98,6 +102,8 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     testcaseId,
     testCaseName,
     testCaseUrl,
+    testCaseApproved,
+    testResult,
     earlReport,
     assertion,
     testCase,
@@ -116,6 +122,7 @@ export function toTestResult(partial: Partial<TestResult>): TestResult {
     testCaseName: "Passed example 1",
     testCaseUrl: "",
     expected: "passed",
+    testCaseApproved: partial.testCaseApproved ?? true,
     outcomes: [partial.expected ?? "passed"],
     ...partial,
   };

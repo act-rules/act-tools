@@ -10,6 +10,7 @@ describe("getTestCaseResults", () => {
       procedureName,
       testcaseId,
       testCaseName,
+      testCaseApproved,
       testCaseUrl,
     } = getTestData();
     const mapping = getTestCaseResults([procedure]);
@@ -18,6 +19,7 @@ describe("getTestCaseResults", () => {
         testcaseId,
         testCaseName,
         testCaseUrl,
+        testCaseApproved,
         expected,
         procedureResults: [{ procedureName, outcomes }],
       },
@@ -32,6 +34,7 @@ describe("getTestCaseResults", () => {
         testcaseId,
         testCaseName,
         testCaseUrl,
+        testCaseApproved,
       } = getTestData();
       const testcaseId2 = randomStr(40);
       procedure.testResults.push({
@@ -45,6 +48,7 @@ describe("getTestCaseResults", () => {
           testcaseId,
           testCaseName,
           testCaseUrl,
+          testCaseApproved,
           expected,
           procedureResults: [{ procedureName, outcomes }],
         },
@@ -52,6 +56,7 @@ describe("getTestCaseResults", () => {
           testcaseId: testcaseId2,
           testCaseName,
           testCaseUrl,
+          testCaseApproved,
           expected,
           procedureResults: [{ procedureName, outcomes }],
         },
@@ -67,6 +72,7 @@ describe("getTestCaseResults", () => {
       testcaseId,
       testCaseName,
       testCaseUrl,
+      testCaseApproved,
     } = getTestData();
     const procedure2 = { ...procedure, procedureName: "procedure-2" };
 
@@ -76,6 +82,7 @@ describe("getTestCaseResults", () => {
         testcaseId,
         testCaseName,
         testCaseUrl,
+        testCaseApproved,
         expected,
         procedureResults: [
           { procedureName, outcomes },
@@ -94,6 +101,7 @@ describe("getTestCaseResults", () => {
       testcaseId,
       testCaseName,
       testCaseUrl,
+      testCaseApproved,
     } = getTestData();
     const testcaseId2 = randomStr(40);
     procedure.testResults.push({
@@ -107,8 +115,9 @@ describe("getTestCaseResults", () => {
       {
         testcaseId,
         testCaseName,
-        expected,
         testCaseUrl,
+        testCaseApproved,
+        expected,
         procedureResults: [
           { procedureName, outcomes },
           { procedureName: "procedure-2", outcomes },
@@ -118,6 +127,7 @@ describe("getTestCaseResults", () => {
         testcaseId: testcaseId2,
         testCaseName,
         testCaseUrl,
+        testCaseApproved,
         expected,
         procedureResults: [
           { procedureName, outcomes },

@@ -21,9 +21,12 @@ describe("getActImplementationReport", () => {
         ruleId: testData.ruleId,
         ruleName: testData.ruleName,
         procedureNames: [testData.procedureName],
+        ruleApproved: true,
         consistency: "complete",
         coverage: {
           covered: 1,
+          cantTell: 0,
+          untested: 0,
           testCaseTotal: 1,
         },
         accessibilityRequirements: {
@@ -35,6 +38,7 @@ describe("getActImplementationReport", () => {
             testcaseId: testData.testcaseId,
             testCaseName: testData.testCaseName,
             testCaseUrl: testData.testCaseUrl,
+            testCaseApproved: true,
             expected: testData.expected,
             procedureResults: [
               {

@@ -98,6 +98,7 @@ export interface ActImplementationReport extends ActImplementationMeta {
 export interface ActProcedureSet extends PartialActProcedureSet {
   ruleId: string;
   ruleName: string;
+  ruleApproved: boolean;
 }
 
 export interface PartialActProcedureSet {
@@ -115,6 +116,7 @@ export interface TestCaseResult {
   testCaseName: string;
   testcaseId: string;
   testCaseUrl: string;
+  testCaseApproved: boolean;
   expected: string;
   procedureResults: {
     procedureName: string;
@@ -132,6 +134,7 @@ export interface TestResult {
   testcaseId: string;
   testCaseName: string;
   testCaseUrl: string;
+  testCaseApproved?: boolean;
   expected: ExpectedOutcome;
   outcomes: ActualOutcome[];
   automatic?: boolean;

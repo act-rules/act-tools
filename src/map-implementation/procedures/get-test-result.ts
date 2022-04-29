@@ -9,6 +9,7 @@ export function getTestResult(
     testcaseId: ruleTestCase.testcaseId,
     testCaseName: ruleTestCase.testcaseTitle,
     testCaseUrl: ruleTestCase.url,
+    testCaseApproved: ruleTestCase.approved,
     expected: ruleTestCase.expected,
     outcomes: [],
     automatic: true,
