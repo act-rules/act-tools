@@ -135,6 +135,32 @@ describe("getConsistency", () => {
         })
       ).toBe("complete");
     });
+
+    it("ignores proposed results when mixed with approved results", () => {
+      const consistency = getConsistency({
+        ...procedureDefaults,
+        testResults: toTestResults([
+          {
+            expected: "passed",
+            outcomes: ["cantTell"],
+          },
+          {
+            expected: "passed",
+            outcomes: ["failed"],
+            testCaseApproved: false,
+          },
+          {
+            expected: "failed",
+            outcomes: ["failed", "cantTell"],
+          },
+          {
+            expected: "inapplicable",
+            outcomes: ["inapplicable", "cantTell"],
+          },
+        ]),
+      });
+      expect(consistency).toBe("complete");
+    });
   });
 
   describe("partial consistency", () => {

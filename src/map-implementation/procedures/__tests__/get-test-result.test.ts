@@ -11,6 +11,7 @@ describe("getTestResult", () => {
       testcaseId,
       testCaseName,
       testCaseUrl,
+      testCaseApproved,
     } = getTestData();
     const testResults = getTestResult(testCase, [actAssertion]);
     expect(testResults).toEqual({
@@ -19,47 +20,26 @@ describe("getTestResult", () => {
       testcaseId,
       testCaseName,
       testCaseUrl,
+      testCaseApproved,
       expected,
     });
   });
 
   it("reports an outcome for each assertion", () => {
-    const {
-      testCase,
-      actAssertion,
-      expected,
-      testcaseId,
-      testCaseName,
-      testCaseUrl,
-    } = getTestData();
+    const { testCase, actAssertion } = getTestData();
     const assertions: ActAssertion[] = [
       { ...actAssertion, outcome: "failed" },
       { ...actAssertion, outcome: "passed" },
       { ...actAssertion, outcome: "cantTell" },
     ];
     const testResults = getTestResult(testCase, assertions);
-    expect(testResults).toEqual({
-      outcomes: ["failed", "passed", "cantTell"],
-      automatic: false,
-      testcaseId,
-      testCaseName,
-      testCaseUrl,
-      expected,
-    });
+    expect(testResults.outcomes).toEqual(["failed", "passed", "cantTell"]);
   });
 
   it("returns untested when no procedure maps to the result", () => {
-    const { testCase, expected, testcaseId, testCaseName, testCaseUrl } =
-      getTestData();
+    const { testCase } = getTestData();
     const testResults = getTestResult(testCase, []);
-    expect(testResults).toEqual({
-      outcomes: ["untested"],
-      automatic: false,
-      testcaseId,
-      testCaseName,
-      testCaseUrl,
-      expected,
-    });
+    expect(testResults.outcomes).toEqual(["untested"]);
   });
 
   it("throws if on assertions if the testcaseId is a mismatch", () => {

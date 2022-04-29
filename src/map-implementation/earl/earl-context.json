@@ -2,8 +2,7 @@
   "@context": {
     "@vocab": "http://www.w3.org/ns/earl#",
     "earl": "http://www.w3.org/ns/earl#",
-    "WCAG": "https://www.w3.org/TR/WCAG/#",
-    "WCAG2": "https://www.w3.org/TR/WCAG21/#",
+    "WCAG2": "https://www.w3.org/TR/WCAG2/#",
     "cnt": "http://www.w3.org/2011/content#",
     "dct": "http://purl.org/dc/terms/",
     "ptr": "https://www.w3.org/2009/pointers#",

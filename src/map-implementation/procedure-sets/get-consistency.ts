@@ -10,6 +10,11 @@ export function getConsistency(
   { testResults, failedRequirements }: ActProcedureMapping,
   ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
 ): ConsistencyLevel {
+  // If there's an approved test case, ignore any proposed test cases
+  if (testResults.some(isApproved)) {
+    testResults = testResults.filter(isApproved);
+  }
+
   if (hasFalsePositives(testResults)) {
     return null;
   }
@@ -74,3 +79,5 @@ function hasTruePositives(testResults: TestResult[]): boolean {
       expected === "failed" && outcomes.includes("failed")
   );
 }
+
+const isApproved = ({ testCaseApproved }: TestResult) => testCaseApproved;

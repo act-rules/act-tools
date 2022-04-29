@@ -11,12 +11,13 @@ export type EarlTestSubject = {
 };
 
 export type TestPart = { "@id": string } | string;
+export type TestPartSet = { "@set": TestPart[] };
 
 export type EarlTestCriterion = {
   "@type"?: "earl:TestCriterion";
   "@id"?: string;
   title?: string;
-  isPartOf?: TestPart[] | TestPart;
+  isPartOf?: TestPartSet | TestPart[] | TestPart;
 };
 
 export type EarlTestRequirement = {

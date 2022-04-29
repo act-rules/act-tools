@@ -35,9 +35,9 @@ export async function getActImplementationReport(
       procedureMappings,
       ruleGroup.ruleAccessibilityRequirements
     );
-    const { ruleId, ruleName, approved } = ruleGroup;
-    actRuleMapping.push({ ruleId, ruleName, ...procedureSet });
-    updateRuleStats(procedureSet, approved ? approvedRules : proposedRules);
+    const { ruleId, ruleName, ruleApproved } = ruleGroup;
+    actRuleMapping.push({ ruleId, ruleName, ruleApproved, ...procedureSet });
+    updateRuleStats(procedureSet, ruleApproved ? approvedRules : proposedRules);
   }
 
   return { ...metaData, approvedRules, proposedRules, actRuleMapping };
@@ -46,7 +46,7 @@ export async function getActImplementationReport(
 type RuleGroup = {
   ruleId: string;
   ruleName: string;
-  approved: boolean;
+  ruleApproved: boolean;
   ruleTestCases: TestCase[];
   ruleAssertions: ActAssertion[];
   ruleAccessibilityRequirements: TestCase["ruleAccessibilityRequirements"];
@@ -67,7 +67,7 @@ function groupByRule(
       (testCase) => testCase.ruleId === ruleId
     );
 
-    const approved = ruleTestCases.some(({ approved }) => approved);
+    const ruleApproved = ruleTestCases.some(({ approved }) => approved);
     const ruleAssertions = actAssertions.filter((actAssertions) =>
       ruleTestCases.some((testCase) => {
         return testCase.testcaseId === actAssertions.testCaseId;
@@ -75,7 +75,7 @@ function groupByRule(
     );
     return {
       ruleId,
-      approved,
+      ruleApproved,
       ruleName,
       ruleTestCases,
       ruleAssertions,
