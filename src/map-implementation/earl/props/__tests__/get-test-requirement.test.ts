@@ -57,6 +57,28 @@ describe("getTestRequirement", () => {
     expect(testRequirements).toEqual(["WCAG2:name-role-value"]);
   });
 
+  it("infers WCAG URLs from titles", () => {
+    const testRequirements = getTestRequirement({
+      "@type": "earl:TestCriterion",
+      title: "my-custom-rule",
+      isPartOf: {
+        title: "WCAG 2.0, success criterion 4.1.2",
+      },
+    });
+    expect(testRequirements).toEqual(["WCAG2:name-role-value"]);
+  });
+
+  it("returns an empty string if no URL can be inferred from the title", () => {
+    const testRequirements = getTestRequirement({
+      "@type": "earl:TestCriterion",
+      title: "my-custom-rule",
+      isPartOf: {
+        title: "WCAG 1.0, checkpoint 1.1",
+      },
+    });
+    expect(testRequirements).toHaveLength(0);
+  });
+
   it("returns does not namespace WCAG 1.0", () => {
     const testRequirements = getTestRequirement({
       "@type": "earl:TestCriterion",

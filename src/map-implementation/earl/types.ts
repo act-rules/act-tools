@@ -10,7 +10,7 @@ export type EarlTestSubject = {
   title?: string;
 };
 
-export type TestPart = { "@id": string } | string;
+export type TestPart = { "@id": string } | { title: string } | string;
 export type TestPartSet = { "@set": TestPart[] };
 
 export type EarlTestCriterion = {
