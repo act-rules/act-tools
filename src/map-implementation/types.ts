@@ -105,6 +105,7 @@ export interface PartialActProcedureSet {
   procedureNames: string[];
   consistency: ConsistencyLevel | null;
   accessibilityRequirements?: {
+    correct?: boolean; // TODO, not optional
     expected: string[];
     reported: string[];
   };
@@ -143,4 +144,6 @@ export interface TestResult {
 export type ProcedureCoverage = {
   testCaseTotal: number;
   covered: number;
+  untested: number;
+  cantTell: number;
 };

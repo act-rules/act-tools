@@ -10,7 +10,10 @@ import {
   PartialActProcedureSet,
 } from "../types";
 import { getTestCaseResults } from "./get-test-case-results";
-import { getRequirementUris } from "./accessibility-requirements";
+import {
+  getRequirementUris,
+  mapsAllRequirements,
+} from "./accessibility-requirements";
 
 export function findProcedureSet(
   procedureMappings: ActProcedureMapping[],
@@ -34,6 +37,7 @@ export function findProcedureSet(
   // Combine the procedures, to grab the combined name, consistency, coverage
   const procedures = procedureSet.map(({ mapping }) => mapping);
   const combinedProcedure = combineProcedureSet(procedures);
+  const { failedRequirements } = combinedProcedure;
 
   // Work out if the set is complete, even if all procedures are partials
   if (consistency === "partial") {
@@ -47,8 +51,12 @@ export function findProcedureSet(
     procedureNames: procedures.map(({ procedureName }) => procedureName),
     consistency,
     accessibilityRequirements: {
+      correct: mapsAllRequirements(
+        failedRequirements,
+        ruleAccessibilityRequirements
+      ),
       expected: getRequirementUris(ruleAccessibilityRequirements),
-      reported: combinedProcedure.failedRequirements,
+      reported: failedRequirements,
     },
     coverage: getCoverage(combinedProcedure),
     testCaseResults: getTestCaseResults(procedures),

@@ -30,6 +30,7 @@ describe("getActImplementationReport", () => {
           testCaseTotal: 1,
         },
         accessibilityRequirements: {
+          correct: true,
           expected: testData.failedRequirements,
           reported: testData.failedRequirements,
         },
