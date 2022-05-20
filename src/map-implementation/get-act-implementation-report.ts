@@ -68,10 +68,12 @@ function groupByRule(
     );
 
     const ruleApproved = ruleTestCases.some(({ approved }) => approved);
-    const ruleAssertions = actAssertions.filter((actAssertions) =>
-      ruleTestCases.some((testCase) => {
-        return testCase.testcaseId === actAssertions.testCaseId;
-      })
+    const ruleAssertions = actAssertions.filter((actAssertion) =>
+      ruleTestCases.some(
+        (testCase) =>
+          testCase.ruleId === actAssertion.ruleId &&
+          testCase.testcaseId === actAssertion.testCaseId
+      )
     );
     return {
       ruleId,

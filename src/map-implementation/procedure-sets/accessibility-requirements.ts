@@ -6,7 +6,7 @@ export function mapsAllRequirements(
   ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
 ): boolean {
   const requirementKeys = getRequirementUris(ruleAccessibilityRequirements);
-  failedRequirements = failedRequirements.filter(isUnique);
+  failedRequirements = failedRequirements.filter(isUnique).filter(isNormative);
   if (failedRequirements.length !== requirementKeys.length) {
     return false;
   }
@@ -39,4 +39,8 @@ function findCriterionByKey(wcagKey: string): Criterion | undefined {
 
 function isUnique(item: unknown, index: number, arr: unknown[]): boolean {
   return arr.indexOf(item) === index;
+}
+
+function isNormative(item: string): boolean {
+  return item.substring(0, 6) === "WCAG2:";
 }

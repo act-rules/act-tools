@@ -86,5 +86,14 @@ describe("accessibility-requirements", () => {
       );
       expect(maps).toBe(false);
     });
+
+    it("ignores non-normative requirements", () => {
+      const maps = mapsAllRequirements(["WCAG2:non-text-content"], {
+        "wcag21:1.1.1": requirement,
+        "https://www.w3.org/WAI/WCAG21/Techniques/failures/F3.html":
+          requirement,
+      });
+      expect(maps).toBe(true);
+    });
   });
 });
