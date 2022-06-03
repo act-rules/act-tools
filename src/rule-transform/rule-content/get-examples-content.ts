@@ -67,6 +67,7 @@ function getExternalLink(
   return (
     '<a class="example-link" ' +
     `title="${title}" ` +
+    `target="_blank" ` +
     `href="${href}">Open in a new tab</a> `
   );
 }

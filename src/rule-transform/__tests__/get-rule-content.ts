@@ -121,7 +121,7 @@ describe("getRuleContent", () => {
 
       #### Passed Example 1
 
-      <a class="example-link" title="Passed Example 1" href="https://w3.org/WAI/content-assets/wcag-act-rules/testcases/abc123/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html">Open in a new tab</a>
+      <a class="example-link" title="Passed Example 1" target="_blank" href="https://w3.org/WAI/content-assets/wcag-act-rules/testcases/abc123/98a6b1fc6e5d43490f9c9a7cce9676487c94d2a3.html">Open in a new tab</a>
 
       ${q}html
       <img alt="" />

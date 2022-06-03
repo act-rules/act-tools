@@ -37,7 +37,7 @@ describe("rule-content", () => {
 
         #### Pass Example 1
 
-        <a class="example-link" title="Pass Example 1" href="${href}">Open in a new tab</a>
+        <a class="example-link" title="Pass Example 1" target="_blank" href="${href}">Open in a new tab</a>
 
         ${q}html
         <img alt="" />
@@ -47,7 +47,7 @@ describe("rule-content", () => {
 
         #### Failed Example 2
 
-        <a class="example-link" title="Failed Example 2" href="${href}">Open in a new tab</a>
+        <a class="example-link" title="Failed Example 2" target="_blank" href="${href}">Open in a new tab</a>
 
         Some problem description
 
