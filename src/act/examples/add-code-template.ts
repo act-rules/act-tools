@@ -14,7 +14,8 @@ export function addCodeTemplate(
   if (assetsBase) {
     code = code
       .replace(/"\/test-assets\//g, `"${assetsBase}/test-assets/`)
-      .replace(/'\/test-assets\//g, `'${assetsBase}/test-assets/`);
+      .replace(/'\/test-assets\//g, `'${assetsBase}/test-assets/`)
+      .replace(/url\(\/test-assets\//g, `url(${assetsBase}/test-assets/`);
   }
 
   if (["html", "xhtml"].includes(lang) === false) {
