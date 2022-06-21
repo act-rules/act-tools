@@ -1,13 +1,13 @@
 import * as fs from "fs";
 import { promisify } from "util";
-import { createMatrixFile, template } from "../create-matrix-file";
+import { createVersionsFile, template } from "../create-versions-file";
 
 const mkdir = promisify(fs.mkdir);
 const rm = promisify(fs.rm);
 const tmpDir = "./.tmp";
 
 describe("rule-transform", () => {
-  describe("createMatrixFile", () => {
+  describe("createVersionsFile", () => {
     beforeEach(async () => {
       if (!fs.existsSync(tmpDir)) {
         await mkdir(tmpDir);
@@ -23,23 +23,17 @@ describe("rule-transform", () => {
 
     it("does nothing if the file exists", async () => {
       const dirName = `${tmpDir}/content/rules`;
-      const filePath = `${dirName}/abc123/_implementation-approved.md`;
+      const filePath = `${dirName}/abc123/_versions.md`;
       fs.mkdirSync(dirName, { recursive: true });
       fs.writeFileSync(filePath, "foo");
 
-      await createMatrixFile(tmpDir, "abc123");
+      await createVersionsFile(tmpDir, "abc123");
       expect(fs.readFileSync(filePath, "utf8")).toBe("foo");
     });
 
     it("creates a file if none exists", async () => {
-      const filePath = `${tmpDir}/content/rules/abc123/_implementation-approved.md`;
-      await createMatrixFile(tmpDir, "abc123");
-      expect(fs.readFileSync(filePath, "utf8")).toBe(template);
-    });
-
-    it("can create proposed implementation files", async () => {
-      const filePath = `${tmpDir}/content/rules/abc123/_implementation-proposed.md`;
-      await createMatrixFile(tmpDir, "abc123", true);
+      const filePath = `${tmpDir}/content/rules/abc123/_versions.md`;
+      await createVersionsFile(tmpDir, "abc123");
       expect(fs.readFileSync(filePath, "utf8")).toBe(template);
     });
   });

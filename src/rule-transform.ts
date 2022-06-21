@@ -2,7 +2,7 @@ import * as path from "path";
 import { pathExistsSync, readFileSync } from "fs-extra";
 import { getRulePages, getDefinitionPages } from "./utils/get-page-data";
 import { createFile } from "./utils";
-import { createMatrixFile } from "./rule-transform/create-matrix-file";
+import { createVersionsFile } from "./rule-transform/create-versions-file";
 import { getRuleContent } from "./rule-transform/get-rule-content";
 import { DefinitionPage, RulePage } from "./types";
 import { createWcagMapping } from "./rule-transform/create-wcag-mapping";
@@ -15,7 +15,6 @@ export type RuleTransformOptions = Partial<{
   ruleIds: string[];
   proposed: boolean;
   noExampleLinks: boolean;
-  matrix: boolean;
 }>;
 
 export async function ruleTransform({
@@ -25,9 +24,8 @@ export async function ruleTransform({
   outDir = ".",
   proposed = false,
   noExampleLinks = false,
-  matrix = true,
 }: RuleTransformOptions): Promise<void> {
-  const options = { proposed, matrix, noExampleLinks };
+  const options = { proposed, noExampleLinks };
   const rulesData = getRulePages(rulesDir, ruleIds);
   const glossary = getDefinitionPages(glossaryDir);
 
@@ -37,10 +35,7 @@ export async function ruleTransform({
     const fileName = path.join(ruleId, `${proposed ? "proposed" : "index"}.md`);
     const absolutePath = path.resolve(outDir, "content", "rules", fileName);
     saveRuleFileIfChanged(absolutePath, content);
-
-    if (options.matrix) {
-      await createMatrixFile(outDir, ruleData.frontmatter?.id, proposed);
-    }
+    await createVersionsFile(outDir, ruleData.frontmatter?.id);
   }
 
   const wcagMappingPath = path.resolve(outDir, "wcag-mapping.json");

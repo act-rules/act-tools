@@ -149,11 +149,7 @@ describe("getRuleContent", () => {
 
       World of the [ACT-rules community][]
       
-      {% include_relative _implementation-approved.md %}
-      
-      ## Changelog
-      
-      This is the first version of this ACT rule.
+      {% include_relative _versions.md %}
       
       [act-rules community]: https://act-rules.github.io
       [hello]: #hello

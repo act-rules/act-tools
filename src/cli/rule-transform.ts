@@ -11,7 +11,6 @@ program
   .option("-r, --rulesDir <dirname>", "Path to _rules directory")
   .option("-g, --glossaryDir <dirname>", "Path to glossary directory")
   .option("-p, --proposed", "List the rule with the Proposed rule template")
-  .option("-m, --matrix", "Add a table to link to the implementation matrix")
   .option("--noExampleLinks", "Don't add links to examples");
 
 program.parse(process.argv);
