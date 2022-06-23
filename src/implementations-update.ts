@@ -9,7 +9,7 @@ import {
 } from "./map-implementation/types";
 import { Implementation } from "./types";
 import { createFile, filenameEscape } from "./utils";
-import { createRuleImplementation } from "./matrix-update/create-rule-implementation";
+import { createRuleImplementation } from "./implementation-update/create-rule-implementation";
 
 export interface CliArgs {
   testCaseJson: string;
