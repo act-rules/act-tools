@@ -149,8 +149,6 @@ describe("getRuleContent", () => {
 
       World of the [ACT-rules community][]
       
-      {% include_relative _versions.md %}
-      
       [act-rules community]: https://act-rules.github.io
       [hello]: #hello
       [w3c]: https://w3.org 'W3C website'

@@ -2,7 +2,6 @@ import * as path from "path";
 import { pathExistsSync, readFileSync } from "fs-extra";
 import { getRulePages, getDefinitionPages } from "./utils/get-page-data";
 import { createFile } from "./utils";
-import { createVersionsFile } from "./rule-transform/create-versions-file";
 import { getRuleContent } from "./rule-transform/get-rule-content";
 import { DefinitionPage, RulePage } from "./types";
 import { createWcagMapping } from "./rule-transform/create-wcag-mapping";
@@ -35,7 +34,6 @@ export async function ruleTransform({
     const fileName = path.join(ruleId, `${proposed ? "proposed" : "index"}.md`);
     const absolutePath = path.resolve(outDir, "content", "rules", fileName);
     saveRuleFileIfChanged(absolutePath, content);
-    await createVersionsFile(outDir, ruleData.frontmatter?.id);
   }
 
   const wcagMappingPath = path.resolve(outDir, "wcag-mapping.json");
