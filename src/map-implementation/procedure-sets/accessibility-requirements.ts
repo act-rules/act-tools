@@ -3,16 +3,28 @@ import { criteria, Criterion } from "../../data/index";
 
 export function mapsAllRequirements(
   failedRequirements: string[],
-  ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
+  ruleAccessibilityRequirements: Record<string, AccessibilityRequirement> = {}
 ): boolean {
-  const requirementKeys = getRequirementUris(ruleAccessibilityRequirements);
-  failedRequirements = failedRequirements.filter(isUnique).filter(isNormative);
-  if (failedRequirements.length !== requirementKeys.length) {
+  const allowedCriteria: string[] = [];
+  const missingCriteria: string[] = [];
+  Object.entries(ruleAccessibilityRequirements).forEach(
+    ([key, requirement]) => {
+      const criterion = findCriterionByKey(key)?.scId;
+      if (!criterion) return;
+      allowedCriteria.push(criterion);
+      if (!requirement.secondary && !failedRequirements.includes(criterion)) {
+        missingCriteria.push(criterion);
+      }
+    }
+  );
+  if (missingCriteria.length) {
     return false;
   }
 
-  return requirementKeys.every((requirement) =>
-    failedRequirements.includes(requirement)
+  return failedRequirements.every(
+    (failedRequirement) =>
+      !isNormative(failedRequirement) ||
+      allowedCriteria.includes(failedRequirement)
   );
 }
 
@@ -23,9 +35,11 @@ export function getRequirementUris(
     return [];
   }
   const requirementUris: string[] = [];
-  for (const key of Object.keys(ruleAccessibilityRequirements)) {
+  for (const [key, requirement] of Object.entries(
+    ruleAccessibilityRequirements
+  )) {
     const criterion = findCriterionByKey(key);
-    if (criterion) {
+    if (criterion && !requirement.secondary) {
       requirementUris.push(criterion.scId);
     }
   }
@@ -35,10 +49,6 @@ export function getRequirementUris(
 function findCriterionByKey(wcagKey: string): Criterion | undefined {
   const match = wcagKey.match(/^wcag2\d:(.*)$/i) ?? [];
   return criteria[match[1]];
-}
-
-function isUnique(item: unknown, index: number, arr: unknown[]): boolean {
-  return arr.indexOf(item) === index;
 }
 
 function isNormative(item: string): boolean {

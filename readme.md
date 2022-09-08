@@ -41,7 +41,7 @@ This tool takes rule markdown files, extracts the examples from it, saves those 
 yarn build-examples \
   --rulesDir "../act-rules.github.io/_rules/" \
   --outDir "../wcag-act-rules/" \
-  --testCaseJson "../wcag-act-rules/content/testcases.json" \
+  --testCaseJson "../wcag-act-rules/content-assets/wcag-act-rules/testcases.json" \
   --ruleIds 5f99a7,6cfa84
 ```
 

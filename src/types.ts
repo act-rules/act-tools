@@ -50,6 +50,7 @@ export type AccessibilityRequirement = {
   inapplicable: string;
   title?: string;
   forConformance?: boolean;
+  secondary?: boolean;
 };
 
 export type Contributor = { name: string; url?: string };

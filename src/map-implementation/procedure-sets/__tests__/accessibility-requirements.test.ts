@@ -10,6 +10,10 @@ describe("accessibility-requirements", () => {
     passed: "further testing needed",
     inapplicable: "further testing needed",
   };
+  const secondaryRequirement: AccessibilityRequirement = {
+    secondary: true,
+    ...requirement,
+  };
 
   describe("getRequirementUris", () => {
     it("returns wcag URIs", () => {
@@ -54,6 +58,25 @@ describe("accessibility-requirements", () => {
           "wcag21:1.1.1": requirement,
         }
       );
+      expect(maps).toBe(true);
+    });
+
+    it("returns true for unknown non-normative failures", () => {
+      expect(mapsAllRequirements(["using-aria:rule1"], {})).toBe(true);
+    });
+
+    it("returns true if all requirements are secondary and no mapping is reported", () => {
+      const maps = mapsAllRequirements([], {
+        "wcag21:4.1.2": secondaryRequirement,
+      });
+      expect(maps).toBe(true);
+    });
+
+    it("returns true if a secondary requirement is omitted", () => {
+      const maps = mapsAllRequirements(["WCAG2:contrast-minimum"], {
+        "wcag20:1.4.3": requirement,
+        "wcag21:1.4.7": secondaryRequirement,
+      });
       expect(maps).toBe(true);
     });
 
