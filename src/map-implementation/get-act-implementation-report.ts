@@ -49,7 +49,9 @@ type RuleGroup = {
   ruleApproved: boolean;
   ruleTestCases: TestCase[];
   ruleAssertions: ActAssertion[];
-  ruleAccessibilityRequirements: TestCase["ruleAccessibilityRequirements"];
+  ruleAccessibilityRequirements:
+    | TestCase["ruleAccessibilityRequirements"]
+    | null;
 };
 
 function groupByRule(

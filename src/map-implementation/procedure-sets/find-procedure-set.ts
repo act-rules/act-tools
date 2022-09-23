@@ -17,7 +17,10 @@ import {
 
 export function findProcedureSet(
   procedureMappings: ActProcedureMapping[],
-  ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
+  ruleAccessibilityRequirements?: Record<
+    string,
+    AccessibilityRequirement
+  > | null
 ): PartialActProcedureSet {
   if (procedureMappings.length === 0) {
     return emptyProcedureSet();
@@ -71,7 +74,10 @@ type ProcedureScore = {
 
 function getProcedureScore(
   mapping: ActProcedureMapping,
-  ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
+  ruleAccessibilityRequirements?: Record<
+    string,
+    AccessibilityRequirement
+  > | null
 ): ProcedureScore {
   const consistency = getConsistency(mapping, ruleAccessibilityRequirements);
   const coverage = getCoverage(mapping);

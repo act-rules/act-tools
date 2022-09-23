@@ -67,7 +67,9 @@ export type TestCase = {
   relativePath: string;
   expected: ExpectedOutcome;
   rulePage: string;
-  ruleAccessibilityRequirements: RuleFrontMatter["accessibility_requirements"];
+  ruleAccessibilityRequirements:
+    | RuleFrontMatter["accessibility_requirements"]
+    | null;
   approved?: boolean;
 };
 

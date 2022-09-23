@@ -8,7 +8,10 @@ import { mapsAllRequirements } from "./accessibility-requirements";
 
 export function getConsistency(
   { testResults, failedRequirements }: ActProcedureMapping,
-  ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
+  ruleAccessibilityRequirements?: Record<
+    string,
+    AccessibilityRequirement
+  > | null
 ): ConsistencyLevel {
   // If there's an approved test case, ignore any proposed test cases
   if (testResults.some(isApproved)) {

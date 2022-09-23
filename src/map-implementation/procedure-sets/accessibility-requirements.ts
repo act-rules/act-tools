@@ -3,11 +3,14 @@ import { criteria, Criterion } from "../../data/index";
 
 export function mapsAllRequirements(
   failedRequirements: string[],
-  ruleAccessibilityRequirements: Record<string, AccessibilityRequirement> = {}
+  ruleAccessibilityRequirements?: Record<
+    string,
+    AccessibilityRequirement
+  > | null
 ): boolean {
   const allowedCriteria: string[] = [];
   const missingCriteria: string[] = [];
-  Object.entries(ruleAccessibilityRequirements).forEach(
+  Object.entries(ruleAccessibilityRequirements || {}).forEach(
     ([key, requirement]) => {
       const criterion = findCriterionByKey(key)?.scId;
       if (!criterion) return;
@@ -29,7 +32,10 @@ export function mapsAllRequirements(
 }
 
 export function getRequirementUris(
-  ruleAccessibilityRequirements?: Record<string, AccessibilityRequirement>
+  ruleAccessibilityRequirements?: Record<
+    string,
+    AccessibilityRequirement
+  > | null
 ): string[] {
   if (!ruleAccessibilityRequirements) {
     return [];
