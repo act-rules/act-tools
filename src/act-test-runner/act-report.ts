@@ -21,7 +21,7 @@ export class ActReport {
     return this.#earlReport.toJSON();
   }
 
-  async getImplementationMapping(): ReturnType<typeof actAssertionsToReport> {
+  getImplementationMapping(): ReturnType<typeof actAssertionsToReport> {
     const metadata = {
       name: this.#earlReport.assertor.name,
       version: this.#earlReport.assertor.versionNumber,

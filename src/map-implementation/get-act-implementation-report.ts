@@ -22,11 +22,11 @@ export async function getActImplementationReport(
   return actAssertionsToReport(actAssertions, testCases, metaData);
 }
 
-export async function actAssertionsToReport(
+export function actAssertionsToReport(
   actAssertions: ActAssertion[],
   testCases: TestCase[],
   metaData: ActImplementationMeta = {}
-): Promise<ActImplementationReport> {
+): ActImplementationReport {
   const approvedRules = emptyRuleStats();
   const proposedRules = emptyRuleStats();
 
