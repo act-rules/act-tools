@@ -6,7 +6,7 @@ export default class EarlReport {
   assertor: EarlAssertor;
   subjects: EarlSubject[] = [];
 
-  constructor(assertor: AssertorSpec) {
+  constructor(assertor: AssertorSpec = {}) {
     this.assertor = new EarlAssertor(assertor);
   }
 
@@ -16,7 +16,8 @@ export default class EarlReport {
     return subject;
   }
 
-  toJSON(): object {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  toJSON() {
     const report = {
       ...this.assertor.toJSON(),
       testRuns: this.subjects.map((subject) => subject.toJSON()),
