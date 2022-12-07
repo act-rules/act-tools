@@ -1,9 +1,12 @@
+import assert from "assert";
+import fetch from "node-fetch";
 import {
   TestCase as TestCaseSpec,
   ExpectedOutcome,
   RuleFrontMatter,
 } from "../types";
-import fetch from "node-fetch";
+
+export type Formats = "jsx";
 
 export class TestCase {
   ruleId: string;
@@ -19,6 +22,8 @@ export class TestCase {
     | null;
   approved?: boolean;
 
+  #text?: string;
+
   constructor(spec: TestCaseSpec) {
     this.ruleId = spec.ruleId;
     this.ruleName = spec.ruleName;
@@ -32,8 +37,53 @@ export class TestCase {
     this.approved = spec.approved;
   }
 
-  async fetchSource(): Promise<string> {
-    const response = await fetch(this.url);
-    return response.text();
+  async fetchSource(
+    options: { format?: Formats; assertNoRender?: boolean } = {}
+  ): Promise<string> {
+    if (!this.#text) {
+      const response = await fetch(this.url);
+      this.#text = await response.text();
+    }
+    if (options.assertNoRender) {
+      assert(!this.requiresRender(), "Skip test case that requires rendering");
+    }
+    return sourceTransform(this.#text, options.format);
   }
+
+  requiresRender(text?: string): boolean {
+    text = this.#text ?? text;
+    assert(text, "No page source available. Call .fetchSource() first");
+    return testRequiresRender(text);
+  }
+}
+
+export function sourceTransform(pageCode: string, format?: Formats): string {
+  if (format === "jsx") {
+    return htmlToJsx(pageCode);
+  }
+  return pageCode;
+}
+
+function htmlToJsx(pageCode: string): string {
+  return `function JsxComponent() {
+    return (${stripDoctype(pageCode)})
+  }`;
+}
+
+function stripDoctype(pageCode: string): string {
+  return pageCode.replace(/<!doctype.*>/gi, "").trim();
+}
+
+export function testRequiresRender(source: string): boolean {
+  const renderIndicators = [
+    "style=",
+    "<style",
+    "<script",
+    "<audio",
+    "<video",
+    'rel="stylesheet"',
+    `rel='stylesheet'`,
+    "srcdoc=",
+  ];
+  return renderIndicators.some((indicator) => source.includes(indicator));
 }

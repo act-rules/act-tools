@@ -1,118 +1,113 @@
+import assert from "assert";
+import { writeFileSync, existsSync, readFileSync } from "fs";
 import fetch from "node-fetch";
-import { TestCaseJson } from "../types";
-import { TestRunnerConfig, TestRunner, TestResult } from "./types";
+import {
+  TestRunnerConfig,
+  TestRunner,
+  ReportOptions,
+  TestCaseJson,
+} from "./types";
 import { ActReport } from "./act-report";
 import { TestCase } from "./test-case";
-import { EarlSubject } from "../EarlReport/EarlSubject";
 import EarlReport from "../EarlReport/EarlReport";
-import assert from "assert";
-import type { AssertionSpec } from "../EarlReport/EarlAssertion";
-
-const uniqueKey = ":;:cantTell:;:";
+import { scrapeRequirements } from "./scrape-requirements";
+import { runTestCases } from "./run-test-cases";
+import { getRuleMapping, RuleMapping } from "./get-rule-mapping";
 
 export class ActTestRunner {
   testCaseJson?: TestCaseJson;
   #config: TestRunnerConfig;
   #earlReport?: EarlReport;
+  #scrapeCache: Record<string, string[]> = {};
+  #ignoredProcedures: Record<string, string[]> = {};
+  #reportOptions: ReportOptions = { noSummary: true };
+  #ruleMapping?: RuleMapping;
 
   constructor(config: TestRunnerConfig = {}) {
     this.#config = config;
   }
 
+  get config(): TestRunnerConfig {
+    return this.#config;
+  }
+
+  ignoreProcedures(procedureIds: string[]): void {
+    this.#ignoredProcedures["*"] = procedureIds;
+  }
+
+  ignoreProceduresForRule(ignoredProcedures: Record<string, string[]>): void {
+    this.#ignoredProcedures = {
+      "*": this.#ignoredProcedures["*"],
+      ...ignoredProcedures,
+    };
+  }
+
+  getIgnoredProcedures(actRuleId: string): string[] {
+    return [
+      ...(this.#ignoredProcedures["*"] ?? []),
+      ...(this.#ignoredProcedures[actRuleId] ?? []),
+    ];
+  }
+
   async run(testRunner: TestRunner): Promise<ActReport> {
+    const ruleMappingPath = this.#reportOptions.ruleMapping;
+    if (ruleMappingPath && existsSync(ruleMappingPath)) {
+      this.#ruleMapping = JSON.parse(
+        readFileSync(ruleMappingPath, "utf8")
+      ) as RuleMapping;
+    }
+
     const testCases = await this.loadTestCases();
-    const testCasesByRules = groupTestCasesByRule(testCases);
-    this.#earlReport = new EarlReport(this.#config.implementor);
-    for (const ruleTestCases of Object.values(testCasesByRules)) {
-      await this.#runRuleTestCases(testRunner, ruleTestCases);
-    }
-    return new ActReport(this.#earlReport, testCases);
+    this.#earlReport = await runTestCases(this, testCases, testRunner);
+    return this.#runReporting(testCases);
   }
 
-  async #runRuleTestCases(
-    testRunner: TestRunner,
-    ruleTestCases: TestCase[]
-  ): Promise<void> {
-    const testCaseRuns: EarlSubject[] = [];
-    const proceduresIds = new Set<string>();
-    for (const testCase of ruleTestCases) {
-      const testCaseRun = await this.#runTestCase(testRunner, testCase);
-      testCaseRuns.push(testCaseRun);
-      testCaseRun.assertions.forEach(({ procedureId }) =>
-        proceduresIds.add(procedureId)
-      );
-    }
-    // For each skipped test case, set cantTell for all relevant procedure
-    this.#resolveSkippedTests(testCaseRuns, proceduresIds);
-    // Ensure that every procedure has an assertion for every test case
-    this.#addDefaultAssertions(testCaseRuns, proceduresIds);
+  setReporting(options: ReportOptions): void {
+    this.#reportOptions = options;
   }
 
-  async #runTestCase(
-    testRunner: TestRunner,
-    testCase: TestCase
-  ): Promise<EarlSubject> {
-    assert(this.#earlReport);
-    const testRun = this.#earlReport.addTestRun(testCase.url);
-    if (isSkippedFileType(testCase, this.#config.fileTypes)) {
-      this.#log(`Skipped: ${testCase.testcaseTitle} (${testCase.ruleName})`);
-      const cantTellAssertion = getRulelessCantTell();
-      return testRun.addAssertion(cantTellAssertion);
+  getProcedureIds(ruleId: string): string[] | undefined {
+    if (!this.#ruleMapping?.[ruleId]) {
+      return undefined;
     }
-
-    try {
-      this.#log(`Testing: ${testCase.testcaseTitle} (${testCase.ruleName})`);
-      const testRunResults = await testRunner(testCase);
-      for (const testRunResult of testRunResults) {
-        const assertionSpec = testResultToAssertion(testRunResult);
-        testRun.addAssertion(assertionSpec);
-      }
-      return testRun;
-    } catch {
-      const cantTellAssertion = getRulelessCantTell();
-      return testRun.addAssertion(cantTellAssertion);
-    }
+    return this.#ruleMapping[ruleId].procedureNames;
   }
 
-  /**
-   * Ensure every test case has an assertion for every rule
-   */
-  #addDefaultAssertions(
-    testCaseRuns: EarlSubject[],
-    proceduresIds: Set<string>
-  ): void {
-    for (const testRun of testCaseRuns) {
-      for (const procedureId of proceduresIds) {
-        if (
-          testRun.assertions.every(
-            (assertion) => assertion.procedureId !== procedureId
-          )
-        ) {
-          testRun.addAssertion({ outcome: "passed", procedureId });
-        }
-      }
+  #runReporting(testCases: TestCase[]): ActReport {
+    assert(this.#earlReport, "earlReport must exist before creating report");
+    const options = this.#reportOptions;
+    const actReport = new ActReport(this.#earlReport, testCases);
+    const implReport = actReport.getImplementationMapping();
+
+    if (options.earlReport) {
+      const earlText = JSON.stringify(actReport.getEarlReport(), null, 2);
+      writeFileSync(options.earlReport, earlText, "utf8");
+      console.log(`Created EARL report at ${options.earlReport}`);
     }
+
+    if (options.actReport) {
+      const mappingText = JSON.stringify(implReport, null, 2);
+      writeFileSync(options.actReport, mappingText, "utf8");
+      console.log(`Created ACT mapping at ${options.actReport}`);
+    }
+
+    if (options.ruleMapping) {
+      const ruleMapping = getRuleMapping(implReport);
+      const ruleMappingJson = JSON.stringify(ruleMapping, null, 2);
+      writeFileSync(options.ruleMapping, ruleMappingJson, "utf8");
+    }
+
+    if (!options.noSummary) {
+      const { approvedRules, proposedRules } = implReport;
+      console.table({
+        "Approved rules": approvedRules,
+        "Proposed rules": proposedRules,
+      });
+    }
+    return actReport;
   }
 
-  #resolveSkippedTests(
-    testCaseRuns: EarlSubject[],
-    procedureIds: Set<string>
-  ): void {
-    for (const testRun of testCaseRuns) {
-      if (
-        testRun.assertions.length !== 1 ||
-        testRun.assertions[0].procedureId !== uniqueKey
-      ) {
-        continue;
-      }
-      testRun.assertions.shift(); // Get rid of it
-      for (const procedureId of procedureIds) {
-        testRun.addAssertion({ outcome: "cantTell", procedureId });
-      }
-    }
-  }
-
-  #log(...logMsg: any[]): void {
+  log(...logMsg: any[]): void {
     if (this.#config.log !== false) {
       console.log(...logMsg);
     }
@@ -144,6 +139,25 @@ export class ActTestRunner {
     return testCases;
   }
 
+  /**
+   * Scrape a rule documentation page to work out which WCAG criteria and
+   * other accessibility requirements are referenced. Scraping is done by
+   * looking for links to WCAG understanding documents.
+   *
+   * @param {string} url
+   * @returns {Promise<string[]>}
+   */
+  async scrapeRequirementsFromDocs(url: string): Promise<string[]> {
+    if (!this.#scrapeCache[url]) {
+      try {
+        this.#scrapeCache[url] = await scrapeRequirements(url);
+      } catch {
+        this.#scrapeCache[url] = [];
+      }
+    }
+    return this.#scrapeCache[url];
+  }
+
   getTestCaseJsonUrl(): string {
     if (this.#config.testCaseJsonUrl) {
       return this.#config.testCaseJsonUrl;
@@ -165,37 +179,4 @@ export class ActTestRunner {
     }
     return true;
   }
-}
-
-function groupTestCasesByRule(
-  testCases: TestCase[]
-): Record<string, TestCase[]> {
-  const testCaseGroups: Record<string, TestCase[]> = {};
-  for (const testCase of testCases) {
-    testCaseGroups[testCase.ruleId] ??= [];
-    testCaseGroups[testCase.ruleId].push(testCase);
-  }
-  return testCaseGroups;
-}
-
-const getRulelessCantTell = (): AssertionSpec => ({
-  procedureId: uniqueKey,
-  outcome: "cantTell",
-  wcag2: [],
-});
-
-function isSkippedFileType(testCase: TestCase, fileTypes?: string[]): boolean {
-  const ext = testCase.relativePath.split(".")?.[1];
-  return Array.isArray(fileTypes) && fileTypes.includes(ext) === false;
-}
-
-function testResultToAssertion(testResult: TestResult): AssertionSpec {
-  if (typeof testResult === "string") {
-    return {
-      procedureId: testResult,
-      outcome: "failed",
-      wcag2: [],
-    };
-  }
-  return testResult;
 }

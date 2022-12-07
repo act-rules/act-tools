@@ -27,3 +27,7 @@ export default class EarlReport {
     return report;
   }
 }
+
+export { AssertorSpec, EarlAssertor } from "./EarlAssertor";
+export { EarlSubject } from "./EarlSubject";
+export { EarlAssertion, AssertionSpec } from "./EarlAssertion";

@@ -1,11 +1,12 @@
 import { ActTestRunner } from "../act-test-runner";
 import { TestCase, TestCaseJson } from "../../types";
 
-function getTestCase(partial: Partial<TestCase> = {}): TestCase {
+function getTestCase(partial: Partial<TestCase> = {}, ext = "html"): TestCase {
   const ruleId = partial.ruleId || "abc123";
-  const testcaseId = partial.testcaseId || "abcdefghijklmnopqrstuvwxyz";
+  const testcaseId = (partial.testcaseId || "abcdef123456").padEnd(40, "x");
   const expected = partial.expected || "passed";
-  const relativePath = partial.relativePath || `/${ruleId}/${testcaseId}.html`;
+  const relativePath =
+    partial.relativePath || `/${ruleId}/${testcaseId}.${ext}`;
   return {
     ...partial,
     ruleId,
@@ -14,7 +15,7 @@ function getTestCase(partial: Partial<TestCase> = {}): TestCase {
     relativePath,
     ruleName: "ABC test",
     testcaseTitle: `${expected} example`,
-    url: `http://localhost/testcases${expected}`,
+    url: `http://localhost/testcases${relativePath}`,
     rulePage: `http://localhost/rule/${ruleId}}`,
     ruleAccessibilityRequirements: null,
   };
@@ -92,7 +93,7 @@ describe("ActTestRunner", () => {
       ];
       const runner = new ActTestRunner({ testCaseJson, log });
       const report = await runner.run(async ({ testcaseId }) => {
-        return testcaseId === "foo" ? ["rule-a"] : [];
+        return testcaseId.includes("foo") ? ["rule-a"] : [];
       });
       const { testRuns } = report.getEarlReport();
       expect(testRuns).toHaveLength(2);
@@ -109,7 +110,7 @@ describe("ActTestRunner", () => {
       ];
       const runner = new ActTestRunner({ testCaseJson, log });
       const report = await runner.run(async ({ testcaseId }) => {
-        if (testcaseId === "bar") {
+        if (testcaseId.includes("bar")) {
           throw new Error("Boom!");
         }
         return ["rule-a"];
@@ -140,18 +141,18 @@ describe("ActTestRunner", () => {
     describe(".run({ fileTypes })", () => {
       it("does only tests those file types", async () => {
         testCaseJson.testcases = [
-          getTestCase({ relativePath: "/foo.html" }),
-          getTestCase({ relativePath: "/foo.svg" }),
-          getTestCase({ relativePath: "/foo.xml" }),
+          getTestCase({ testcaseId: "foo" }, "html"),
+          getTestCase({ testcaseId: "bar" }, "svg"),
+          getTestCase({ testcaseId: "baz" }, "xml"),
         ];
         const runner = new ActTestRunner({
           fileTypes: ["html", "xml"],
           testCaseJson,
           log,
         });
-        const expected = ["/foo.html", "/foo.xml"];
+        const expected = [".html", ".xml"];
         await runner.run(async ({ relativePath }) => {
-          expect(relativePath).toBe(expected.shift());
+          expect(relativePath).toContain(expected.shift());
           return [];
         });
         expect(expected).toHaveLength(0);
@@ -159,8 +160,8 @@ describe("ActTestRunner", () => {
 
       it("reports cantTell for all others", async () => {
         testCaseJson.testcases = [
-          getTestCase({ relativePath: "/foo.html" }),
-          getTestCase({ relativePath: "/foo.svg" }),
+          getTestCase({}, "html"),
+          getTestCase({}, "svg"),
         ];
         const runner = new ActTestRunner({
           fileTypes: ["html"],
@@ -178,6 +179,68 @@ describe("ActTestRunner", () => {
         expect(testRuns[1].assertions[0].test.title).toBe("rule-a");
         expect(testRuns[1].assertions[0].result.outcome).toBe("earl:cantTell");
       });
+    });
+  });
+
+  describe(".ignoreProcedures", () => {
+    it("sets procedures to be ignored for every rule", () => {
+      const runner = new ActTestRunner();
+      const ignored = ["foo", "bar"];
+      runner.ignoreProcedures(ignored);
+      expect(runner.getIgnoredProcedures("abc123")).toEqual(ignored);
+      expect(runner.getIgnoredProcedures("xyz789")).toEqual(ignored);
+    });
+
+    it("overrides previous calls to .ignoreProcedures", () => {
+      const runner = new ActTestRunner();
+      const ignored = ["baz"];
+      runner.ignoreProcedures(["foo", "bar"]);
+      runner.ignoreProcedures(["baz"]);
+      expect(runner.getIgnoredProcedures("abc123")).toEqual(ignored);
+    });
+  });
+
+  describe(".ignoreProceduresForRule", () => {
+    it("sets procedures to be ignored for a specific rule", () => {
+      const runner = new ActTestRunner();
+      const ignored = ["foo", "bar"];
+      runner.ignoreProceduresForRule({ abc123: ignored });
+      expect(runner.getIgnoredProcedures("abc123")).toEqual(ignored);
+      expect(runner.getIgnoredProcedures("xyz789")).toHaveLength(0);
+    });
+
+    it("adds to .ignoreProcedures", () => {
+      const runner = new ActTestRunner();
+      const ignored1 = ["foo", "bar"];
+      const ignored2 = ["baz", "buzz"];
+      runner.ignoreProcedures(ignored1);
+      runner.ignoreProceduresForRule({ abc123: ignored2 });
+      expect(runner.getIgnoredProcedures("abc123")).toEqual([
+        ...ignored1,
+        ...ignored2,
+      ]);
+    });
+
+    it("overrides previous calls to .ignoreProceduresForRule", () => {
+      const runner = new ActTestRunner();
+      const ignored = ["baz"];
+      runner.ignoreProceduresForRule({ abc123: ["foo", "bar"] });
+      runner.ignoreProceduresForRule({ abc123: ignored });
+      expect(runner.getIgnoredProcedures("abc123")).toEqual(ignored);
+    });
+  });
+
+  describe("scrapeRequirementsFromDocs", () => {
+    it("returns WCAG success criteria", async () => {
+      const runner = new ActTestRunner();
+      const url = "https://www.w3.org/WAI/WCAG21/Techniques/html/H2.html";
+      const requirements = await runner.scrapeRequirementsFromDocs(url);
+
+      expect(requirements).toEqual([
+        "WCAG2:non-text-content",
+        "WCAG2:link-purpose-in-context",
+        "WCAG2:link-purpose-link-only",
+      ]);
     });
   });
 });
