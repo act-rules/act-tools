@@ -22,10 +22,12 @@ function getSCsTested(
   const accRequirements = Object.entries(accessibility_requirements);
   let criterionCount = 0;
   let text = "scs_tested:";
-  accRequirements.forEach(([requirementId]) => {
+  accRequirements.forEach(([requirementId, req]) => {
     const [requirementDoc, scNumber] = requirementId.split(":");
     const criterion = criteria[scNumber];
-    if (!requirementDoc.includes("wcag2") || !criterion) return;
+    if (!requirementDoc.includes("wcag2") || !criterion || req.secondary) {
+      return;
+    }
 
     criterionCount++;
     text += `\n  - handle: ${criterion.handle}`;

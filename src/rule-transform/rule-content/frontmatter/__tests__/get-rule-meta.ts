@@ -45,4 +45,35 @@ describe("getRuleMeta", () => {
       last_modified: moment().format("D MMMM YYYY"),
     });
   });
+
+  it("skips secondary requirements in scs_tested", () => {
+    const fm = {
+      ...frontmatter,
+      accessibility_requirements: {
+        "wcag21:1.4.3": sc214Requirement,
+        "wcag21:2.4.6": {
+          ...sc214Requirement,
+          secondary: true,
+        },
+      },
+    };
+    const ruleMeta = getRuleMeta(fm);
+    const frontmatterData = stripDashes(ruleMeta);
+    const data = yaml.load(frontmatterData);
+
+    expect(data).toEqual({
+      id: "abc123",
+      name: "hello world",
+      description: "Some description\n",
+      rule_type: "atomic",
+      scs_tested: [
+        {
+          num: "1.4.3",
+          handle: "Contrast (Minimum)",
+          level: "AA",
+        },
+      ],
+      last_modified: moment().format("D MMMM YYYY"),
+    });
+  });
 });
