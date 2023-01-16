@@ -14,6 +14,7 @@ export type ReportOptions = {
 
 export type TestRunnerConfig = {
   implementor?: AssertorSpec | string;
+  timeout?: number;
   rules?: string[];
   fileTypes?: string[];
   testCaseJson?: TestCaseJson;

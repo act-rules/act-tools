@@ -11,7 +11,7 @@ import { ActReport } from "./act-report";
 import { TestCase } from "./test-case";
 import EarlReport from "../EarlReport/EarlReport";
 import { scrapeRequirements } from "./scrape-requirements";
-import { runTestCases } from "./run-test-cases";
+import { getRulelessCantTell, runTestCases } from "./run-test-cases";
 import { getRuleMapping, RuleMapping } from "./get-rule-mapping";
 
 export class ActTestRunner {
@@ -54,7 +54,9 @@ export class ActTestRunner {
   }
 
   async run(testRunner: TestRunner): Promise<ActReport> {
+    testRunner = wrapWithTimeout(testRunner, this.#config.timeout);
     const ruleMappingPath = this.#reportOptions.ruleMapping;
+
     if (ruleMappingPath && existsSync(ruleMappingPath)) {
       this.#ruleMapping = JSON.parse(
         readFileSync(ruleMappingPath, "utf8")
@@ -183,4 +185,16 @@ export class ActTestRunner {
     }
     return true;
   }
+}
+
+function wrapWithTimeout(testRunner: TestRunner, timeout = 2000): TestRunner {
+  return async (testCase, procedureIds) => {
+    const runner = testRunner(testCase, procedureIds);
+    const timer: ReturnType<TestRunner> = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve([getRulelessCantTell()]);
+      }, timeout);
+    });
+    return Promise.race([runner, timer]);
+  };
 }

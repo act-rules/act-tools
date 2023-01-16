@@ -158,7 +158,7 @@ function groupTestCasesByRule(
   return testCaseGroups;
 }
 
-const getRulelessCantTell = (): AssertionSpec => ({
+export const getRulelessCantTell = (): AssertionSpec => ({
   procedureId: uniqueKey,
   outcome: "cantTell",
 });
