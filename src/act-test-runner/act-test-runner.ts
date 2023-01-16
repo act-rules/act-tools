@@ -31,6 +31,10 @@ export class ActTestRunner {
     return this.#config;
   }
 
+  setRules(rules: string[] | undefined): void {
+    this.#config.rules = rules;
+  }
+
   ignoreProcedures(procedureIds: string[]): void {
     this.#ignoredProcedures["*"] = procedureIds;
   }

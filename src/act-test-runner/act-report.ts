@@ -5,6 +5,7 @@ import { ActAssertion } from "../map-implementation/types";
 import {
   ruleIdFromUri,
   testCaseIdFromUri,
+  getTestUrl,
 } from "../map-implementation/earl/props";
 
 export class ActReport {
@@ -41,13 +42,15 @@ export class ActReport {
       for (const earlAssertion of testSubjects.assertions) {
         const ruleId = ruleIdFromUri(testSubjects.source);
         const testCaseId = testCaseIdFromUri(testSubjects.source);
+        const requirements = earlAssertion.isPartOf?.map(getTestUrl);
+
         actAssertions.push({
           ruleId,
           testCaseId,
           testCaseUrl: testSubjects.source,
           outcome: earlAssertion.outcome,
           procedureName: earlAssertion.procedureId,
-          accessibilityRequirements: earlAssertion.requirements,
+          accessibilityRequirements: requirements,
           automatic: true,
         });
       }
