@@ -41,7 +41,7 @@ function accRequirementItems(
     title: mapping.title,
   });
   if (!accRequirement) {
-    return `<li>Accessibility Requirements have no or unknown mapping.</li>`;
+    return `<li>This rule is <strong>not required</strong> for conformance to WCAG 2.1 at any level.</li>`;
   }
 
   const { conformanceLevel, url, requirementType, shortTitle } = accRequirement;
