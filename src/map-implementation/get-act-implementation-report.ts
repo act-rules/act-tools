@@ -21,7 +21,6 @@ export async function getActImplementationReport(
   const proposedRules = emptyRuleStats();
 
   const actAssertions = await earlToActAssertions(earlReport);
-  console.log(`Found ${actAssertions.length} assertions`);
 
   const actRuleMapping: ActProcedureSet[] = [];
   for (const ruleGroup of groupByRule(testCases, actAssertions)) {
