@@ -91,7 +91,7 @@ describe("getRuleProcedureMapping", () => {
 
   it("reports failed requirements from cantTell outcomes", () => {
     const { testCase, actAssertion, procedureName, failedRequirements } =
-      getTestData({ outcomes: ["cantTell"] });
+      getTestData();
     const assertion: ActAssertion = { ...actAssertion, outcome: "cantTell" };
     const mappings = getRuleProcedureMapping([testCase], [assertion]);
     const testResult = getTestResult(testCase, [assertion]);
