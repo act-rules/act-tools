@@ -88,4 +88,19 @@ describe("getRuleProcedureMapping", () => {
     const mapping = getRuleProcedureMapping([testCase], [actAssertion])[0];
     expect(mapping.failedRequirements).toEqual(failedRequirements);
   });
+
+  it("reports failed requirements from cantTell outcomes", () => {
+    const { testCase, actAssertion, procedureName, failedRequirements } =
+      getTestData({ outcomes: ["cantTell"] });
+    const assertion: ActAssertion = { ...actAssertion, outcome: "cantTell" };
+    const mappings = getRuleProcedureMapping([testCase], [assertion]);
+    const testResult = getTestResult(testCase, [assertion]);
+    expect(mappings).toEqual([
+      {
+        procedureName,
+        failedRequirements,
+        testResults: [testResult],
+      },
+    ]);
+  });
 });
