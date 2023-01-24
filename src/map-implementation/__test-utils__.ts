@@ -80,7 +80,7 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     procedureName,
     accessibilityRequirements: failedRequirements,
   };
-  const outcomes = [expected];
+  const outcomes = input.outcomes ?? [expected];
   const automatic = true;
   const testResult: TestResult = {
     testcaseId,
