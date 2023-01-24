@@ -56,7 +56,10 @@ export function groupAssertionsByProcedure(
 export function getFailedRequirements(actAssertions: ActAssertion[]): string[] {
   const failedRequirements: string[] = [];
   for (const actAssertion of actAssertions) {
-    if (actAssertion.outcome === "failed") {
+    if (
+      actAssertion.outcome === "failed" ||
+      actAssertion.outcome === "cantTell"
+    ) {
       actAssertion.accessibilityRequirements?.forEach((requirement) => {
         if (!failedRequirements.includes(requirement)) {
           failedRequirements.push(requirement);
