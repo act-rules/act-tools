@@ -18,9 +18,13 @@ export const getFrontmatter = (
     proposed ? "proposed" : "index"
   }.md`;
 
+  const deprecated = !frontmatter.deprecated
+    ? ""
+    : `deprecated: |\n${indent(frontmatter.deprecated)}\n`;
+
   return outdent`
     ---
-    title: "${stripMarkdownFromStr(frontmatter.name)}"
+    title: "${normalizeTitle(frontmatter.name)}"
     permalink: ${permalink}/
     ref: ${permalink}/
     lang: en
@@ -31,15 +35,16 @@ export const getFrontmatter = (
     footer: |
     ${indent(getFooter(frontmatter, options?.proposed))}
     proposed: ${options?.proposed || false}
+    ${deprecated}
     rule_meta:
     ${indent(getRuleMeta(frontmatter))}
     ---
-  `;
+  `.replace("\n\n", "\n");
 };
 
-function stripMarkdownFromStr(str: string): string {
+function normalizeTitle(str: string): string {
   const AST = parseMarkdown(str);
-  return stripMarkdownFromAST(AST);
+  return stripMarkdownFromAST(AST).replace("DEPRECATED -", "").trim();
 }
 
 function stripMarkdownFromAST(node: Node | Parent | Literal): string {
