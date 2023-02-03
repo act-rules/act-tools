@@ -26,14 +26,16 @@ export async function updateTestCaseJson(
     };
   }
 
-  testCaseData.forEach(({ metadata: testcase }) => {
-    const isExistingTestCase = testCasesJson.testcases.some(
+  testCaseData.forEach(({ metadata: testcase, deprecated }) => {
+    const currentIndex = testCasesJson.testcases.findIndex(
       ({ testcaseId, ruleId }) =>
         testcaseId === testcase.testcaseId && ruleId === testcase.ruleId
     );
 
-    if (!isExistingTestCase) {
+    if (currentIndex === -1 && !deprecated) {
       testCasesJson.testcases.push(testcase);
+    } else if (currentIndex !== -1 && deprecated) {
+      testCasesJson.testcases.splice(currentIndex, 1);
     }
   });
 

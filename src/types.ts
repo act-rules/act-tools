@@ -23,6 +23,7 @@ export type RuleFrontMatterBase = {
   name: string;
   rule_type: "atomic" | "composite";
   description: string;
+  deprecated?: string;
   accessibility_requirements?: Record<string, AccessibilityRequirement>;
   acknowledgments?: Record<string, string[]>;
 };

@@ -4,6 +4,7 @@ import { TestCase, RulePage } from "../types";
 export type TestCaseData = {
   codeSnippet: string;
   filePath: string;
+  deprecated?: boolean;
   metadata: TestCase;
 };
 
@@ -18,6 +19,7 @@ export function extractTestCases(
     name: ruleName,
     accessibility_requirements: ruleAccessibilityRequirements,
   } = frontmatter;
+  const deprecated = typeof frontmatter.deprecated === "string";
 
   const ruleData = {
     ruleId,
@@ -38,7 +40,7 @@ export function extractTestCases(
         url: baseUrl + filePath,
         rulePage: pageUrl + ruleId + (proposed ? `/proposed/` : `/`),
       };
-      return { codeSnippet, filePath, metadata };
+      return { codeSnippet, filePath, deprecated, metadata };
     }
   );
 }
