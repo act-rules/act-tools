@@ -9,6 +9,12 @@ import { createWcagMapping } from "../create-wcag-mapping";
 const mkdir = promisify(fs.mkdir);
 const rm = promisify(fs.rm);
 const tmpDir = "./.tmp";
+const mappingBase = {
+  successCriteria: [],
+  wcagTechniques: [],
+  proposed: false,
+  deprecated: false,
+};
 
 function getRulePage(metadata = ""): RulePage {
   const page = parsePage(outdent`
@@ -44,11 +50,9 @@ describe("rule-transform", () => {
       expect(mapping).toEqual({
         "act-rules": [
           {
+            ...mappingBase,
             title: "Hello world",
             permalink: "/standards-guidelines/act/rules/123abc/",
-            successCriteria: [],
-            wcagTechniques: [],
-            proposed: false,
           },
         ],
       });
@@ -69,10 +73,10 @@ describe("rule-transform", () => {
       expect(mapping).toEqual({
         "act-rules": [
           {
+            ...mappingBase,
             title: "Hello world",
             permalink: "/standards-guidelines/act/rules/123abc/proposed/",
             successCriteria: ["non-text-content", "language-of-page"],
-            wcagTechniques: [],
             proposed: true,
           },
         ],
@@ -96,6 +100,7 @@ describe("rule-transform", () => {
       expect(mapping).toEqual({
         "act-rules": [
           {
+            ...mappingBase,
             title: "Hello world",
             permalink: "/standards-guidelines/act/rules/123abc/proposed/",
             successCriteria: ["non-text-content"],
@@ -116,10 +121,9 @@ describe("rule-transform", () => {
       expect(mapping).toEqual({
         "act-rules": [
           {
+            ...mappingBase,
             title: "Hello world",
             permalink: "/standards-guidelines/act/rules/123abc/proposed/",
-            successCriteria: [],
-            wcagTechniques: [],
             proposed: true,
           },
         ],
@@ -133,11 +137,9 @@ describe("rule-transform", () => {
         JSON.stringify({
           "act-rules": [
             {
+              ...mappingBase,
               title: "Hello Mars",
               permalink: "/standards-guidelines/act/rules/789xyz/",
-              successCriteria: [],
-              wcagTechniques: [],
-              proposed: false,
             },
           ],
         })
@@ -149,18 +151,14 @@ describe("rule-transform", () => {
       expect(mapping).toEqual({
         "act-rules": [
           {
+            ...mappingBase,
             title: "Hello Mars",
             permalink: "/standards-guidelines/act/rules/789xyz/",
-            successCriteria: [],
-            wcagTechniques: [],
-            proposed: false,
           },
           {
+            ...mappingBase,
             title: "Hello world",
             permalink: "/standards-guidelines/act/rules/123abc/",
-            successCriteria: [],
-            wcagTechniques: [],
-            proposed: false,
           },
         ],
       });
@@ -173,11 +171,9 @@ describe("rule-transform", () => {
         JSON.stringify({
           "act-rules": [
             {
+              ...mappingBase,
               title: "Hello Mars",
               permalink: "/standards-guidelines/act/rules/123abc/",
-              successCriteria: [],
-              wcagTechniques: [],
-              proposed: false,
             },
           ],
         })
@@ -189,11 +185,9 @@ describe("rule-transform", () => {
       expect(mapping).toEqual({
         "act-rules": [
           {
+            ...mappingBase,
             title: "Hello world",
             permalink: "/standards-guidelines/act/rules/123abc/",
-            successCriteria: [],
-            wcagTechniques: [],
-            proposed: false,
           },
         ],
       });
@@ -212,11 +206,9 @@ describe("rule-transform", () => {
           content: {
             "act-rules": [
               {
+                ...mappingBase,
                 permalink: "/standards-guidelines/act/rules/123abc/",
-                proposed: false,
-                successCriteria: [],
                 title: "Hello world",
-                wcagTechniques: [],
               },
             ],
           },
@@ -231,11 +223,9 @@ describe("rule-transform", () => {
         JSON.stringify({
           "act-rules": [
             {
+              ...mappingBase,
               title: "Hello Mars",
               permalink: "/standards-guidelines/act/rules/123abc/",
-              successCriteria: [],
-              wcagTechniques: [],
-              proposed: false,
             },
           ],
         })
@@ -249,11 +239,28 @@ describe("rule-transform", () => {
       expect(mapping).toEqual({
         "act-rules": [
           {
+            ...mappingBase,
             title: "Hello world",
             permalink: "/standards-guidelines/act/rules/123abc/",
-            successCriteria: [],
-            wcagTechniques: [],
-            proposed: false,
+          },
+        ],
+      });
+    });
+
+    it("indicates when rules are deprecated", async () => {
+      const filePath = "./.tmp/wcag-mapping.json";
+      const rulePage = getRulePage();
+      rulePage.frontmatter.deprecated = "This rule is deprecated.";
+
+      createFile.mock();
+      const mapping = await createWcagMapping(filePath, [rulePage]);
+      expect(mapping).toEqual({
+        "act-rules": [
+          {
+            ...mappingBase,
+            title: "Hello world",
+            permalink: "/standards-guidelines/act/rules/123abc/",
+            deprecated: true,
           },
         ],
       });

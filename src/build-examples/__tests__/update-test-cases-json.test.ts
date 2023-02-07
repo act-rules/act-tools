@@ -115,5 +115,37 @@ describe("build-examples", () => {
       expect(filteredTestCases).toHaveLength(1);
       expect(filteredTestCases[0]).toEqual(approvedRule);
     });
+
+    it("skips tests from deprecated rules", async () => {
+      const { testcases } = await updateTestCaseJson(
+        jsonPath,
+        baseUrl,
+        testCaseData.map((testCase) => ({
+          ...testCase,
+          deprecated: true,
+        }))
+      );
+      expect(testcases).toHaveLength(1);
+    });
+
+    it("removes tests from deprecated approved rules", async () => {
+      testCaseData = [
+        {
+          ...testCaseData[0],
+          deprecated: true,
+          metadata: {
+            ...testCaseData[0].metadata,
+            ruleId: "abc123",
+            testcaseId: "261dcd3214e87532fc2f9c8db7fdce05de9e07f0",
+          },
+        },
+      ];
+      const { testcases } = await updateTestCaseJson(
+        jsonPath,
+        baseUrl,
+        testCaseData
+      );
+      expect(testcases).toHaveLength(0);
+    });
   });
 });
