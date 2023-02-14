@@ -12,8 +12,14 @@
     "vendor": {
       "@id": "doap:vendor"
     },
-    "vendorTool": {
+    "name": {
       "@id": "doap:name"
+    },
+    "release": {
+      "@id": "doap:release"
+    },
+    "revision": {
+      "@id": "doap:revision"
     },
     "assertedBy": {
       "@id": "earl:assertedBy",
