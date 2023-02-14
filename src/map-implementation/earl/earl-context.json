@@ -9,18 +9,13 @@
     "doap": "http://usefulinc.com/ns/doap#",
     "foaf": "http://xmlns.com/foaf/spec/#",
     "isPartOf": "dct:isPartOf",
-    "vendor": {
-      "@id": "doap:vendor"
-    },
-    "name": {
-      "@id": "doap:name"
-    },
-    "release": {
-      "@id": "doap:release"
-    },
-    "revision": {
-      "@id": "doap:revision"
-    },
+    "vendor": "doap:vendor",
+    "name": "doap:name",
+    "shortdesc": "doap:shortdesc",
+    "release": "doap:release",
+    "revision": "doap:revision",
+    "created": "doap:created",
+    "homepage": "doap:homepage",
     "assertedBy": {
       "@id": "earl:assertedBy",
       "@type": "@id"
@@ -29,74 +24,32 @@
       "@id": "earl:result",
       "@type": "@id"
     },
-    "test": {
-      "@id": "earl:test"
-    },
-    "wcagem-test": {
-      "@id": "http://www.w3.org/TR/WCAG-EM/#testcase"
-    },
+    "test": "earl:test",
+    "wcagem-test": "http://www.w3.org/TR/WCAG-EM/#testcase",
     "outcome": {
       "@type": "@id"
     },
-    "passed": {
-      "@id": "earl:passed"
-    },
-    "failed": {
-      "@id": "earl:failed"
-    },
-    "inapplicable": {
-      "@id": "earl:inapplicable"
-    },
-    "cantTell": {
-      "@id": "earl:cantTell"
-    },
-    "undefined": {
-      "@id": "earl:undefined"
-    },
-    "subject": {
-      "@id": "earl:subject"
-    },
+    "passed": "earl:passed",
+    "failed": "earl:failed",
+    "inapplicable": "earl:inapplicable",
+    "cantTell": "earl:cantTell",
+    "undefined": "earl:undefined",
+    "subject": "earl:subject",
     "mode": {
       "@type": "@id"
     },
-    "automatic": {
-      "@id": "earl:automatic"
-    },
-    "info": {
-      "@id": "earl:info"
-    },
-    "pointer": {
-      "@id": "earl:pointer"
-    },
-    "body": {
-      "@id": "http:body"
-    },
-    "statusCodeValue": {
-      "@id": "http:statusCodeValue"
-    },
-    "methodName": {
-      "@id": "http:methodName"
-    },
-    "requestURI": {
-      "@id": "http:requestURI"
-    },
-    "chars": {
-      "@id": "cnt:chars"
-    },
-    "characterEncoding": {
-      "@id": "cnt:characterEncoding"
-    },
-    "source": {
-      "@id": "dct:source"
-    },
-    "title": {
-      "@id": "dct:title"
-    },
-    "expression": {
-      "@id": "ptr:expression"
-    },
-    "reference": {
-      "@id": "ptr:reference"
-    }
+    "automatic": "earl:automatic",
+    "info": "earl:info",
+    "pointer": "earl:pointer",
+    "body": "http:body",
+    "statusCodeValue": "http:statusCodeValue",
+    "methodName": "http:methodName",
+    "requestURI": "http:requestURI",
+    "chars": "cnt:chars",
+    "characterEncoding": "cnt:characterEncoding",
+    "source": "dct:source",
+    "title": "dct:title",
+    "expression": "ptr:expression",
+    "reference": "ptr:reference"
   }
 }
