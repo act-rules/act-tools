@@ -11,6 +11,7 @@ import {
 import { getRuleProcedureMapping } from "./procedures/get-rule-procedure-mapping";
 import { findProcedureSet } from "./procedure-sets/find-procedure-set";
 import { earlToActAssertions } from "./earl/earl-to-act-assertions";
+import { findAssertor } from "./earl/find-assertor";
 
 export async function getActImplementationReport(
   earlReport: Object,
@@ -19,7 +20,6 @@ export async function getActImplementationReport(
 ): Promise<ActImplementationReport> {
   const approvedRules = emptyRuleStats();
   const proposedRules = emptyRuleStats();
-
   const actAssertions = await earlToActAssertions(earlReport);
 
   const actRuleMapping: ActProcedureSet[] = [];
@@ -39,7 +39,8 @@ export async function getActImplementationReport(
     updateRuleStats(procedureSet, ruleApproved ? approvedRules : proposedRules);
   }
 
-  return { ...metaData, approvedRules, proposedRules, actRuleMapping };
+  const assertor = await findAssertor(earlReport, metaData);
+  return { ...assertor, approvedRules, proposedRules, actRuleMapping };
 }
 
 type RuleGroup = {

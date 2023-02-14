@@ -6,7 +6,7 @@ import {
   TestCase,
   TestResult,
 } from "./types";
-import { EarlAssertion } from "./earl/types";
+import { EarlAssertion, EarlAssertor } from "./earl/types";
 import earlContext from "./earl/earl-context.json";
 
 export type TestData = {
@@ -20,6 +20,7 @@ export type TestData = {
   testCaseUrl: string;
   earlReport: object;
   assertion: EarlAssertion;
+  assertor: EarlAssertor;
   testCase: TestCase;
   expected: ExpectedOutcome;
   actAssertion: ActAssertion;
@@ -48,10 +49,14 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     subject: { source: testCaseUrl },
     result: { outcome: `earl:${expected}` },
   };
+  const assertor: EarlAssertor = input.assertor ?? {
+    "@type": "Assertor",
+    name: "cool-cool",
+  };
   const earlReport = input.earlReport ?? {
     "@context": earlContext["@context"],
     "@type": "TestSubject",
-    "@graph": [assertion],
+    "@graph": [assertion, assertor],
   };
   const testCase: TestCase = input.testCase ?? {
     ruleId,
@@ -106,6 +111,7 @@ export function getTestData(input: Partial<TestData> = {}): TestData {
     testResult,
     earlReport,
     assertion,
+    assertor,
     testCase,
     ruleName,
     expected,

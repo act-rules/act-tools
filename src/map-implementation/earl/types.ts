@@ -1,3 +1,4 @@
+export { ActImplementationMeta } from "../types";
 import { ExpectedOutcome } from "../types";
 
 export type ComplexSource = { "@id"?: string };
@@ -51,4 +52,17 @@ export type EarlAssertion = {
 
 export type AssertionGraph = {
   "@graph": EarlAssertion[];
+};
+
+export type EarlAssertor = {
+  "@type"?: "earl:Assertor" | "Assertor";
+  name?: string;
+  shortdesc?: string;
+  release?: {
+    revision?: string;
+  };
+};
+
+export type AssertorGraph = {
+  "@graph": EarlAssertor[];
 };
