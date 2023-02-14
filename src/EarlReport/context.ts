@@ -10,7 +10,7 @@ export const context = {
   shortDesc: "doap:shortdesc",
   release: "doap:release",
   revision: "doap:revision",
-  source: "doap:source",
+  source: "dct:source",
   title: "dct:title",
   WebPage: "sch:WebPage",
   assertedBy: { "@type": "@id" },
