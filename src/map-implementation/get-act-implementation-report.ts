@@ -11,15 +11,18 @@ import {
 import { getRuleProcedureMapping } from "./procedures/get-rule-procedure-mapping";
 import { findProcedureSet } from "./procedure-sets/find-procedure-set";
 import { earlToActAssertions } from "./earl/earl-to-act-assertions";
+import { findAssertor } from "./earl/find-assertor";
 
 export async function getActImplementationReport(
   earlReport: Object,
   testCases: TestCase[],
   metaData: ActImplementationMeta = {}
 ): Promise<ActImplementationReport> {
+  const assertorData = await findAssertor(earlReport, metaData);
   const actAssertions = await earlToActAssertions(earlReport);
   console.log(`Found ${actAssertions.length} assertions`);
-  return actAssertionsToReport(actAssertions, testCases, metaData);
+
+  return actAssertionsToReport(actAssertions, testCases, assertorData);
 }
 
 export function actAssertionsToReport(

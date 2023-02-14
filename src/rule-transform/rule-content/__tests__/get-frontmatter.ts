@@ -80,5 +80,33 @@ describe("rule-content", () => {
         "*Hello* world, welcome to ACT_taskforce **"
       );
     });
+
+    it("optionally includes deprecated text", () => {
+      const deprecated = "This rule\nhas been\ndeprecated";
+      const deprecatedRuleData = {
+        ...ruleData,
+        frontmatter: { ...ruleData.frontmatter, deprecated },
+      };
+
+      const frontmatterStr = getFrontmatter(deprecatedRuleData);
+      const frontmatterData = stripDashes(frontmatterStr);
+      const data = yaml.load(frontmatterData) as any;
+      expect(data.deprecated.trim()).toBe(deprecated);
+    });
+
+    it('strips "DEPRECATED - " from titles', () => {
+      const deprecatedRuleData = {
+        ...ruleData,
+        frontmatter: {
+          ...ruleData.frontmatter,
+          name: `DEPRECATED - ${ruleData.frontmatter.name}`,
+        },
+      };
+
+      const frontmatterStr = getFrontmatter(deprecatedRuleData);
+      const frontmatterData = stripDashes(frontmatterStr);
+      const data = yaml.load(frontmatterData) as any;
+      expect(data.title).toBe(ruleData.frontmatter.name);
+    });
   });
 });

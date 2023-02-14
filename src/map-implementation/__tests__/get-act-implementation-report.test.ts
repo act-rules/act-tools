@@ -1,16 +1,27 @@
 import { getActImplementationReport } from "../get-act-implementation-report";
 import { ActImplementationReport } from "../types";
+import { EarlAssertor } from "../earl/types";
 import { getTestData, TestData } from "../__test-utils__";
 
 describe("getActImplementationReport", () => {
   let implementationReport: ActImplementationReport;
   let testData: TestData;
+  const metaData = {
+    vendor: "cool-corp",
+    name: "cooler-tooler",
+  };
+  const assertor: EarlAssertor = {
+    "@type": "Assertor",
+    name: "cool-tool",
+    release: { revision: "99" },
+  };
 
   beforeAll(async () => {
-    testData = getTestData();
+    testData = getTestData({ assertor });
     implementationReport = await getActImplementationReport(
       testData.earlReport,
-      [testData.testCase]
+      [testData.testCase],
+      metaData
     );
   });
 
@@ -73,5 +84,11 @@ describe("getActImplementationReport", () => {
       inconsistent: 0,
       untested: 0,
     });
+  });
+
+  it("includes assertor info not provided through metaData", () => {
+    expect(implementationReport.vendor).toBe("cool-corp");
+    expect(implementationReport.name).toBe("cooler-tooler");
+    expect(implementationReport.version).toBe("99");
   });
 });

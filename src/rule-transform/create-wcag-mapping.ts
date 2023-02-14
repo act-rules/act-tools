@@ -9,6 +9,7 @@ export type ActWcagMap = {
   successCriteria: string[];
   wcagTechniques: string[];
   proposed?: boolean;
+  deprecated?: boolean;
 };
 
 export type WcagMapping = {
@@ -43,7 +44,7 @@ export function updateWcagMapping(
   { frontmatter }: RulePage,
   { proposed }: { proposed: boolean }
 ): ActWcagMap[] {
-  const { id } = frontmatter;
+  const { id, deprecated } = frontmatter;
   const currentItem = wcagMapping.findIndex(({ permalink }) =>
     permalink.includes(`/${id}`)
   );
@@ -54,10 +55,11 @@ export function updateWcagMapping(
 
   const { successCriteria, wcagTechniques } = getRequirements(frontmatter);
   wcagMapping.push({
-    title: frontmatter.name.replace(/`/gi, ""),
+    title: frontmatter.name.replace(/`/gi, "").replace("DEPRECATED - ", ""),
     permalink: ruleUrl(frontmatter.id, proposed),
     successCriteria,
     wcagTechniques,
+    deprecated: typeof deprecated === "string",
     proposed,
   });
   return wcagMapping;

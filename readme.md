@@ -136,7 +136,7 @@ The `map-implementation` tool takes the test results from an implementation and 
 yarn map-implementation \
   --name "Acme Test Tool" \
   --vendor "Acme Corp" \
-  --jsonReports "./acme-earl-report.json" \
+  --jsonReport "./acme-earl-report.json" \
   --output "../implementations/{organization}-{tool}.json" \
   --testCaseJson "../wcag-act-rules/content/testcases.json"
 ```
