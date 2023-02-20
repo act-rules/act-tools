@@ -22,11 +22,7 @@ program
     "unknown"
   )
   .option("-n, --name <name>", "Name of the implementation", "unknown")
-  .option(
-    "-V, --version <version.number>",
-    "Version of the implementation",
-    "latest"
-  );
+  .option("-V, --version <version.number>", "Version of the implementation");
 
 program.parse(process.argv);
 const options = program.opts<CliArgs>();
