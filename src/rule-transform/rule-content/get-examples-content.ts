@@ -74,15 +74,26 @@ function getExternalLink(
 function getAssetsString(assets: TestAssets): string {
   const sorted = Object.entries(assets).sort((a, b) => comparer(a[0], b[0]));
 
+  const plural = sorted.length === 0 ? ["This", " is"] : ["These", "s are"];
+  const hasJS =
+    sorted.find(([filename]) => filename.endsWith(".js")) !== undefined;
+  const js = hasJS ? "Javascript " : "";
+  const hasCSS =
+    sorted.find(([filename]) => filename.endsWith(".css")) !== undefined;
+  const css = hasCSS ? "CSS " : "";
+  const both = hasJS && hasCSS ? "and " : "";
+
+  const header = `${plural[0]} ${js}${both}${css}file${plural[1]} used in several examples:`;
+
   let result = `<details>
 <summary>
-These Javascript and CSS files are used in several examples:
+${header}
 </summary>
   `;
 
   const assetsBase = "/WAI/content-assets/wcag-act-rules";
 
-  for (const [filename, asset] of sorted) {
+  for (const [filename, content] of sorted) {
     const truePath = filename
       .replace(/"\/test-assets\//g, `"${assetsBase}/test-assets/`)
       .replace(/'\/test-assets\//g, `'${assetsBase}/test-assets/`)
@@ -90,7 +101,7 @@ These Javascript and CSS files are used in several examples:
 
     result += `\nFile [\`${filename}\`](${truePath}):\n\n`;
     result += "```" + (filename.endsWith(".js") ? "javascript" : "css") + "\n";
-    result += asset.content;
+    result += content;
     result += "```\n\n";
   }
 

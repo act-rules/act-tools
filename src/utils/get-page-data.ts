@@ -67,7 +67,7 @@ export function getTestAssets(dir: string, ruleBody: string): TestAssets {
     // That is 2 items after splitting, due to the initial "/".
     const absolutePath = path.resolve(dir, ...filename.split("/").slice(2));
     const content = fs.readFileSync(absolutePath, { encoding: "utf8" });
-    assets[filename] = { absolutePath, content };
+    assets[filename] = content;
   }
 
   return assets;
