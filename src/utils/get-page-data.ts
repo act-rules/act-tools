@@ -59,6 +59,10 @@ export function getTestAssets(dir: string, ruleBody: string): TestAssets {
   const assets: TestAssets = {};
 
   for (const filename of assetsFilenames) {
+    if (!filename.endsWith(".js") && !filename.endsWith(".css")) {
+      continue;
+    }
+
     // The assets filename starts with "/test-assets", that need to be discarded.
     // That is 2 items after splitting, due to the initial "/".
     const absolutePath = path.resolve(dir, ...filename.split("/").slice(2));
