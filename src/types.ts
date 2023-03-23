@@ -12,6 +12,7 @@ export type MarkdownPage = PageBase & {
 
 export type RulePage = PageBase & {
   frontmatter: RuleFrontMatter;
+  assets: TestAssets;
 };
 
 export type DefinitionPage = PageBase & {
@@ -83,6 +84,9 @@ export type TestCaseJson = {
   testcases: TestCase[];
 };
 
+export type TestAssets = {
+  [filename: string]: { absolutePath: string; content: string };
+};
 export interface Implementation {
   name: string;
   vendor: string;

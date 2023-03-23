@@ -12,7 +12,8 @@ type Options = Record<string, boolean | undefined>;
 
 export function getExamplesContent(
   { frontmatter, markdownAST, body }: RulePage,
-  _?: unknown,
+  _1?: unknown,
+  _2?: unknown,
   options: Options = {}
 ): string {
   const ruleId = frontmatter.id;
@@ -22,6 +23,7 @@ export function getExamplesContent(
     failed: [],
     inapplicable: [],
   };
+
   examples.forEach((example) => {
     const { title, description, language, rawCode, expected } = example;
     const externalLink = !options.noExampleLinks

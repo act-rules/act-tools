@@ -10,6 +10,7 @@ import { isEqualExcludingDates } from "./utils/is-equal-excluding-dates";
 export type RuleTransformOptions = Partial<{
   rulesDir: string;
   glossaryDir: string;
+  testAssetsDir: string;
   outDir: string;
   ruleIds: string[];
   proposed: boolean;
@@ -19,13 +20,14 @@ export type RuleTransformOptions = Partial<{
 export async function ruleTransform({
   rulesDir = ".",
   glossaryDir = ".",
+  testAssetsDir = ".",
   ruleIds,
   outDir = ".",
   proposed = false,
   noExampleLinks = false,
 }: RuleTransformOptions): Promise<void> {
   const options = { proposed, noExampleLinks };
-  const rulesData = getRulePages(rulesDir, ruleIds);
+  const rulesData = getRulePages(rulesDir, testAssetsDir, ruleIds);
   const glossary = getDefinitionPages(glossaryDir);
 
   for (const ruleData of rulesData) {
@@ -49,7 +51,7 @@ function buildTfRuleFile(
 ) {
   return {
     filepath: ruleData.filename,
-    content: getRuleContent(ruleData, glossary, options, rulesData),
+    content: getRuleContent(ruleData, glossary, {}, options, rulesData),
   };
 }
 
@@ -62,6 +64,8 @@ async function saveRuleFileIfChanged(
     const currentContent = readFileSync(absolutePath, "utf8");
     contentChanged = !isEqualExcludingDates(currentContent, newContent);
   }
+
+  console.log(`Content of ${absolutePath} has changed? ${contentChanged}`);
 
   if (contentChanged) {
     await createFile(absolutePath, newContent);

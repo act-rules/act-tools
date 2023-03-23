@@ -9,6 +9,7 @@ export function getInput(
   { frontmatter }: RulePage,
   _1?: unknown,
   _2?: unknown,
+  _3?: unknown,
   rulesData: RulePage[] = []
 ): string {
   if ("input_aspects" in frontmatter) {

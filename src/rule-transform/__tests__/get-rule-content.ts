@@ -59,6 +59,7 @@ describe("getRuleContent", () => {
     const taskforceMarkdown = getRuleContent(
       { ...rulePage, filename: "abc123.md" },
       glossary,
+      {},
       { matrix: true },
       []
     );
