@@ -84,9 +84,10 @@ export type TestCaseJson = {
   testcases: TestCase[];
 };
 
-export type TestAssets = {
-  [filename: string]: { absolutePath: string; content: string };
-};
+export type TestAssets = Record<
+  string,
+  { absolutePath: string; content: string }
+>;
 export interface Implementation {
   name: string;
   vendor: string;
