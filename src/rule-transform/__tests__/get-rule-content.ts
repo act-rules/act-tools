@@ -61,8 +61,8 @@ describe("getRuleContent", () => {
         ...rulePage,
         filename: "abc123.md",
         assets: {
-          "/test-assets/hello.css": "div { color: blue }\n",
-          "/test-assets/world.js": "console.log('world');\n",
+          "/test-assets/hello.css": "div { color: blue }",
+          "/test-assets/world.js": "console.log('world');",
         },
       },
       glossary,

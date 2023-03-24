@@ -88,14 +88,8 @@ function getAssetsString(assets: TestAssets = {}): string {
 
   const header = `${plural[0]} ${js}${both}${css}file${plural[1]} used in several examples:`;
 
-  let result = `<details>
-<summary>
-${header}
-</summary>
-
-`;
-
   const assetsBase = "/WAI/content-assets/wcag-act-rules";
+  const blocks: string[] = [];
 
   for (const [filename, content] of sorted) {
     const truePath = filename.replace(
@@ -103,15 +97,19 @@ ${header}
       `${assetsBase}/test-assets/`
     );
 
-    result += `File [\`${filename}\`](${truePath}):\n\n`;
-    result += "```" + (filename.endsWith(".js") ? "javascript" : "css") + "\n";
-    result += content;
-    result += "```\n\n";
+    blocks.push(
+      joinStrings(`File [\`${filename}\`](${truePath}):`, [
+        "```" + (filename.endsWith(".js") ? "javascript" : "css"),
+        content + (content.endsWith("\n") ? "" : "\n") + "```",
+      ])
+    );
   }
 
-  result += `</details>`;
-
-  return result;
+  return joinStrings(
+    ["<details>", "<summary>", header, "</summary>"],
+    ...blocks,
+    "</details>"
+  );
 }
 
 function comparer(a: string, b: string): number {
