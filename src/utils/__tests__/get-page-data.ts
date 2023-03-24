@@ -53,8 +53,6 @@ describe("utils", () => {
     });
   });
 
-  // TODO: add test for assets
-
   describe("getDefinitionPages", () => {
     it("returns definition pages", () => {
       const dfnPages = getDefinitionPages(tmpDir);

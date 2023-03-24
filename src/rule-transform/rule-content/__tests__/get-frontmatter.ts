@@ -47,7 +47,7 @@ describe("rule-content", () => {
     });
 
     it("has the appropriate data in the yaml", () => {
-      const frontmatterStr = getFrontmatter(ruleData, null, { proposed: true });
+      const frontmatterStr = getFrontmatter(ruleData, [], { proposed: true });
       const frontmatterData = stripDashes(frontmatterStr);
       const data = yaml.load(frontmatterData);
 

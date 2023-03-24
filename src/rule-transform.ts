@@ -65,8 +65,6 @@ async function saveRuleFileIfChanged(
     contentChanged = !isEqualExcludingDates(currentContent, newContent);
   }
 
-  console.log(`Content of ${absolutePath} has changed? ${contentChanged}`);
-
   if (contentChanged) {
     await createFile(absolutePath, newContent);
     console.log(`Updated ${absolutePath}`);

@@ -3,6 +3,8 @@ import { RuleFrontMatter } from "../../types";
 import { ruleUrl } from "../../utils";
 
 type RulePage = { frontmatter: RuleFrontMatter; filename: string };
+export const headingText = "Accessibility Requirements Mapping";
+
 export function getInput(
   { frontmatter }: RulePage,
   _1?: unknown,
