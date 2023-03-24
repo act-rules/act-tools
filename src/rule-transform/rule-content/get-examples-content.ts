@@ -74,7 +74,11 @@ function getExternalLink(
 function getAssetsString(assets: TestAssets): string {
   const sorted = Object.entries(assets).sort((a, b) => comparer(a[0], b[0]));
 
-  const plural = sorted.length === 0 ? ["This", " is"] : ["These", "s are"];
+  if (sorted.length === 0) {
+    return "";
+  }
+
+  const plural = sorted.length === 1 ? ["This", " is"] : ["These", "s are"];
   const hasJS =
     sorted.find(([filename]) => filename.endsWith(".js")) !== undefined;
   const js = hasJS ? "Javascript " : "";
@@ -89,7 +93,8 @@ function getAssetsString(assets: TestAssets): string {
 <summary>
 ${header}
 </summary>
-  `;
+
+`;
 
   const assetsBase = "/WAI/content-assets/wcag-act-rules";
 
@@ -99,7 +104,7 @@ ${header}
       `${assetsBase}/test-assets/`
     );
 
-    result += `\nFile [\`${filename}\`](${truePath}):\n\n`;
+    result += `File [\`${filename}\`](${truePath}):\n\n`;
     result += "```" + (filename.endsWith(".js") ? "javascript" : "css") + "\n";
     result += content;
     result += "```\n\n";

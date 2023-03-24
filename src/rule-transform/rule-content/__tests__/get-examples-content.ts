@@ -8,7 +8,7 @@ describe("rule-content", () => {
   const q = "```";
   const frontmatter = { id: "abc123" } as RuleFrontMatter;
   const href1 =
-    "https://w3.org/WAI/content-assets/wcag-act-rules/testcases/abc123/b81daf1115e28e1c56adc9a006833d8265a930e7.html";
+    "https://w3.org/WAI/content-assets/wcag-act-rules/testcases/abc123/f8fcab4462dd8a68a5cb3ff11b02480e84f627ad.html";
   const href2 =
     "https://w3.org/WAI/content-assets/wcag-act-rules/testcases/abc123/6b8c89adf4f288cfc6b3e757f279e83ffdc2f5e5.html";
 
@@ -19,7 +19,7 @@ describe("rule-content", () => {
         ### Passes
         ##### Pass Example 1
         ${q}html
-        <link rel="stylesheet" type="text/css" href="/test-assets/style.css" />
+        <link rel="stylesheet" type="text/css" href="/test-assets/mystyle.css" />
         ${q}
         
         ### Failure Test Cases
@@ -50,7 +50,7 @@ describe("rule-content", () => {
         <a class="example-link" title="Pass Example 1" target="_blank" href="${href1}">Open in a new tab</a>
 
         ${q}html
-        <link rel="stylesheet" type="text/css" href="/test-assets/style.css" />
+        <link rel="stylesheet" type="text/css" href="/test-assets/mystyle.css" />
         ${q}
 
         ### Failed
@@ -76,6 +76,7 @@ describe("rule-content", () => {
       const examples = getExamplesContent(
         { filename: "unused", frontmatter, markdownAST, body, assets: {} },
         null,
+        null,
         { noExampleLinks: true }
       );
       expect(examples).toBe(outdent`
@@ -86,7 +87,7 @@ describe("rule-content", () => {
         #### Pass Example 1
 
         ${q}html
-        <img alt="" />
+        <link rel="stylesheet" type="text/css" href="/test-assets/mystyle.css" />
         ${q}
 
         ### Failed
@@ -96,7 +97,8 @@ describe("rule-content", () => {
         Some problem description
 
         ${q}html
-        <img alt="" />
+        <script src="/test-assets/script1.js"></script>
+        <script src="/test-assets/script2.js"></script>
         ${q}
 
         ### Inapplicable
@@ -115,48 +117,174 @@ describe("rule-content", () => {
         assets,
       });
       expect(examples).toBe(outdent`
-      ## Test Cases
-      
-      <details>
-      <summary>
-      This Javascript file is used in several examples:
-      </summary>
+        ## Test Cases
 
-      File [\`/test-assets/script1.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
+        <details>
+        <summary>
+        This Javascript file is used in several examples:
+        </summary>
+    
+        File [\`/test-assets/script1.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
+    
+        ${q}javascript
+        console.log('hello');
+        ${q}
+    
+        </details>
 
-      ${q}javascript
-      console.log('hello');
-      ${q}
-      
-      </details>
+        ### Passed
 
-      ### Passed
+        #### Pass Example 1
 
-      #### Pass Example 1
+        <a class="example-link" title="Pass Example 1" target="_blank" href="${href1}">Open in a new tab</a>
 
-      <a class="example-link" title="Pass Example 1" target="_blank" href="${href1}">Open in a new tab</a>
+        ${q}html
+        <link rel="stylesheet" type="text/css" href="/test-assets/mystyle.css" />
+        ${q}
 
-      ${q}html
-      <link rel="stylesheet" type="text/css" href="/test-assets/style.css" />
-      ${q}
+        ### Failed
 
-      ### Failed
+        #### Failed Example 2
 
-      #### Failed Example 2
+        <a class="example-link" title="Failed Example 2" target="_blank" href="${href2}">Open in a new tab</a>
 
-      <a class="example-link" title="Failed Example 2" target="_blank" href="${href2}">Open in a new tab</a>
+        Some problem description
 
-      Some problem description
+        ${q}html
+        <script src="/test-assets/script1.js"></script>
+        <script src="/test-assets/script2.js"></script>
+        ${q}
 
-      ${q}html
-      <script src="/test-assets/script1.js"></script>
-      <script src="/test-assets/script2.js"></script>
-      ${q}
+        ### Inapplicable
 
-      ### Inapplicable
+        _There are no inapplicable examples._
+      `);
+    });
 
-      _There are no inapplicable examples._  
-    `);
+    it("Correctly pluralise test assets header", () => {
+      const assets = {
+        "/test-assets/script1.js": "console.log('hello');\n",
+        "/test-assets/script2.js": "console.log('world');\n",
+      };
+      const examples = getExamplesContent({
+        filename: "unused",
+        frontmatter,
+        markdownAST,
+        body,
+        assets,
+      });
+      expect(examples).toBe(outdent`
+        ## Test Cases
+
+        <details>
+        <summary>
+        These Javascript files are used in several examples:
+        </summary>
+    
+        File [\`/test-assets/script1.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
+    
+        ${q}javascript
+        console.log('hello');
+        ${q}
+
+        File [\`/test-assets/script2.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script2.js):
+    
+        ${q}javascript
+        console.log('world');
+        ${q}
+
+        </details>
+
+        ### Passed
+
+        #### Pass Example 1
+
+        <a class="example-link" title="Pass Example 1" target="_blank" href="${href1}">Open in a new tab</a>
+
+        ${q}html
+        <link rel="stylesheet" type="text/css" href="/test-assets/mystyle.css" />
+        ${q}
+
+        ### Failed
+
+        #### Failed Example 2
+
+        <a class="example-link" title="Failed Example 2" target="_blank" href="${href2}">Open in a new tab</a>
+
+        Some problem description
+
+        ${q}html
+        <script src="/test-assets/script1.js"></script>
+        <script src="/test-assets/script2.js"></script>
+        ${q}
+
+        ### Inapplicable
+
+        _There are no inapplicable examples._
+      `);
+    });
+
+    it("Place JS assets before CSS", () => {
+      const assets = {
+        "/test-assets/mystyle.css": "div { color: blue; }\n",
+        "/test-assets/script1.js": "console.log('hello');\n",
+      };
+      const examples = getExamplesContent({
+        filename: "unused",
+        frontmatter,
+        markdownAST,
+        body,
+        assets,
+      });
+      expect(examples).toBe(outdent`
+        ## Test Cases
+
+        <details>
+        <summary>
+        These Javascript and CSS files are used in several examples:
+        </summary>
+    
+        File [\`/test-assets/script1.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
+    
+        ${q}javascript
+        console.log('hello');
+        ${q}
+
+        File [\`/test-assets/mystyle.css\`](/WAI/content-assets/wcag-act-rules/test-assets/mystyle.css):
+    
+        ${q}css
+        div { color: blue; }
+        ${q}
+
+        </details>
+
+        ### Passed
+
+        #### Pass Example 1
+
+        <a class="example-link" title="Pass Example 1" target="_blank" href="${href1}">Open in a new tab</a>
+
+        ${q}html
+        <link rel="stylesheet" type="text/css" href="/test-assets/mystyle.css" />
+        ${q}
+
+        ### Failed
+
+        #### Failed Example 2
+
+        <a class="example-link" title="Failed Example 2" target="_blank" href="${href2}">Open in a new tab</a>
+
+        Some problem description
+
+        ${q}html
+        <script src="/test-assets/script1.js"></script>
+        <script src="/test-assets/script2.js"></script>
+        ${q}
+
+        ### Inapplicable
+
+        _There are no inapplicable examples._
+      `);
     });
   });
 });
