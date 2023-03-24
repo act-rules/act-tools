@@ -23,7 +23,7 @@ describe("build-examples", () => {
       const jsonText = readFileSync(jsonPath, "utf8");
       oldTestCaseJson = JSON.parse(jsonText) as TestCaseJson;
       oldTestCases = oldTestCaseJson.testcases;
-      ruleData = getRulePages(rulesDir, ["abc123"])[0];
+      ruleData = getRulePages(rulesDir, ".", ["abc123"])[0];
       testCaseData = extractTestCases(ruleData, baseUrl, pageUrl);
       createFile.mock();
     });

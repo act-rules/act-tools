@@ -59,7 +59,10 @@ describe("getRuleContent", () => {
     const taskforceMarkdown = getRuleContent(
       { ...rulePage, filename: "abc123.md" },
       glossary,
-      {},
+      {
+        "test-assets/hello.css": "div { color: blue }",
+        "test-assets/world.js": "console.log('world');",
+      },
       { matrix: true },
       []
     );
@@ -117,6 +120,23 @@ describe("getRuleContent", () => {
       - [DOM Tree](https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom)
 
       ## Test Cases
+      
+      <details>
+      <summary>
+      These Javascript and CSS files are used in several examples:
+      </summary>
+      
+      File [\`/test-assets/world.js\`](/WAI/content-assets/wcag-act-rules/test-assets/world.js):
+      
+      ${q}javascript
+      console.log('world');
+      ${q}
+      
+      File [\`/test-assets/hello.css\`](/WAI/content-assets/wcag-act-rules/test-assets/hello.css):
+      
+      ${q}css
+      div { color: blue }
+      ${q}
 
       ### Passed
 

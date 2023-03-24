@@ -94,10 +94,10 @@ ${header}
   const assetsBase = "/WAI/content-assets/wcag-act-rules";
 
   for (const [filename, content] of sorted) {
-    const truePath = filename
-      .replace(/"\/test-assets\//g, `"${assetsBase}/test-assets/`)
-      .replace(/'\/test-assets\//g, `'${assetsBase}/test-assets/`)
-      .replace(/url\(\/test-assets\//g, `url(${assetsBase}/test-assets/`);
+    const truePath = filename.replace(
+      /\/test-assets\//g,
+      `${assetsBase}/test-assets/`
+    );
 
     result += `\nFile [\`${filename}\`](${truePath}):\n\n`;
     result += "```" + (filename.endsWith(".js") ? "javascript" : "css") + "\n";
