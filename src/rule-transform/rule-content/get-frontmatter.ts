@@ -8,8 +8,7 @@ import { indent } from "../../utils/index";
 
 export const getFrontmatter = (
   { frontmatter }: { frontmatter: RuleFrontMatter },
-  _1?: unknown,
-  _2?: unknown,
+  _?: unknown,
   options?: Record<string, boolean | undefined>
 ): string => {
   const proposed = options?.proposed;

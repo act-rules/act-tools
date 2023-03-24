@@ -9,7 +9,7 @@ import {
 
 const mkdir = promisify(fs.mkdir);
 const rm = promisify(fs.rm);
-const tmpDir = "./.tmp";
+const tmpDir = "./.tmp-get-page-data";
 
 describe("utils", () => {
   const ruleText = outdent`

@@ -51,7 +51,7 @@ function buildTfRuleFile(
 ) {
   return {
     filepath: ruleData.filename,
-    content: getRuleContent(ruleData, glossary, {}, options, rulesData),
+    content: getRuleContent(ruleData, glossary, options, rulesData),
   };
 }
 

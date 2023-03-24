@@ -6,8 +6,7 @@ type Options = Record<string, boolean | undefined>;
 
 export function getExamplesContent(
   { frontmatter, markdownAST, body, assets }: RulePage,
-  _1?: unknown,
-  _2?: unknown,
+  _?: unknown,
   options: Options = {}
 ): string {
   const ruleId = frontmatter.id;
@@ -71,7 +70,7 @@ function getExternalLink(
   );
 }
 
-function getAssetsString(assets: TestAssets): string {
+function getAssetsString(assets: TestAssets = {}): string {
   const sorted = Object.entries(assets).sort((a, b) => comparer(a[0], b[0]));
 
   if (sorted.length === 0) {

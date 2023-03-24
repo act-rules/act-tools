@@ -57,12 +57,16 @@ describe("getRuleContent", () => {
       [w3c]: https://w3.org 'W3C website'
     `) as RulePage;
     const taskforceMarkdown = getRuleContent(
-      { ...rulePage, filename: "abc123.md" },
-      glossary,
       {
-        "test-assets/hello.css": "div { color: blue }",
-        "test-assets/world.js": "console.log('world');",
+        ...rulePage,
+        filename: "abc123.md",
+        assets: {
+          "/test-assets/hello.css": "div { color: blue }\n",
+          "/test-assets/world.js": "console.log('world');\n",
+        },
       },
+      glossary,
+
       { matrix: true },
       []
     );
@@ -137,6 +141,8 @@ describe("getRuleContent", () => {
       ${q}css
       div { color: blue }
       ${q}
+      
+      </details>
 
       ### Passed
 

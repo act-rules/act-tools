@@ -76,7 +76,6 @@ describe("rule-content", () => {
       const examples = getExamplesContent(
         { filename: "unused", frontmatter, markdownAST, body, assets: {} },
         null,
-        null,
         { noExampleLinks: true }
       );
       expect(examples).toBe(outdent`

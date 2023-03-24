@@ -11,7 +11,6 @@ import { getInput } from "./rule-content/get-input";
 type RuleGenerator = (
   ruleData: RulePage,
   glossary: DefinitionPage[],
-  assets: { [filename: string]: string },
   options: Record<string, boolean | undefined>,
   rulesData: RulePage[]
 ) => string;
@@ -29,13 +28,12 @@ const sectionMethodsInOrder: RuleGenerator[] = [
 export const getRuleContent: RuleGenerator = (
   ruleData,
   glossary,
-  assets = {},
   options = {},
   rulesData
 ) => {
   const ruleDefinitions = getRuleDefinitions(ruleData, glossary);
   const rulePageSections = sectionMethodsInOrder.map((createContent) => {
-    return createContent(ruleData, ruleDefinitions, assets, options, rulesData);
+    return createContent(ruleData, ruleDefinitions, options, rulesData);
   });
   return rulePageSections.join("\n\n") + "\n";
 };
