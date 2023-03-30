@@ -52,6 +52,57 @@ describe("build-examples", () => {
       `);
     });
 
+    it("wraps <head> elements with <html>", () => {
+      const headCode = outdent`
+        <head>
+        \t<title>Hello world</title>
+        </head>
+      `;
+      const snippet = addCodeTemplate(headCode, "html", "foo");
+      expect(snippet).toBe(outdent`
+        <!DOCTYPE html>
+        <html lang="en">
+        ${headCode}
+        </html>
+      `);
+    });
+
+    it("wraps <body> elements with <html>", () => {
+      const bodyCode = outdent`
+        <body>
+        \t<p>Hello</p>
+        </body>
+      `;
+      const snippet = addCodeTemplate(bodyCode, "html", "foo");
+      expect(snippet).toBe(outdent`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        \t<title>foo</title>
+        </head>
+        ${bodyCode}
+        </html>
+      `);
+    });
+
+    it("wraps <head> and <body> elements with <html>", () => {
+      const innerHtmlCode = outdent`
+        <head>
+        \t<title>Hello world</title>
+        </head>
+        <body>
+        \t<p>Hello</p>
+        </body>
+      `;
+      const snippet = addCodeTemplate(innerHtmlCode, "html", "foo");
+      expect(snippet).toBe(outdent`
+        <!DOCTYPE html>
+        <html lang="en">
+        ${innerHtmlCode}
+        </html>
+      `);
+    });
+
     it("adds an XHTML 1.1 doctype to XHTML documents", () => {
       const snippet = addCodeTemplate(
         `<html>\n${code}\n</html>`,
