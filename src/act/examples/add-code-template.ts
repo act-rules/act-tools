@@ -38,15 +38,37 @@ export const htmlTemplate = (
   title: string,
   code: string
 ): string => {
+  const strings = [
+    doctype,
+    '<html lang="en">',
+    headTemplate(title, code),
+    bodyTemplate(code),
+    "</html>",
+  ];
+  return strings.filter((str) => str !== "").join("\n");
+};
+
+export const headTemplate = (title: string, code: string): string => {
+  if (/<head/i.test(code)) {
+    return code;
+  }
   return outdent`
-    ${doctype}
-    <html lang="en">
     <head>
     \t<title>${title}</title>
     </head>
+  `;
+};
+
+export const bodyTemplate = (code: string): string => {
+  if (/<head/i.test(code)) {
+    return "";
+  }
+  if (/<body/i.test(code)) {
+    return code;
+  }
+  return outdent`
     <body>
     ${indent(code, "\t", 1)}
     </body>
-    </html>
   `;
 };
