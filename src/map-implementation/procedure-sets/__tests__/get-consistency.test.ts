@@ -257,46 +257,46 @@ describe("getConsistency", () => {
         })
       ).toBe("partial");
     });
-  });
 
-  describe("minimal consistency", () => {
-    it("is minimal when passed has a cantTell, and no true positives", () => {
-      expect(
-        getConsistency({
-          ...procedureDefaults,
-          testResults: toTestResults([
-            { expected: "passed", outcomes: ["cantTell"] },
-            { expected: "failed", outcomes: ["passed"] },
-            { expected: "inapplicable", outcomes: ["inapplicable"] },
-          ]),
-        })
-      ).toBe("minimal");
-    });
+    describe("with only cantTell outcomes", () => {
+      it("is partial when passed has a cantTell, and no true positives", () => {
+        expect(
+          getConsistency({
+            ...procedureDefaults,
+            testResults: toTestResults([
+              { expected: "passed", outcomes: ["cantTell"] },
+              { expected: "failed", outcomes: ["passed"] },
+              { expected: "inapplicable", outcomes: ["inapplicable"] },
+            ]),
+          })
+        ).toBe("partial");
+      });
 
-    it("is minimal when failed has a cantTell, and no true positives", () => {
-      expect(
-        getConsistency({
-          ...procedureDefaults,
-          testResults: toTestResults([
-            { expected: "passed", outcomes: ["passed"] },
-            { expected: "failed", outcomes: ["cantTell"] },
-            { expected: "inapplicable", outcomes: ["inapplicable"] },
-          ]),
-        })
-      ).toBe("minimal");
-    });
+      it("is partial when failed has a cantTell, and no true positives", () => {
+        expect(
+          getConsistency({
+            ...procedureDefaults,
+            testResults: toTestResults([
+              { expected: "passed", outcomes: ["passed"] },
+              { expected: "failed", outcomes: ["cantTell"] },
+              { expected: "inapplicable", outcomes: ["inapplicable"] },
+            ]),
+          })
+        ).toBe("partial");
+      });
 
-    it("is not minimal when inapplicable has a cantTell, and no true positives", () => {
-      expect(
-        getConsistency({
-          ...procedureDefaults,
-          testResults: toTestResults([
-            { expected: "passed", outcomes: ["passed"] },
-            { expected: "failed", outcomes: ["cantTell"] },
-            { expected: "inapplicable", outcomes: ["cantTell"] },
-          ]),
-        })
-      ).toBeNull();
+      it("is not partial when inapplicable has a cantTell, and no true positives", () => {
+        expect(
+          getConsistency({
+            ...procedureDefaults,
+            testResults: toTestResults([
+              { expected: "passed", outcomes: ["passed"] },
+              { expected: "failed", outcomes: ["cantTell"] },
+              { expected: "inapplicable", outcomes: ["cantTell"] },
+            ]),
+          })
+        ).toBeNull();
+      });
     });
   });
 });

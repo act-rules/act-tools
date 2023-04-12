@@ -132,7 +132,6 @@ function emptyRuleStats(): RuleStats {
   return {
     complete: 0,
     partial: 0,
-    minimal: 0,
     inconsistent: 0,
     untested: 0,
   };
