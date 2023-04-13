@@ -56,7 +56,7 @@ describe("findProcedureSet", () => {
     failedRequirements: ["WCAG2:foo"],
     testResults: [correctPass, correctFail],
   };
-  const minimalProcedure: ActProcedureMapping = {
+  const cantTellOnlyProcedure: ActProcedureMapping = {
     ...procedureDefaults,
     testResults: [cantTellPass, correctInapplicable],
   };
@@ -83,37 +83,41 @@ describe("findProcedureSet", () => {
     );
   });
 
-  it("reports minimal over inconsistent", () => {
+  it("reports partially consistent (cantTell only) over inconsistent", () => {
     const procedureSet = findProcedureSet([
-      minimalProcedure,
-      inconsistentProcedure,
-    ]);
-    expect(procedureSet).toHaveProperty("consistency", "minimal");
-    expect(procedureSet.testCaseResults).toEqual(
-      getTestCaseResults([minimalProcedure])
-    );
-  });
-
-  it("reports partial over minimal or inconsistent", () => {
-    const procedureSet = findProcedureSet([
-      partialProcedure1,
-      partialProcedure2,
-      minimalProcedure,
+      cantTellOnlyProcedure,
       inconsistentProcedure,
     ]);
     expect(procedureSet).toHaveProperty("consistency", "partial");
     expect(procedureSet.testCaseResults).toEqual(
-      getTestCaseResults([partialProcedure1, partialProcedure2])
+      getTestCaseResults([cantTellOnlyProcedure])
     );
   });
 
-  it("reports complete consistency over partial, minimal or inconsistent", () => {
+  it("reports both partial with failed, and partial due to canTells over inconsistent", () => {
+    const procedureSet = findProcedureSet([
+      partialProcedure1,
+      partialProcedure2,
+      cantTellOnlyProcedure,
+      inconsistentProcedure,
+    ]);
+    expect(procedureSet).toHaveProperty("consistency", "partial");
+    expect(procedureSet.testCaseResults).toEqual(
+      getTestCaseResults([
+        partialProcedure1,
+        partialProcedure2,
+        cantTellOnlyProcedure,
+      ])
+    );
+  });
+
+  it("reports complete consistency over partial, or inconsistent", () => {
     const procedureSet = findProcedureSet([
       completeProcedure1,
       completeProcedure2,
       partialProcedure1,
       partialProcedure2,
-      minimalProcedure,
+      cantTellOnlyProcedure,
       inconsistentProcedure,
     ]);
     expect(procedureSet).toHaveProperty("consistency", "complete");

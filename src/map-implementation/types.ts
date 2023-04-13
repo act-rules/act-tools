@@ -9,7 +9,7 @@ export {
   AccessibilityRequirement,
 } from "../types";
 
-export type ConsistencyTypes = "complete" | "partial" | "minimal";
+export type ConsistencyTypes = "complete" | "partial";
 
 export type ConsistencyLevel = ConsistencyTypes | null;
 

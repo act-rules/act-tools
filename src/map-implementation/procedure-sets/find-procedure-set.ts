@@ -84,12 +84,7 @@ function getProcedureScore(
   return { consistency, coverage, mapping };
 }
 
-const consistencyLevels: ConsistencyLevel[] = [
-  "complete",
-  "partial",
-  "minimal",
-  null,
-];
+const consistencyLevels: ConsistencyLevel[] = ["complete", "partial", null];
 
 function findConsistency(
   consistencyA: ConsistencyLevel,

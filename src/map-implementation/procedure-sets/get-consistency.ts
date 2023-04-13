@@ -33,7 +33,7 @@ export function getConsistency(
     return "partial";
   }
   if (hasCantTell(testResults) && inapplicableAllTruePositive(testResults)) {
-    return "minimal";
+    return "partial";
   }
   return null;
 }
