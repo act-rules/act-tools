@@ -63,7 +63,9 @@ describe("rule-content", () => {
         },
         footer: getFooter(ruleData.frontmatter, true) + "\n",
         proposed: true,
-        rule_meta: yaml.load(getRuleMeta(ruleData.frontmatter)),
+        rule_meta: yaml.load(
+          getRuleMeta(ruleData.frontmatter, ruleData.filename)
+        ),
       });
     });
 
@@ -71,6 +73,7 @@ describe("rule-content", () => {
       const name = "`*Hello*` **world, welcome** to _ACT_taskforce_ **";
       const frontmatterStr = getFrontmatter({
         frontmatter: { ...frontmatter, name },
+        filename: ruleData.filename,
       });
       const frontmatterData = stripDashes(frontmatterStr);
       const data = yaml.load(frontmatterData);
