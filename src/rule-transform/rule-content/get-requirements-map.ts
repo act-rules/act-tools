@@ -1,41 +1,68 @@
+import assert from "assert";
+import { outdent } from "outdent";
 import { joinStrings, indent } from "../../utils";
 import { getAccessibilityRequirement } from "../../act/get-accessibility-requirement";
 import { RuleFrontMatter, AccessibilityRequirement } from "../../types";
-import { outdent } from "outdent";
 
+type RequirementEntry = [string, AccessibilityRequirement];
 type Args = { frontmatter: RuleFrontMatter };
+
 export const headingText = "Accessibility Requirements Mapping";
 
+export const secondaryReqText = outdent`
+  This rule is related to the following accessibility requirements, but was 
+  not designed to test this requirements directly. These 
+  [secondary requirements](https://w3c.github.io/wcag-act/act-rules-format.html#secondary-requirements)
+  can either be stricter than the rule requires, or may be satisfied in ways 
+  not tested by the rule:
+`;
+
 export function getRequirementsMap({ frontmatter }: Args): string {
-  const accMapping = Object.entries(
+  const requirementText: string[] = [`## ${headingText}`];
+  const accMapping: RequirementEntry[] = Object.entries(
     frontmatter.accessibility_requirements || {}
   );
-  if (accMapping.length === 0) {
-    return joinStrings(
-      `## ${headingText}`,
-      "This rule is not required for conformance."
+
+  const secondaryReq: RequirementEntry[] = [];
+  const conformanceReq: RequirementEntry[] = [];
+  for (const requirement of accMapping) {
+    if ("secondary" in requirement[1]) {
+      secondaryReq.push(requirement);
+    } else {
+      conformanceReq.push(requirement);
+    }
+  }
+
+  if (conformanceReq.length > 0) {
+    requirementText.push(outdent`
+      <ul class="act-requirements-list">
+      ${indent(conformanceReq.map(conformanceReqItem).join("\n"))}
+      </ul>
+    `);
+  }
+
+  if (secondaryReq.length > 0) {
+    requirementText.push(
+      "### Secondary Requirements",
+      secondaryReqText,
+      outdent`
+      <ul>
+      ${indent(secondaryReq.map(secondaryReqItem).join("\n"))}
+      </ul>`
     );
   }
 
-  return outdent`
-    ## ${headingText}
-
-    <ul class="act-requirements-list">
-    ${indent(
-      accMapping
-        .map(([requirementId, mapping]) =>
-          accRequirementItems(requirementId, mapping)
-        )
-        .join("\n")
-    )}
-    </ul>
-  `;
+  if (requirementText.length === 1) {
+    requirementText.push("This rule is not required for conformance.");
+  }
+  return joinStrings(...requirementText);
 }
 
-function accRequirementItems(
-  requirementId: string,
-  mapping: AccessibilityRequirement
-): string {
+function conformanceReqItem([
+  requirementId,
+  mapping,
+]: RequirementEntry): string {
+  assert(!("secondary" in mapping), "Must be conformance requirement");
   const accRequirement = getAccessibilityRequirement({
     requirementId,
     title: mapping.title,
@@ -101,4 +128,21 @@ function getConformanceText(outcome: string): string {
     outcomeValue = outcomeMap[outcome];
   }
   return outcomeValue;
+}
+
+function secondaryReqItem([
+  requirementId,
+  requirement,
+]: RequirementEntry): string {
+  assert("secondary" in requirement, "secondary mus be defined");
+  const { title, secondary } = requirement;
+  const reason = typeof secondary === "string" ? `: ${secondary}` : "";
+  const accRequirement = getAccessibilityRequirement({ requirementId, title });
+  if (!accRequirement) {
+    return `<li>${title + reason}</li>`;
+  }
+  const label = accRequirement.title || title;
+  return outdent`
+    <li><a href="${accRequirement.url}">${label}</a>${reason}</li>
+  `;
 }

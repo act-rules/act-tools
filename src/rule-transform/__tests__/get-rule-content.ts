@@ -33,6 +33,8 @@ describe("getRuleContent", () => {
       rule_type: atomic
       description: hello world
       accessibility_requirements:
+        wcag20:1.1.1: # Non-text Content (A)
+          secondary: To fail or not to fail, that is the question.
         wcag20:4.1.2: # Name, Role, Value (A)
           forConformance: true
           failed: not satisfied
@@ -107,6 +109,18 @@ describe("getRuleContent", () => {
             </ul></li>
           </ul>
         </details></li>
+      </ul>
+
+      ### Secondary Requirements
+
+      This rule is related to the following accessibility requirements, but was 
+      not designed to test this requirements directly. These 
+      [secondary requirements](https://w3c.github.io/wcag-act/act-rules-format.html#secondary-requirements)
+      can either be stricter than the rule requires, or may be satisfied in ways 
+      not tested by the rule:
+
+      <ul>
+        <li><a href="https://www.w3.org/TR/WCAG21/#non-text-content">1.1.1 Non-text Content (Level A)</a>: To fail or not to fail, that is the question.</li>
       </ul>
 
       ## Input Aspects

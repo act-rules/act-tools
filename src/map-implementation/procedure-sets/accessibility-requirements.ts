@@ -15,7 +15,10 @@ export function mapsAllRequirements(
       const criterion = findCriterionByKey(key)?.scId;
       if (!criterion) return;
       allowedCriteria.push(criterion);
-      if (!requirement.secondary && !failedRequirements.includes(criterion)) {
+      if (
+        "secondary" in requirement === false &&
+        !failedRequirements.includes(criterion)
+      ) {
         missingCriteria.push(criterion);
       }
     }
@@ -45,7 +48,7 @@ export function getRequirementUris(
     ruleAccessibilityRequirements
   )) {
     const criterion = findCriterionByKey(key);
-    if (criterion && !requirement.secondary) {
+    if (criterion && "secondary" in requirement === false) {
       requirementUris.push(criterion.scId);
     }
   }
