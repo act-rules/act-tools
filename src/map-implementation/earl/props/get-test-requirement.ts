@@ -18,7 +18,7 @@ export function getTestRequirement(
   return [];
 }
 
-function getTestUrl(testPart: TestPart): string {
+export function getTestUrl(testPart: TestPart): string {
   if (typeof testPart === "string") {
     return applyWcagNamespace(testPart);
   }
@@ -26,7 +26,7 @@ function getTestUrl(testPart: TestPart): string {
     return applyWcagNamespace(testPart["@id"]);
   }
 
-  const scNumber = testPart.title.match(/\d\.\d.\d{1,2}/)?.[0];
+  const scNumber = testPart.title.match(/\d\.\d\.\d{1,2}/)?.[0];
   if (scNumber && testPart.title.match(/WCAG\s?2/)) {
     const criterion = Object.values(criteria).find(
       (sc) => sc?.num === scNumber

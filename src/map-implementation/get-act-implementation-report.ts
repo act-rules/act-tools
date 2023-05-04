@@ -18,9 +18,20 @@ export async function getActImplementationReport(
   testCases: TestCase[],
   metaData: ActImplementationMeta = {}
 ): Promise<ActImplementationReport> {
+  const assertorData = await findAssertor(earlReport, metaData);
+  const actAssertions = await earlToActAssertions(earlReport);
+  console.log(`Found ${actAssertions.length} assertions`);
+
+  return actAssertionsToReport(actAssertions, testCases, assertorData);
+}
+
+export function actAssertionsToReport(
+  actAssertions: ActAssertion[],
+  testCases: TestCase[],
+  metaData: ActImplementationMeta = {}
+): ActImplementationReport {
   const approvedRules = emptyRuleStats();
   const proposedRules = emptyRuleStats();
-  const actAssertions = await earlToActAssertions(earlReport);
 
   const actRuleMapping: ActProcedureSet[] = [];
   for (const ruleGroup of groupByRule(testCases, actAssertions)) {
@@ -29,6 +40,7 @@ export async function getActImplementationReport(
       ruleGroup.ruleTestCases,
       ruleGroup.ruleAssertions
     );
+
     // Work out what set of procedures gets the highest consistency to the rule
     const procedureSet = findProcedureSet(
       procedureMappings,
@@ -39,8 +51,7 @@ export async function getActImplementationReport(
     updateRuleStats(procedureSet, ruleApproved ? approvedRules : proposedRules);
   }
 
-  const assertor = await findAssertor(earlReport, metaData);
-  return { ...assertor, approvedRules, proposedRules, actRuleMapping };
+  return { ...metaData, approvedRules, proposedRules, actRuleMapping };
 }
 
 type RuleGroup = {

@@ -18,7 +18,90 @@ cd act-tools
 yarn
 ```
 
-## Usage
+## ActTestRunner class
+
+The ActTestRunner class helps accessibility tools to run ACT test cases, and turn the outcome into a valid EARL report. The following example shows how to run the test cases using Playwright.
+
+```js
+import { chromium } from 'playwright';
+import { ActTestRunner } from 'act-tools';
+import myA11yTool from './myA11yTool';
+
+(async () => {
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
+  // Create a new instance of the tool runner
+  const actRunner = new ActTestRunner({
+    fileTypes: ['html'] // Only test HTML files
+    implementor: { // Set metadata about the tool
+      name: 'My Accessibility Tool',
+      versionNumber: '1.0.0'
+    }
+  });
+
+  // Run the tool against each HTML test case:
+  const actReport = await actRunner.run(async (testCase) => {
+    await page.goto(testCase.url); // Playwright load the page
+    const issues = await myA11yTool.a11yTest(page); // Run myA11yTool
+
+    // Convert myA11yTool's output to one the reporter understands
+    return issues.map(issue => ({
+      outcome: 'failed',
+      ruleId: issue.id,
+      wcag2: issue.wcagCriteria
+    }))
+  });
+
+  // Save the EARL report to disk
+  const earlText = JSON.stringify(actReport.getEarlReport(), null, 2);
+  writeFileSync('./earl-report.json', earlText, 'utf8');
+
+  // Console log a summary of the implementation
+  const { approvedRules, proposedRules } = report.getImplementationMapping();
+  console.table({ approvedRules, proposedRules });
+})();
+```
+
+### ActTestRunner#constructor
+
+The ActTestRunner constructor takes a single object as an argument, with the following options:
+
+- `implementor`: Object with the following optional properties:
+    - `name`: Name of the accessibility test tool
+    - `shortDesc`: Short description or title for the tool
+    - `versionNumber`: Version used in testing
+    - `vendorName`: Author of the tool
+- `rules`: Optional array of strings that limit which rules run
+- `fileTypes`: Optional array of strings that limit which file extensions are tested
+- `log`: Boolean, set to `false` to disable console logging
+- `gitVersion`: Branch name or commit from which to pull the `testcases.json` file. Defaults to `publication`, which is the latest version published on the WAI website.
+- `testCaseJsonUrl`: URL from which to load the testcases.json file. Setting this overrides `gitVersion`
+
+### run(testRunner)
+
+The function passed into `actTestRunner.run()` is called the testRunner. The test runner is passed a single testCase object with the following properties and method:
+
+- `fetchSource()`; Async method that returns the source code of the test case as a string
+- `ruleId`: 6-character ID given to the ACT rule
+- `ruleName`: Title given to the ACT rule
+- `testcaseId`: 48 character hash of the test case code
+- `testcaseTitle`: Name of the test case such as "Passed example 1"
+- `url`: Absolute path to the test case
+- `relativePath`: Unique path for the test case
+- `expected`: `passed`, `failed`, or `inapplicable`
+- `rulePage`: URL to the ACT rule page;
+- `ruleAccessibilityRequirements`: null, or Record of accessibility requirements
+
+The testRunner must return an array of objects with the following properties:
+
+- `procedureId` (required): Unique identifier or name for the procedure / check / rule the tool tested.
+- `outcome` (required): `passed`, `failed`, `inapplicable`, or `cantTell`.
+- `wcag2`: Array of WCAG 2 success criteria numbers that fail if the procedure fails
+- `requirements`: Array of other accessibility requirements that fail if the procedure fails, such as ARIA Practices and WCAG Techniques
+
+Tools can return more than one result for a procedure. For example if the test case as two links without a name, the tool may return two `failed` outcomes. Many accessibility tools report warning in addition to violations. Warnings should be reported as `cantTell`. 
+
+## CLI Usage
 
 ### Rule Transformer
 
