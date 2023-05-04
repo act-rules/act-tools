@@ -68,7 +68,7 @@ describe("utils", () => {
       expect(testAssets["/test-assets/hello.js"]).toEqual(`${testAssetText}`);
     });
 
-    it("ignores non CSS/JS assets", () => {
+    it("ignores non CSS/HTML/JS assets", () => {
       fs.writeFileSync(`${tmpDir}/ignore.jpg`, testAssetText);
       const testAssets = getTestAssets(tmpDir, "/test-assets/ignore.jpg");
       expect(Object.keys(testAssets)).toHaveLength(0);

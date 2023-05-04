@@ -219,9 +219,10 @@ describe("rule-content", () => {
       `);
     });
 
-    it("Place JS assets before CSS", () => {
+    it("Place HTML assets, then JS, then CSS", () => {
       const assets = {
         "/test-assets/mystyle.css": "div { color: blue; }",
+        "/test-assets/page.html": "<span>Hello</span>",
         "/test-assets/script1.js": "console.log('hello');",
       };
       const examples = getExamplesContent({
@@ -235,7 +236,13 @@ describe("rule-content", () => {
         ## Test Cases
 
         <details class="act-inline-assets" markdown="block">
-        <summary>These Javascript and CSS files are used in several examples:</summary>
+        <summary>These HTML, Javascript, and CSS files are used in several examples:</summary>
+    
+        File [\`/test-assets/page.html\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/page.html):
+    
+        ${q}html
+        <span>Hello</span>
+        ${q}
     
         File [\`/test-assets/script1.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
     

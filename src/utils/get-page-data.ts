@@ -59,7 +59,11 @@ export function getTestAssets(dir: string, ruleBody: string): TestAssets {
   const assets: TestAssets = {};
 
   for (const filename of assetsFilenames) {
-    if (!filename.endsWith(".js") && !filename.endsWith(".css")) {
+    if (
+      !filename.endsWith(".js") &&
+      !filename.endsWith(".css") &&
+      !filename.endsWith(".html")
+    ) {
       continue;
     }
 

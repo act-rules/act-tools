@@ -71,27 +71,50 @@ function getExternalLink(
 }
 
 function getAssetsString(assets: TestAssets = {}): string {
-  const sorted = Object.entries(assets).sort((a, b) => comparer(a[0], b[0]));
+  const sorted = Object.entries(assets)
+    // Extract the extensions
+    .map(([fileName, content]) => [
+      fileName,
+      fileName.split(".").pop() ?? "",
+      content,
+    ])
+    // Sort by extension
+    .sort((a, b) => comparer(a[1], b[1]));
 
   if (sorted.length === 0) {
     return "";
   }
 
   const plural = sorted.length === 1 ? ["This", " is"] : ["These", "s are"];
+  const hasHTML =
+    sorted.find(([, extension]) => extension === "html") !== undefined;
+  const html = hasHTML ? "HTML" : "";
   const hasJS =
-    sorted.find(([filename]) => filename.endsWith(".js")) !== undefined;
-  const js = hasJS ? "Javascript " : "";
+    sorted.find(([, extension]) => extension === "js") !== undefined;
+  const js = hasJS ? "Javascript" : "";
   const hasCSS =
-    sorted.find(([filename]) => filename.endsWith(".css")) !== undefined;
-  const css = hasCSS ? "CSS " : "";
-  const both = hasJS && hasCSS ? "and " : "";
+    sorted.find(([, extension]) => extension === "css") !== undefined;
+  const css = hasCSS ? "CSS" : "";
 
-  const header = `${plural[0]} ${js}${both}${css}file${plural[1]} used in several examples:`;
+  // "foo " / "foo and bar " / "foo, bar, and baz "
+  const kinds = [html, js, css, " "].filter((str) => str !== "");
+  if (kinds.length === 4) {
+    // ["foo", "bar", "baz", " "] => ["foo", ", ", "bar", ", and ", "baz", " "]
+    kinds.splice(2, 0, ", and ");
+    kinds.splice(1, 0, ", ");
+  } else if (kinds.length === 3) {
+    // ["foo", "bar", " "] => ["foo", " and ", "bar", " "]
+    kinds.splice(1, 0, " and ");
+  }
+
+  const header = `${plural[0]} ${kinds.join("")}file${
+    plural[1]
+  } used in several examples:`;
 
   const assetsBase = "https://w3.org/WAI/content-assets/wcag-act-rules";
   const blocks: string[] = [];
 
-  for (const [filename, content] of sorted) {
+  for (const [filename, extension, content] of sorted) {
     const truePath = filename.replace(
       /\/test-assets\//g,
       `${assetsBase}/test-assets/`
@@ -99,26 +122,36 @@ function getAssetsString(assets: TestAssets = {}): string {
 
     blocks.push(
       joinStrings(`File [\`${filename}\`](${truePath}):`, [
-        "```" + (filename.endsWith(".js") ? "javascript" : "css"),
+        "```" + (extension === "js" ? "javascript" : extension),
         content + (content.endsWith("\n") ? "" : "\n") + "```",
       ])
     );
   }
 
   return joinStrings(
-    [`<details class="act-inline-assets" markdown="block">`,
-      `<summary>${header}</summary>`],
+    [
+      `<details class="act-inline-assets" markdown="block">`,
+      `<summary>${header}</summary>`,
+    ],
     ...blocks,
     "</details>"
   );
 }
 
+/**
+ * We want to order the test assets as HTML, JS, CSS
+ * Assets with the same file type are order alphabetically.
+ */
+const fileOrder = ["html", "js", "css"];
 function comparer(a: string, b: string): number {
-  if (a.endsWith(".js") && b.endsWith(".css")) {
+  const aOrder = fileOrder.indexOf(a);
+  const bOrder = fileOrder.indexOf(b);
+
+  if (aOrder < bOrder) {
     return -1;
   }
 
-  if (a.endsWith(".css") && b.endsWith(".js")) {
+  if (aOrder > bOrder) {
     return 1;
   }
 
