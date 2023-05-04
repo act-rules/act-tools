@@ -23,7 +23,7 @@ describe("getInput", () => {
         filename,
         frontmatter: {
           ...defaultMatter,
-          input_aspects: ["CSS styling", "DOM Tree"],
+          input_aspects: ["CSS styling", "DOM Tree", "Audio output"],
         },
       });
       expect(input).toContain(
@@ -31,6 +31,9 @@ describe("getInput", () => {
       );
       expect(input).toContain(
         "- [DOM Tree](https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom)"
+      );
+      expect(input).toContain(
+        "- [Audio output](https://www.w3.org/TR/act-rules-aspects/#input-aspects-audio-out)"
       );
     });
 

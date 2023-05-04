@@ -69,6 +69,11 @@ function getInputAspectUrl(inputAspect: string): string {
     "css styling": "#input-aspects-css",
     "accessibility tree": "#input-aspects-accessibility",
     language: "#input-aspects-text",
+    "source code": "#input-aspects-code",
+    "audio output": "#input-aspects-audio-out",
+    audio: "#input-aspects-audio-out",
+    "video output": "#input-aspects-video-out",
+    video: "#input-aspects-video-out",
   };
   const urlHash = idMap[inputAspect.toLowerCase()];
   if (!urlHash) {
