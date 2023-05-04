@@ -88,7 +88,7 @@ function getAssetsString(assets: TestAssets = {}): string {
 
   const header = `${plural[0]} ${js}${both}${css}file${plural[1]} used in several examples:`;
 
-  const assetsBase = "/WAI/content-assets/wcag-act-rules";
+  const assetsBase = "https://w3.org/WAI/content-assets/wcag-act-rules";
   const blocks: string[] = [];
 
   for (const [filename, content] of sorted) {
@@ -106,7 +106,8 @@ function getAssetsString(assets: TestAssets = {}): string {
   }
 
   return joinStrings(
-    ["<details>", "<summary>", header, "</summary>"],
+    [`<details class="act-inline-assets" markdown="block">`,
+      `<summary>${header}</summary>`],
     ...blocks,
     "</details>"
   );

@@ -118,12 +118,10 @@ describe("rule-content", () => {
       expect(examples).toBe(outdent`
         ## Test Cases
 
-        <details>
-        <summary>
-        This Javascript file is used in several examples:
-        </summary>
+        <details class="act-inline-assets" markdown="block">
+        <summary>This Javascript file is used in several examples:</summary>
     
-        File [\`/test-assets/script1.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
+        File [\`/test-assets/script1.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
     
         ${q}javascript
         console.log('hello');
@@ -175,18 +173,16 @@ describe("rule-content", () => {
       expect(examples).toBe(outdent`
         ## Test Cases
 
-        <details>
-        <summary>
-        These Javascript files are used in several examples:
-        </summary>
+        <details class="act-inline-assets" markdown="block">
+        <summary>These Javascript files are used in several examples:</summary>
     
-        File [\`/test-assets/script1.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
+        File [\`/test-assets/script1.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
     
         ${q}javascript
         console.log('hello');
         ${q}
 
-        File [\`/test-assets/script2.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script2.js):
+        File [\`/test-assets/script2.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script2.js):
     
         ${q}javascript
         console.log('world');
@@ -238,18 +234,16 @@ describe("rule-content", () => {
       expect(examples).toBe(outdent`
         ## Test Cases
 
-        <details>
-        <summary>
-        These Javascript and CSS files are used in several examples:
-        </summary>
+        <details class="act-inline-assets" markdown="block">
+        <summary>These Javascript and CSS files are used in several examples:</summary>
     
-        File [\`/test-assets/script1.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
+        File [\`/test-assets/script1.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
     
         ${q}javascript
         console.log('hello');
         ${q}
 
-        File [\`/test-assets/mystyle.css\`](/WAI/content-assets/wcag-act-rules/test-assets/mystyle.css):
+        File [\`/test-assets/mystyle.css\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/mystyle.css):
     
         ${q}css
         div { color: blue; }
@@ -301,18 +295,16 @@ describe("rule-content", () => {
       expect(examples).toBe(outdent`
         ## Test Cases
 
-        <details>
-        <summary>
-        These Javascript and CSS files are used in several examples:
-        </summary>
+        <details class="act-inline-assets" markdown="block">
+        <summary>These Javascript and CSS files are used in several examples:</summary>
     
-        File [\`/test-assets/script1.js\`](/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
+        File [\`/test-assets/script1.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
     
         ${q}javascript
         console.log('hello');
         ${q}
 
-        File [\`/test-assets/mystyle.css\`](/WAI/content-assets/wcag-act-rules/test-assets/mystyle.css):
+        File [\`/test-assets/mystyle.css\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/mystyle.css):
     
         ${q}css
         div { color: blue; }
