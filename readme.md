@@ -29,7 +29,7 @@ yarn transform-rule \
   --rulesDir "../act-rules.github.io/_rules/" \
   --glossaryDir "../act-rules.github.io/pages/glossary/" \
   --outDir "../wcag-act-rules/" \
-  --matrix \
+  --testAssetsDir "../act-rules.github.io/test-assets/" \
   --ruleIds 5f99a7,6cfa84
 ```
 

@@ -25,9 +25,9 @@ export async function buildExamples({
   baseUrl = "https://www.w3.org/WAI/content-assets/wcag-act-rules/",
   pageUrl = "https://www.w3.org/WAI/standards-guidelines/act/rules/",
   proposed = false,
-  testAssetsDir,
+  testAssetsDir = "unused",
 }: BuildExampleOptions): Promise<void> {
-  const rulesData = getRulePages(rulesDir, ruleIds);
+  const rulesData = getRulePages(rulesDir, testAssetsDir, ruleIds);
   const testCaseData: TestCaseData[] = [];
   const assetsPath = path.resolve(outDir, "content-assets", "wcag-act-rules");
   for (const ruleData of rulesData) {

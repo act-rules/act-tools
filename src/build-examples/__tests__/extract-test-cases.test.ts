@@ -9,7 +9,7 @@ describe("build-examples", () => {
     const baseUrl = "https://act-rules.github.io/";
     const pageUrl = "https://act-rules.github.io/rules/";
     const ruleId = "abc123";
-    const ruleData = getRulePages(rulesDir, [ruleId])[0];
+    const ruleData = getRulePages(rulesDir, "unused", [ruleId])[0];
     const testcaseId = "8d5356fac10c2a57a5d97d934e786e756e12a232";
 
     it("extracts test cases from rule data", () => {

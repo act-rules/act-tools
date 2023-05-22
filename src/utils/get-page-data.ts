@@ -9,6 +9,7 @@ import {
   MarkdownPage,
   RulePage,
   RuleFrontMatter,
+  TestAssets,
 } from "../types";
 
 /**
@@ -26,12 +27,17 @@ export const getMarkdownData = (dir: string): MarkdownPage[] => {
   });
 };
 
-export const getRulePages = (dir: string, ruleIds?: string[]): RulePage[] => {
+export const getRulePages = (
+  rulesDir: string,
+  testAssetsDir: string,
+  ruleIds?: string[]
+): RulePage[] => {
   const rulePages: RulePage[] = [];
-  const markdown = getMarkdownData(dir);
+  const markdown = getMarkdownData(rulesDir);
   markdown.forEach(({ frontmatter, ...page }) => {
     if (isRuleFrontmatter(frontmatter) && isIncluded(frontmatter.id, ruleIds)) {
-      rulePages.push({ frontmatter, ...page });
+      const assets = getTestAssets(testAssetsDir, page.body);
+      rulePages.push({ frontmatter, ...page, assets });
     }
   });
   return rulePages;
@@ -44,6 +50,31 @@ export function isRuleFrontmatter(
     typeof frontmatter["id"] === "string" &&
     typeof frontmatter["description"] === "string"
   );
+}
+
+export function getTestAssets(dir: string, ruleBody: string): TestAssets {
+  const assetsFilenames = new Set(
+    ruleBody.match(/\/test-assets\/[^'"]*/g) ?? []
+  );
+  const assets: TestAssets = {};
+
+  for (const filename of assetsFilenames) {
+    if (
+      !filename.endsWith(".js") &&
+      !filename.endsWith(".css") &&
+      !filename.endsWith(".html")
+    ) {
+      continue;
+    }
+
+    // The assets filename starts with "/test-assets", that need to be discarded.
+    // That is 2 items after splitting, due to the initial "/".
+    const absolutePath = path.resolve(dir, ...filename.split("/").slice(2));
+    const content = fs.readFileSync(absolutePath, { encoding: "utf8" });
+    assets[filename] = content;
+  }
+
+  return assets;
 }
 
 export const getDefinitionPages = (dir: string): DefinitionPage[] => {

@@ -1,11 +1,15 @@
 import * as fs from "fs";
 import { outdent } from "outdent";
 import { promisify } from "util";
-import { getRulePages, getDefinitionPages } from "../get-page-data";
+import {
+  getRulePages,
+  getDefinitionPages,
+  getTestAssets,
+} from "../get-page-data";
 
 const mkdir = promisify(fs.mkdir);
 const rm = promisify(fs.rm);
-const tmpDir = "./.tmp";
+const tmpDir = "./.tmp-get-page-data";
 
 describe("utils", () => {
   const ruleText = outdent`
@@ -24,10 +28,17 @@ describe("utils", () => {
     Hello definition
   `;
 
+  const testAssetText = outdent`
+    console.log("hello");
+  `;
+
   beforeEach(async () => {
     if (!fs.existsSync(tmpDir)) {
       await mkdir(tmpDir);
     }
+    fs.writeFileSync(`${tmpDir}/abc123.md`, ruleText);
+    fs.writeFileSync(`${tmpDir}/dfn.md`, definitionText);
+    fs.writeFileSync(`${tmpDir}/hello.js`, testAssetText);
   });
 
   afterEach(async () => {
@@ -36,9 +47,7 @@ describe("utils", () => {
 
   describe("getRulePages", () => {
     it("returns rule pages", () => {
-      fs.writeFileSync(`${tmpDir}/abc123.md`, ruleText);
-      fs.writeFileSync(`${tmpDir}/dfn.md`, definitionText);
-      const rulePages = getRulePages(tmpDir);
+      const rulePages = getRulePages(tmpDir, tmpDir);
       expect(rulePages).toHaveLength(1);
       expect(rulePages[0].filename).toContain("abc123.md");
     });
@@ -46,11 +55,23 @@ describe("utils", () => {
 
   describe("getDefinitionPages", () => {
     it("returns definition pages", () => {
-      fs.writeFileSync(`${tmpDir}/abc123.md`, ruleText);
-      fs.writeFileSync(`${tmpDir}/dfn.md`, definitionText);
       const dfnPages = getDefinitionPages(tmpDir);
       expect(dfnPages).toHaveLength(1);
       expect(dfnPages[0].filename).toContain("dfn.md");
+    });
+  });
+
+  describe("getTestAssets", () => {
+    it("returns test assets", () => {
+      const testAssets = getTestAssets(tmpDir, "/test-assets/hello.js");
+      expect(Object.keys(testAssets)).toHaveLength(1);
+      expect(testAssets["/test-assets/hello.js"]).toEqual(`${testAssetText}`);
+    });
+
+    it("ignores non CSS/HTML/JS assets", () => {
+      fs.writeFileSync(`${tmpDir}/ignore.jpg`, testAssetText);
+      const testAssets = getTestAssets(tmpDir, "/test-assets/ignore.jpg");
+      expect(Object.keys(testAssets)).toHaveLength(0);
     });
   });
 });

@@ -4,7 +4,7 @@ import { createFile } from "../create-file";
 
 const mkdir = promisify(fs.mkdir);
 const rm = promisify(fs.rm);
-const tmpDir = "./.tmp";
+const tmpDir = "./.tmp-create-file";
 
 describe("utils", () => {
   describe("createFile", () => {

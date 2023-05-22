@@ -57,8 +57,16 @@ describe("getRuleContent", () => {
       [w3c]: https://w3.org 'W3C website'
     `) as RulePage;
     const taskforceMarkdown = getRuleContent(
-      { ...rulePage, filename: "abc123.md" },
+      {
+        ...rulePage,
+        filename: "abc123.md",
+        assets: {
+          "/test-assets/hello.css": "div { color: blue }",
+          "/test-assets/world.js": "console.log('world');",
+        },
+      },
       glossary,
+
       { matrix: true },
       []
     );
@@ -116,6 +124,23 @@ describe("getRuleContent", () => {
       - [DOM Tree](https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom)
 
       ## Test Cases
+      
+      <details class="act-inline-assets" markdown="block">
+      <summary><span>These Javascript and CSS files are used in several examples:</span></summary>
+      
+      File [\`/test-assets/world.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/world.js):
+      
+      ${q}javascript
+      console.log('world');
+      ${q}
+      
+      File [\`/test-assets/hello.css\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/hello.css):
+      
+      ${q}css
+      div { color: blue }
+      ${q}
+      
+      </details>
 
       ### Passed
 
