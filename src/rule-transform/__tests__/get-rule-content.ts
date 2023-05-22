@@ -126,7 +126,7 @@ describe("getRuleContent", () => {
       ## Test Cases
       
       <details class="act-inline-assets" markdown="block">
-      <summary>These Javascript and CSS files are used in several examples:</summary>
+      <summary><span>These Javascript and CSS files are used in several examples:</span></summary>
       
       File [\`/test-assets/world.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/world.js):
       

@@ -131,7 +131,7 @@ function getAssetsString(assets: TestAssets = {}): string {
   return joinStrings(
     [
       `<details class="act-inline-assets" markdown="block">`,
-      `<summary>${header}</summary>`,
+      `<summary><span>${header}</span></summary>`,
     ],
     ...blocks,
     "</details>"

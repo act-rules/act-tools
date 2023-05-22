@@ -119,7 +119,7 @@ describe("rule-content", () => {
         ## Test Cases
 
         <details class="act-inline-assets" markdown="block">
-        <summary>This Javascript file is used in several examples:</summary>
+        <summary><span>This Javascript file is used in several examples:</span></summary>
     
         File [\`/test-assets/script1.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
     
@@ -174,7 +174,7 @@ describe("rule-content", () => {
         ## Test Cases
 
         <details class="act-inline-assets" markdown="block">
-        <summary>These Javascript files are used in several examples:</summary>
+        <summary><span>These Javascript files are used in several examples:</span></summary>
     
         File [\`/test-assets/script1.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
     
@@ -236,7 +236,7 @@ describe("rule-content", () => {
         ## Test Cases
 
         <details class="act-inline-assets" markdown="block">
-        <summary>These HTML, Javascript, and CSS files are used in several examples:</summary>
+        <summary><span>These HTML, Javascript, and CSS files are used in several examples:</span></summary>
     
         File [\`/test-assets/page.html\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/page.html):
     
@@ -303,7 +303,7 @@ describe("rule-content", () => {
         ## Test Cases
 
         <details class="act-inline-assets" markdown="block">
-        <summary>These Javascript and CSS files are used in several examples:</summary>
+        <summary><span>These Javascript and CSS files are used in several examples:</span></summary>
     
         File [\`/test-assets/script1.js\`](https://w3.org/WAI/content-assets/wcag-act-rules/test-assets/script1.js):
     
