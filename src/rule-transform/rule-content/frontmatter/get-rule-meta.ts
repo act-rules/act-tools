@@ -29,7 +29,7 @@ function getSCsTested(
   accRequirements.forEach(([requirementId, req]) => {
     const [requirementDoc, scNumber] = requirementId.split(":");
     const criterion = criteria[scNumber];
-    if (!requirementDoc.includes("wcag2") || !criterion || req.secondary) {
+    if (!requirementDoc.includes("wcag2") || !criterion || "secondary" in req) {
       return;
     }
 

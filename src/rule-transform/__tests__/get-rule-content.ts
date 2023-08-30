@@ -38,6 +38,12 @@ describe("getRuleContent", () => {
           failed: not satisfied
           passed: further testing needed
           inapplicable: further testing needed
+        wcag20:1.1.1: # Non-text Content (A)
+          secondary: |
+            This rule is **less strict** than this criterion.
+        using-aria:fourth:
+          title: Fourth rule of ARIA use
+          secondary: This rule is **more strict** than this requirement.
       input_aspects:
         - DOM Tree
       acknowledgments:
@@ -117,6 +123,17 @@ describe("getRuleContent", () => {
           </ul>
         </details></li>
       </ul>
+
+      ### Secondary Requirements
+
+      This rule is related to the following accessibility requirements, but was 
+      not designed to test this requirements directly. These 
+      [secondary requirements](https://w3c.github.io/wcag-act/act-rules-format.html#secondary-requirements)
+      can either be stricter than the rule requires, or may be satisfied in ways 
+      not tested by the rule:
+
+      - [1.1.1 Non-text Content (Level A)](https://www.w3.org/TR/WCAG21/#non-text-content): This rule is **less strict** than this criterion.
+      - [Fourth rule of ARIA use](https://www.w3.org/TR/using-aria/#fourth): This rule is **more strict** than this requirement.
 
       ## Input Aspects
 

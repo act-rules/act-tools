@@ -46,14 +46,22 @@ export type DefinitionFrontMatter = {
   key: string;
 };
 
-export type AccessibilityRequirement = {
+export type ConformanceRequirement = {
   failed: string;
   passed: string;
   inapplicable: string;
   title?: string;
   forConformance?: boolean;
-  secondary?: boolean;
 };
+
+export type SecondaryRequirement = {
+  secondary: string;
+  title?: string;
+};
+
+export type AccessibilityRequirement =
+  | ConformanceRequirement
+  | SecondaryRequirement;
 
 export type Contributor = { name: string; url?: string };
 
