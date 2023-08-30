@@ -54,7 +54,7 @@ export type ConformanceRequirement = {
 };
 
 export type SecondaryRequirement = {
-  secondary: boolean | string;
+  secondary: string;
   title?: string;
 };
 

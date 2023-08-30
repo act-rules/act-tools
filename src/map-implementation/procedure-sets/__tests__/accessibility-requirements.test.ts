@@ -11,8 +11,7 @@ describe("accessibility-requirements", () => {
     inapplicable: "further testing needed",
   };
   const secondaryRequirement: AccessibilityRequirement = {
-    secondary: true,
-    ...requirement,
+    secondary: "This rule is **less strict** than this criterion.",
   };
 
   describe("getRequirementUris", () => {

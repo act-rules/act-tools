@@ -33,13 +33,17 @@ describe("getRuleContent", () => {
       rule_type: atomic
       description: hello world
       accessibility_requirements:
-        wcag20:1.1.1: # Non-text Content (A)
-          secondary: To fail or not to fail, that is the question.
         wcag20:4.1.2: # Name, Role, Value (A)
           forConformance: true
           failed: not satisfied
           passed: further testing needed
           inapplicable: further testing needed
+        wcag20:1.1.1: # Non-text Content (A)
+          secondary: |
+            This rule is **less strict** than this criterion.
+        using-aria:fourth:
+          title: Fourth rule of ARIA use
+          secondary: This rule is **more strict** than this requirement.
       input_aspects:
         - DOM Tree
       acknowledgments:
@@ -119,9 +123,8 @@ describe("getRuleContent", () => {
       can either be stricter than the rule requires, or may be satisfied in ways 
       not tested by the rule:
 
-      <ul>
-        <li><a href="https://www.w3.org/TR/WCAG21/#non-text-content">1.1.1 Non-text Content (Level A)</a>: To fail or not to fail, that is the question.</li>
-      </ul>
+      - [1.1.1 Non-text Content (Level A)](https://www.w3.org/TR/WCAG21/#non-text-content): This rule is **less strict** than this criterion.
+      - [Fourth rule of ARIA use](https://www.w3.org/TR/using-aria/#fourth): This rule is **more strict** than this requirement.
 
       ## Input Aspects
 

@@ -45,10 +45,7 @@ export function getRequirementsMap({ frontmatter }: Args): string {
     requirementText.push(
       "### Secondary Requirements",
       secondaryReqText,
-      outdent`
-      <ul>
-      ${indent(secondaryReq.map(secondaryReqItem).join("\n"))}
-      </ul>`
+      secondaryReq.map(secondaryReqItem).join("\n")
     );
   }
 
@@ -136,13 +133,10 @@ function secondaryReqItem([
 ]: RequirementEntry): string {
   assert("secondary" in requirement, "secondary mus be defined");
   const { title, secondary } = requirement;
-  const reason = typeof secondary === "string" ? `: ${secondary}` : "";
   const accRequirement = getAccessibilityRequirement({ requirementId, title });
   if (!accRequirement) {
-    return `<li>${title + reason}</li>`;
+    return `- ${title}: ${secondary.trim()}`;
   }
   const label = accRequirement.title || title;
-  return outdent`
-    <li><a href="${accRequirement.url}">${label}</a>${reason}</li>
-  `;
+  return `- [${label}](${accRequirement.url}): ${secondary.trim()}`;
 }
