@@ -1,13 +1,13 @@
 import { Node, Parent, Literal } from "unist";
 import { outdent } from "outdent";
-import { RuleFrontMatter } from "../../types";
+import { RulePage } from "../../types";
 import { parseMarkdown } from "../../utils/parse-page";
 import { getFooter } from "./frontmatter/get-footer";
 import { getRuleMeta } from "./frontmatter/get-rule-meta";
 import { indent } from "../../utils/index";
 
 export const getFrontmatter = (
-  { frontmatter }: { frontmatter: RuleFrontMatter },
+  { frontmatter, filename }: Pick<RulePage, "frontmatter" | "filename">,
   _?: unknown,
   options?: Record<string, boolean | undefined>
 ): string => {
@@ -37,7 +37,7 @@ export const getFrontmatter = (
     proposed: ${options?.proposed || false}
     ${deprecated}
     rule_meta:
-    ${indent(getRuleMeta(frontmatter))}
+    ${indent(getRuleMeta(frontmatter, filename))}
     ---
   `.replace("\n\n", "\n");
 };

@@ -3,12 +3,16 @@ import moment from "moment";
 import { AccessibilityRequirement, RuleFrontMatter } from "../../../types";
 import { criteria } from "../../../data/index";
 
-export function getRuleMeta(frontmatter: RuleFrontMatter): string {
+export function getRuleMeta(
+  frontmatter: RuleFrontMatter,
+  fileName: string
+): string {
   const date = moment().format("D MMMM YYYY");
   return outdent`
     id: ${frontmatter.id}
     name: "${frontmatter.name}"
     rule_type: ${frontmatter.rule_type}
+    original_file: ${fileName}
     description: |
       ${frontmatter.description.trim()}
     last_modified: ${date}

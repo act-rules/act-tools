@@ -89,6 +89,7 @@ describe("getRuleContent", () => {
         id: abc123
         name: "Hello world"
         rule_type: atomic
+        original_file: abc123.md
         description: |
           hello world
         last_modified: ${moment().format("D MMMM YYYY")}

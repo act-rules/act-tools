@@ -8,6 +8,7 @@ function stripDashes(str: string): string {
 }
 
 describe("getRuleMeta", () => {
+  const filename = "rule-abc123.md";
   const sc214Requirement = {
     forConformance: true,
     failed: "not satisfied",
@@ -26,7 +27,7 @@ describe("getRuleMeta", () => {
   };
 
   it("has the appropriate data in the yaml", () => {
-    const ruleMeta = getRuleMeta(frontmatter);
+    const ruleMeta = getRuleMeta(frontmatter, filename);
     const frontmatterData = stripDashes(ruleMeta);
     const data = yaml.load(frontmatterData);
 
@@ -35,6 +36,7 @@ describe("getRuleMeta", () => {
       name: "hello world",
       description: "Some description\n",
       rule_type: "atomic",
+      original_file: filename,
       scs_tested: [
         {
           num: "2.1.4",
@@ -57,7 +59,7 @@ describe("getRuleMeta", () => {
         },
       },
     };
-    const ruleMeta = getRuleMeta(fm);
+    const ruleMeta = getRuleMeta(fm, filename);
     const frontmatterData = stripDashes(ruleMeta);
     const data = yaml.load(frontmatterData);
 
@@ -66,6 +68,7 @@ describe("getRuleMeta", () => {
       name: "hello world",
       description: "Some description\n",
       rule_type: "atomic",
+      original_file: filename,
       scs_tested: [
         {
           num: "1.4.3",
