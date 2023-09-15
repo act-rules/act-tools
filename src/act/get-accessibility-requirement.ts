@@ -26,6 +26,11 @@ const accessibilityDocs: AccessibilityDocuments = {
     baseURL: "https://www.w3.org/TR/graphics-aria-1.0/#",
     requirementType: "WAI-ARIA Graphics Module requirement",
   },
+  "html-aria": {
+    conformanceLevel: "ARIA in HTML",
+    baseURL: "https://www.w3.org/TR/html-aria/#",
+    requirementType: "ARIA in HTML requirement",
+  },
   "using-aria": {
     baseURL: "https://www.w3.org/TR/using-aria/#",
     requirementType: "WAI-ARIA rule",

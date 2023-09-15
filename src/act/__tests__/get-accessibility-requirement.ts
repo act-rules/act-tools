@@ -57,4 +57,22 @@ describe("getAccessibilityRequirement", () => {
       url: "https://www.w3.org/TR/using-aria/#fourth",
     });
   });
+
+  it("returns ARIA in HTML requirements", () => {
+    const fourth = getAccessibilityRequirement({
+      requirementId: "html-aria:docconformance",
+      title:
+        "ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML",
+    });
+
+    expect(fourth).toEqual({
+      conformanceLevel: "ARIA in HTML",
+      requirementType: "ARIA in HTML requirement",
+      title:
+        "ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML",
+      shortTitle:
+        "ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML",
+      url: "https://www.w3.org/TR/html-aria/#docconformance",
+    });
+  });
 });
