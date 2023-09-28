@@ -15,12 +15,14 @@ const accessibilityDocs: AccessibilityDocuments = {
     baseURL: "https://www.w3.org/TR/wai-aria-1.2/#",
     requirementType: "WAI-ARIA requirement",
   },
+  // Note: as of 28/09/2023, we have no rule mapping to DPUB ARIA
   "dpub-aria": {
     conformanceLevel:
       "WAI-ARIA Digital Publishing Module 1.0 author requirements",
     baseURL: "https://www.w3.org/TR/dpub-aria-1.0/#",
     requirementType: "WAI-ARIA Digital Publishing Module requirement",
   },
+  // Note: as of 28/09/2023, we have no rule mapping to Graphics ARIA
   "graphics-aria": {
     conformanceLevel: "WAI-ARIA Graphics Module 1.0 author requirements",
     baseURL: "https://www.w3.org/TR/graphics-aria-1.0/#",
