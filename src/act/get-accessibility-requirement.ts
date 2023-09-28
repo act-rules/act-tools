@@ -10,9 +10,9 @@ type AccessibilityDocuments = {
 };
 
 const accessibilityDocs: AccessibilityDocuments = {
-  aria11: {
-    conformanceLevel: "WAI-ARIA 1.1 author requirements",
-    baseURL: "https://www.w3.org/TR/wai-aria-1.1/#",
+  aria12: {
+    conformanceLevel: "WAI-ARIA 1.2 author requirements",
+    baseURL: "https://www.w3.org/TR/wai-aria-1.2/#",
     requirementType: "WAI-ARIA requirement",
   },
   "dpub-aria": {
