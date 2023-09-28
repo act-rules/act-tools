@@ -207,6 +207,28 @@ describe("getRuleContent", () => {
   it("accept all possible non-WCAG mappings", () => {
     const requirements = [
       {
+        source: `wcag-technique:ARIA5: # Using WAI-ARIA state and property attributes to expose the state of a user interface component
+          forConformance: false
+          failed: not satisfied
+          passed: further testing needed
+          inapplicable: further testing needed`,
+        expected: outdent`
+        <ul class="act-requirements-list">
+          <li><details>
+            <summary><span>ARIA5: Using WAI-ARIA state and property attributes to expose the state of a user interface component</span></summary>
+            <ul>
+              <li><a href="https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA5">Learn more about technique ARIA5</a></li>
+              <li>Not required for conformance to any W3C accessibility recommendation.</li>
+              <li>Outcome mapping: <ul>
+                <li>Any <code>failed</code> outcomes: technique is not satisfied</li>
+                <li>All <code>passed</code> outcomes: technique needs further testing</li>
+                <li>An <code>inapplicable</code> outcome: technique needs further testing</li>
+              </ul></li>
+            </ul>
+          </details></li>
+        </ul>`,
+      },
+      {
         source: `aria12:state_property_processing:
           title: ARIA 1.2, 8.6 State and Property Attribute Processing
           forConformance: true
@@ -228,20 +250,76 @@ describe("getRuleContent", () => {
             </ul>
           </details></li>
         </ul>`,
-        // {
-        //   source: `wcag-technique:ARIA5: # Using WAI-ARIA state and property attributes to expose the state of a user interface component
-        //     forConformance: false
-        //     failed: not satisfied
-        //     passed: further testing needed
-        //     inapplicable: further testing needed`,
-        //   expected: outdent``,
-        // },
       },
-      // { source: `dpub-aria:`, expected: outdent`` },
-      // { source: `graphics-aria`, expected: outdent`` },
-      // { source: `html-aria:`, expected: outdent`` },
-      // { source: `using-aria:`, expected: outdent`` },
-      // { source: `wcag-text:`, expected: outdent`` },
+      {
+        source: `html-aria:docconformance:
+          title: ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML
+          forConformance: true
+          failed: not satisfied
+          passed: satisfied
+          inapplicable: satisfied`,
+        expected: outdent`
+        <ul class="act-requirements-list">
+          <li><details>
+            <summary><span>ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML</span></summary>
+            <ul>
+              <li><a href="https://www.w3.org/TR/html-aria/#docconformance">Learn more about ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML</a></li>
+              <li><strong>Required for conformance</strong> to ARIA in HTML.</li>
+              <li>Outcome mapping: <ul>
+                <li>Any <code>failed</code> outcomes: ARIA in HTML requirement is not satisfied</li>
+                <li>All <code>passed</code> outcomes: ARIA in HTML requirement is satisfied</li>
+                <li>An <code>inapplicable</code> outcome: ARIA in HTML requirement is satisfied</li>
+              </ul></li>
+            </ul>
+          </details></li>
+        </ul>`,
+      },
+      {
+        source: `using-aria:fourth:
+          title: Fourth rule of ARIA use
+          forConformance: false
+          failed: not satisfied
+          passed: further testing needed
+          inapplicable: further testing needed`,
+        expected: outdent`
+        <ul class="act-requirements-list">
+          <li><details>
+            <summary><span>Fourth rule of ARIA use</span></summary>
+            <ul>
+              <li><a href="https://www.w3.org/TR/using-aria/#fourth">Learn more about Fourth rule of ARIA use</a></li>
+              <li>Not required for conformance to any W3C accessibility recommendation.</li>
+              <li>Outcome mapping: <ul>
+                <li>Any <code>failed</code> outcomes: WAI-ARIA rule is not satisfied</li>
+                <li>All <code>passed</code> outcomes: WAI-ARIA rule needs further testing</li>
+                <li>An <code>inapplicable</code> outcome: WAI-ARIA rule needs further testing</li>
+              </ul></li>
+            </ul>
+          </details></li>
+        </ul>`,
+      },
+      {
+        source: `wcag-text:cc5: # Non-interference due to mapping to 2.2.2
+          title: WCAG Non-Interference
+          forConformance: true
+          failed: not satisfied
+          passed: further testing needed
+          inapplicable: further testing needed`,
+        expected: outdent`
+        <ul class="act-requirements-list">
+          <li><details>
+            <summary><span>WCAG Non-Interference</span></summary>
+            <ul>
+              <li><a href="https://www.w3.org/TR/WCAG21/#cc5">Learn more about WCAG Non-Interference</a></li>
+              <li><strong>Required for conformance</strong> to WCAG 2.1.</li>
+              <li>Outcome mapping: <ul>
+                <li>Any <code>failed</code> outcomes: WCAG 2 conformance requirement is not satisfied</li>
+                <li>All <code>passed</code> outcomes: WCAG 2 conformance requirement needs further testing</li>
+                <li>An <code>inapplicable</code> outcome: WCAG 2 conformance requirement needs further testing</li>
+              </ul></li>
+            </ul>
+          </details></li>
+        </ul>`,
+      },
     ];
 
     for (const requirement of requirements) {
