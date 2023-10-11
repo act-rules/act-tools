@@ -29,16 +29,16 @@ describe("getAccessibilityRequirement", () => {
 
   it("returns ARIA requirements", () => {
     const ariaReq = getAccessibilityRequirement({
-      requirementId: "aria11:childrenArePresentational",
+      requirementId: "aria12:childrenArePresentational",
       title: "5.2.8 Presentational Children",
     });
 
     expect(ariaReq).toEqual({
-      conformanceLevel: "WAI-ARIA 1.1 author requirements",
+      conformanceLevel: "WAI-ARIA 1.2 author requirements",
       requirementType: "WAI-ARIA requirement",
       title: "5.2.8 Presentational Children",
       shortTitle: "5.2.8 Presentational Children",
-      url: "https://www.w3.org/TR/wai-aria-1.1/#childrenarepresentational",
+      url: "https://www.w3.org/TR/wai-aria-1.2/#childrenarepresentational",
     });
   });
 
@@ -55,6 +55,24 @@ describe("getAccessibilityRequirement", () => {
       title: "Fourth Rule of ARIA Use",
       shortTitle: "Fourth Rule",
       url: "https://www.w3.org/TR/using-aria/#fourth",
+    });
+  });
+
+  it("returns ARIA in HTML requirements", () => {
+    const fourth = getAccessibilityRequirement({
+      requirementId: "html-aria:docconformance",
+      title:
+        "ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML",
+    });
+
+    expect(fourth).toEqual({
+      conformanceLevel: "ARIA in HTML",
+      requirementType: "ARIA in HTML requirement",
+      title:
+        "ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML",
+      shortTitle:
+        "ARIA in HTML, 4. Document conformance requirements for use of ARIA attributes in HTML",
+      url: "https://www.w3.org/TR/html-aria/#docconformance",
     });
   });
 });

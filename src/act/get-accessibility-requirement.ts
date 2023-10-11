@@ -10,21 +10,28 @@ type AccessibilityDocuments = {
 };
 
 const accessibilityDocs: AccessibilityDocuments = {
-  aria11: {
-    conformanceLevel: "WAI-ARIA 1.1 author requirements",
-    baseURL: "https://www.w3.org/TR/wai-aria-1.1/#",
+  aria12: {
+    conformanceLevel: "WAI-ARIA 1.2 author requirements",
+    baseURL: "https://www.w3.org/TR/wai-aria-1.2/#",
     requirementType: "WAI-ARIA requirement",
   },
+  // Note: as of 28/09/2023, we have no rule mapping to DPUB ARIA
   "dpub-aria": {
     conformanceLevel:
       "WAI-ARIA Digital Publishing Module 1.0 author requirements",
     baseURL: "https://www.w3.org/TR/dpub-aria-1.0/#",
     requirementType: "WAI-ARIA Digital Publishing Module requirement",
   },
+  // Note: as of 28/09/2023, we have no rule mapping to Graphics ARIA
   "graphics-aria": {
     conformanceLevel: "WAI-ARIA Graphics Module 1.0 author requirements",
     baseURL: "https://www.w3.org/TR/graphics-aria-1.0/#",
     requirementType: "WAI-ARIA Graphics Module requirement",
+  },
+  "html-aria": {
+    conformanceLevel: "ARIA in HTML",
+    baseURL: "https://www.w3.org/TR/html-aria/#",
+    requirementType: "ARIA in HTML requirement",
   },
   "using-aria": {
     baseURL: "https://www.w3.org/TR/using-aria/#",

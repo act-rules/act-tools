@@ -108,8 +108,8 @@ describe("getRequirementsMap", () => {
         frontmatter: {
           ...defaultMatter,
           accessibility_requirements: {
-            "aria11:state_property_processing": {
-              title: "ARIA 1.1, 7.6 State and Property Attribute Processing",
+            "aria12:state_property_processing": {
+              title: "ARIA 1.2, 7.6 State and Property Attribute Processing",
               forConformance: true,
               ...scRequirement,
             },
@@ -117,7 +117,7 @@ describe("getRequirementsMap", () => {
         },
       });
       expect(reqMap).toContain(
-        "ARIA 1.1, 7.6 State and Property Attribute Processing"
+        "ARIA 1.2, 7.6 State and Property Attribute Processing"
       );
       expect(reqMap).toContain("Required for conformance");
       expect(reqMap).toContain("WAI-ARIA requirement is not satisfied");
