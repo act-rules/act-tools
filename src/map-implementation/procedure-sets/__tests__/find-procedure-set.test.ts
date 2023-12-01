@@ -164,5 +164,35 @@ describe("findProcedureSet", () => {
       ]);
       expect(procedureSet).toHaveProperty("consistency", "partial");
     });
+
+    it("continues to filter proposed test cases on approved rules", () => {
+      const procedureSet = findProcedureSet([
+        {
+          ...procedureDefaults,
+          testResults: [
+            { ...correctFail, testcaseId: "fail1" },
+            { ...falseNegativeFail, testcaseId: "fail2" },
+            {
+              ...falsePositivePass,
+              testcaseId: "pass1",
+              testCaseApproved: false,
+            },
+          ],
+        },
+        {
+          ...procedureDefaults,
+          testResults: [
+            { ...falseNegativeFail, testcaseId: "fail1" },
+            { ...correctFail, testcaseId: "fail2" },
+            {
+              ...falsePositivePass,
+              testcaseId: "pass1",
+              testCaseApproved: false,
+            },
+          ],
+        },
+      ]);
+      expect(procedureSet).toHaveProperty("consistency", "complete");
+    });
   });
 });
