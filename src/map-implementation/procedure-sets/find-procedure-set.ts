@@ -130,7 +130,7 @@ function combineTestResults(
   testResult: TestResult,
   procedureSet: ActProcedureMapping[]
 ): TestResult {
-  const { testcaseId, expected, testCaseName, testCaseUrl } = testResult;
+  const { testcaseId, expected } = testResult;
   const outcomes: ActualOutcome[] = [];
   const testcaseResults: TestResult[] = [];
   procedureSet.forEach((procedure) => {
@@ -143,9 +143,7 @@ function combineTestResults(
   testcaseResults.forEach((result) => outcomes.push(...result.outcomes));
   const automatic = testcaseResults.every(({ automatic }) => automatic);
   return {
-    testcaseId,
-    testCaseName,
-    testCaseUrl,
+    ...testResult,
     expected,
     outcomes,
     automatic,
