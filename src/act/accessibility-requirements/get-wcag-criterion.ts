@@ -11,7 +11,7 @@ type SuccessCriterion = {
 const scUrls: Record<string, SuccessCriterion | undefined> = successCriteria;
 
 const requirementType = "success criterion";
-const latestWcagVersion = "2.1";
+const latestWcagVersion = "2.2";
 const highestLevel = "AAA";
 
 // For WCAG SC. Title, URL and more is grabbed from data fetched during build.
@@ -47,6 +47,6 @@ function fallbackCriterion(scNumber: string) {
   return {
     requirementType,
     title: `${scNumber} Unknown success criterion`,
-    url: "https://www.w3.org/TR/WCAG21/",
+    url: "https://www.w3.org/TR/WCAG22/",
   };
 }

@@ -113,7 +113,7 @@ describe("getRuleContent", () => {
         <li><details>
           <summary><span>4.1.2 Name, Role, Value (Level A)</span></summary>
           <ul>
-            <li><a href="https://www.w3.org/TR/WCAG21/#name-role-value">Learn more about 4.1.2 Name, Role, Value</a></li>
+            <li><a href="https://www.w3.org/TR/WCAG22/#name-role-value">Learn more about 4.1.2 Name, Role, Value</a></li>
             <li><strong>Required for conformance</strong> to WCAG 2.0 and later on level A and higher.</li>
             <li>Outcome mapping: <ul>
               <li>Any <code>failed</code> outcomes: success criterion is not satisfied</li>
@@ -132,7 +132,7 @@ describe("getRuleContent", () => {
       can either be stricter than the rule requires, or may be satisfied in ways 
       not tested by the rule:
 
-      - [1.1.1 Non-text Content (Level A)](https://www.w3.org/TR/WCAG21/#non-text-content): This rule is **less strict** than this criterion.
+      - [1.1.1 Non-text Content (Level A)](https://www.w3.org/TR/WCAG22/#non-text-content): This rule is **less strict** than this criterion.
       - [Fourth rule of ARIA use](https://www.w3.org/TR/using-aria/#fourth): This rule is **more strict** than this requirement.
 
       ## Input Aspects
@@ -217,7 +217,7 @@ describe("getRuleContent", () => {
           <li><details>
             <summary><span>ARIA5: Using WAI-ARIA state and property attributes to expose the state of a user interface component</span></summary>
             <ul>
-              <li><a href="https://www.w3.org/WAI/WCAG21/Techniques/aria/ARIA5">Learn more about technique ARIA5</a></li>
+              <li><a href="https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA5">Learn more about technique ARIA5</a></li>
               <li>Not required for conformance to any W3C accessibility recommendation.</li>
               <li>Outcome mapping: <ul>
                 <li>Any <code>failed</code> outcomes: technique is not satisfied</li>
@@ -309,8 +309,8 @@ describe("getRuleContent", () => {
           <li><details>
             <summary><span>WCAG Non-Interference</span></summary>
             <ul>
-              <li><a href="https://www.w3.org/TR/WCAG21/#cc5">Learn more about WCAG Non-Interference</a></li>
-              <li><strong>Required for conformance</strong> to WCAG 2.1.</li>
+              <li><a href="https://www.w3.org/TR/WCAG22/#cc5">Learn more about WCAG Non-Interference</a></li>
+              <li><strong>Required for conformance</strong> to WCAG 2.2.</li>
               <li>Outcome mapping: <ul>
                 <li>Any <code>failed</code> outcomes: WCAG 2 conformance requirement is not satisfied</li>
                 <li>All <code>passed</code> outcomes: WCAG 2 conformance requirement needs further testing</li>

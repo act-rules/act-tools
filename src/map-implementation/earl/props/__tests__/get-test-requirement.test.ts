@@ -35,7 +35,7 @@ describe("getTestRequirement", () => {
       title: "my-custom-rule",
       isPartOf: [
         {
-          "@id": "https://www.w3.org/TR/WCAG21/#name-role-value",
+          "@id": "https://www.w3.org/TR/WCAG22/#name-role-value",
         },
       ],
     });

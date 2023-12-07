@@ -8,7 +8,7 @@ describe("getWcagCriterion", () => {
       conformanceLevel: "WCAG 2.0 and later on level A and higher",
       title: "1.1.1 Non-text Content (Level A)",
       shortTitle: "1.1.1 Non-text Content",
-      url: "https://www.w3.org/TR/WCAG21/#non-text-content",
+      url: "https://www.w3.org/TR/WCAG22/#non-text-content",
     });
   });
 
@@ -16,10 +16,21 @@ describe("getWcagCriterion", () => {
     const criterion = getWcagCriterion("1.3.4");
     expect(criterion).toEqual({
       requirementType: "success criterion",
-      conformanceLevel: "WCAG 2.1 on level AA and higher",
+      conformanceLevel: "WCAG 2.1 and later on level AA and higher",
       title: "1.3.4 Orientation (Level AA)",
       shortTitle: "1.3.4 Orientation",
-      url: "https://www.w3.org/TR/WCAG21/#orientation",
+      url: "https://www.w3.org/TR/WCAG22/#orientation",
+    });
+  });
+
+  it("returns a criterion for WCAG 2.2 level AA", () => {
+    const criterion = getWcagCriterion("2.5.8");
+    expect(criterion).toEqual({
+      requirementType: "success criterion",
+      conformanceLevel: "WCAG 2.2 on level AA and higher",
+      title: "2.5.8 Target Size (Minimum) (Level AA)",
+      shortTitle: "2.5.8 Target Size (Minimum)",
+      url: "https://www.w3.org/TR/WCAG22/#target-size-minimum",
     });
   });
 
@@ -30,7 +41,7 @@ describe("getWcagCriterion", () => {
       conformanceLevel: "WCAG 2.0 and later on level AAA",
       title: "1.2.9 Audio-only (Live) (Level AAA)",
       shortTitle: "1.2.9 Audio-only (Live)",
-      url: "https://www.w3.org/TR/WCAG21/#audio-only-live",
+      url: "https://www.w3.org/TR/WCAG22/#audio-only-live",
     });
   });
 
@@ -39,7 +50,7 @@ describe("getWcagCriterion", () => {
     expect(criterion).toEqual({
       requirementType: "success criterion",
       title: "0.0.0 Unknown success criterion",
-      url: "https://www.w3.org/TR/WCAG21/",
+      url: "https://www.w3.org/TR/WCAG22/",
     });
   });
 });

@@ -9,7 +9,7 @@ describe("getWcagTechnique", () => {
       title:
         "H2: Combining adjacent image and text links for the same resource",
       shortTitle: "technique H2",
-      url: "https://www.w3.org/WAI/WCAG21/Techniques/html/H2",
+      url: "https://www.w3.org/WAI/WCAG22/Techniques/html/H2",
     });
   });
 
@@ -19,7 +19,7 @@ describe("getWcagTechnique", () => {
       requirementType: "technique",
       title: "H1: Unknown technique",
       shortTitle: "technique H1",
-      url: "https://www.w3.org/WAI/WCAG21/Techniques/#html",
+      url: "https://www.w3.org/WAI/WCAG22/Techniques/#html",
     });
   });
 
@@ -29,7 +29,7 @@ describe("getWcagTechnique", () => {
       requirementType: "technique",
       title: "X123: Unknown technique",
       shortTitle: "technique X123",
-      url: "https://www.w3.org/WAI/WCAG21/Techniques/",
+      url: "https://www.w3.org/WAI/WCAG22/Techniques/",
     });
   });
 });

@@ -38,8 +38,8 @@ const accessibilityDocs: AccessibilityDocuments = {
     requirementType: "WAI-ARIA rule",
   },
   "wcag-text": {
-    conformanceLevel: "WCAG 2.1",
-    baseURL: "https://www.w3.org/TR/WCAG21/#",
+    conformanceLevel: "WCAG 2.2",
+    baseURL: "https://www.w3.org/TR/WCAG22/#",
     requirementType: "WCAG 2 conformance requirement",
   },
 };

@@ -98,7 +98,7 @@ describe("earlToActAssertions", () => {
           "@type": "Assertion",
           test: {
             title: "procedure-a",
-            "dct:isPartOf": "https://www.w3.org/TR/WCAG21/#name-role-value",
+            "dct:isPartOf": "https://www.w3.org/TR/WCAG22/#name-role-value",
           },
           subject: { source: testCaseUrl },
           result: { outcome: "earl:failed" },
