@@ -6,6 +6,6 @@ The technique-titles.json file can be updated by running the following code in t
 
 ```js
 JSON.stringify(Object.fromEntries($$('.toc-wcag-docs a').map(a => {
-  return a.textContent.split(': ').map(t => t.replaceAll(/\s+/g, ' '))
+  return a.textContent.split(': ').map(t => t.replaceAll(/\s+/g, ' ').trim())
 })), null, 2)
 ```
