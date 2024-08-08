@@ -17,11 +17,13 @@ describe("accessibility-requirements", () => {
   describe("getRequirementUris", () => {
     it("returns wcag URIs", () => {
       const uris = getRequirementUris({
+        "wcag22:1.3.1": requirement,
         "wcag21:1.1.1": requirement,
         "wcag20:4.1.2": requirement,
       });
-      expect(uris).toHaveLength(2);
+      expect(uris).toHaveLength(3);
       expect(uris).toContain("WCAG2:non-text-content");
+      expect(uris).toContain("WCAG2:info-and-relationships");
       expect(uris).toContain("WCAG2:name-role-value");
     });
 
@@ -112,7 +114,7 @@ describe("accessibility-requirements", () => {
     it("ignores non-normative requirements", () => {
       const maps = mapsAllRequirements(["WCAG2:non-text-content"], {
         "wcag21:1.1.1": requirement,
-        "https://www.w3.org/WAI/WCAG21/Techniques/failures/F3.html":
+        "https://www.w3.org/WAI/WCAG22/Techniques/failures/F3.html":
           requirement,
       });
       expect(maps).toBe(true);

@@ -34,7 +34,7 @@ const technologyMap: Record<string, string | undefined> = {
 };
 
 function getTechniqueUrl(techniqueId: string): string {
-  const baseUrl = `https://www.w3.org/WAI/WCAG21/Techniques/`;
+  const baseUrl = `https://www.w3.org/WAI/WCAG22/Techniques/`;
   techniqueId = techniqueId.toUpperCase();
   const prefix = techniqueId.replace(/[0-9]/g, "").toLowerCase();
   const techniqueType = technologyMap[prefix];

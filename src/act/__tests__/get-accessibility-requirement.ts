@@ -10,7 +10,7 @@ describe("getAccessibilityRequirement", () => {
       title:
         "H2: Combining adjacent image and text links for the same resource",
       shortTitle: "technique H2",
-      url: "https://www.w3.org/WAI/WCAG21/Techniques/html/H2",
+      url: "https://www.w3.org/WAI/WCAG22/Techniques/html/H2",
     });
   });
 
@@ -23,7 +23,7 @@ describe("getAccessibilityRequirement", () => {
       requirementType: "success criterion",
       title: "1.1.1 Non-text Content (Level A)",
       shortTitle: "1.1.1 Non-text Content",
-      url: "https://www.w3.org/TR/WCAG21/#non-text-content",
+      url: "https://www.w3.org/TR/WCAG22/#non-text-content",
     });
   });
 
