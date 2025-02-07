@@ -1,6 +1,9 @@
 import { Parent } from "unist";
-import { AtomicRuleFrontmatter, RuleFrontMatter } from "../../types";
-import * as fs from "fs";
+import {
+  AccessibilitySupport,
+  AtomicRuleFrontmatter,
+  RuleFrontMatter,
+} from "../../types";
 
 type Args = {
   body: string;
@@ -8,11 +11,17 @@ type Args = {
   frontmatter: RuleFrontMatter;
 };
 
-export function getRuleBody({ body, markdownAST, frontmatter }: Args): string {
+export function getRuleBody(
+  { body, markdownAST, frontmatter }: Args,
+  _1: unknown,
+  _2: unknown,
+  _3: unknown,
+  supportKeys: AccessibilitySupport
+): string {
   body = stripExamples({ body });
   body = stripReferences({ body, markdownAST });
   if ("input_aspects" in frontmatter) {
-    body = addInputAspects(frontmatter, body);
+    body = addInputAspects(frontmatter, body, supportKeys);
   }
   return body.trim();
 }
@@ -52,14 +61,9 @@ function stripReferences({
 
 function addInputAspects(
   frontmatter: AtomicRuleFrontmatter,
-  body: string
+  body: string,
+  supportKeys: AccessibilitySupport
 ): string {
-  const supportKeys = JSON.parse(
-    fs.readFileSync(
-      require.resolve("../input-aspects-to-accessibility-support.json"),
-      "utf8"
-    )
-  );
   frontmatter.input_aspects.forEach((aspect) => {
     if (aspect.toLowerCase() in supportKeys) {
       body = updateAccessibilitySupportInBody(
