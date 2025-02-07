@@ -2,6 +2,7 @@ import outdent from "outdent";
 import { Parent } from "unist";
 import { parseMarkdown } from "../../../utils/parse-page";
 import { getRuleBody } from "../get-rule-body";
+import { RuleFrontMatter } from "../../../types";
 
 describe("rule-content", () => {
   describe("get-rule-body", () => {
@@ -11,7 +12,11 @@ describe("rule-content", () => {
 
       `; // indent is intentional
       const markdownAST = parseMarkdown(body) as Parent;
-      const stripped = getRuleBody({ body, markdownAST });
+      const frontmatter = {
+        rule_type: "atomic",
+        input_aspects: [""],
+      } as RuleFrontMatter;
+      const stripped = getRuleBody({ body, markdownAST, frontmatter });
 
       expect(stripped).toBe(body.trim());
     });
@@ -36,8 +41,12 @@ describe("rule-content", () => {
       `; // blank line is intentional
       const body = content + "\n" + references;
       const markdownAST = parseMarkdown(body) as Parent;
+      const frontmatter = {
+        rule_type: "atomic",
+        input_aspects: [""],
+      } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST });
+      const stripped = getRuleBody({ body, markdownAST, frontmatter });
       expect(stripped).toBe(content.trim());
     });
 
@@ -61,8 +70,12 @@ describe("rule-content", () => {
       `; // blank line is intentional
       const body = content + "\n" + examples;
       const markdownAST = parseMarkdown(body) as Parent;
+      const frontmatter = {
+        rule_type: "atomic",
+        input_aspects: [""],
+      } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST });
+      const stripped = getRuleBody({ body, markdownAST, frontmatter });
       expect(stripped).toBe(content.trim());
     });
 
@@ -84,8 +97,105 @@ describe("rule-content", () => {
       `; // blank line is intentional
       const body = content + "\n" + examples;
       const markdownAST = parseMarkdown(body) as Parent;
+      const frontmatter = {
+        rule_type: "atomic",
+        input_aspects: [""],
+      } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST });
+      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      expect(stripped).toBe(content.trim());
+    });
+
+    it("added accessibility support note for accessibility tree input aspect", () => {
+      const content = outdent`
+        ## Hello
+        Welcome to the [party][] [time][] in the [ACT Taskforce][]!
+
+        ### Accessibility Support
+
+        There are no accessibility support issues known.
+
+        ### Bibliography
+
+      `;
+      const output = outdent`
+        ## Hello
+        Welcome to the [party][] [time][] in the [ACT Taskforce][]!
+
+        ### Accessibility Support
+
+        \`aria-busy\` exists but, currently, is not widely supported, so the rule ignores it.
+
+        ### Bibliography
+
+      `;
+      const body = content + "\n";
+      const markdownAST = parseMarkdown(body) as Parent;
+      const frontmatter = {
+        rule_type: "atomic",
+        input_aspects: ["Accessibility tree"],
+      } as RuleFrontMatter;
+
+      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      expect(stripped).toBe(output.trim());
+    });
+
+    it("added accessibility support note for accessibility tree input aspect to existing notes", () => {
+      const content = outdent`
+        ## Hello
+        Welcome to the [party][] [time][] in the [ACT Taskforce][]!
+
+        ### Accessibility Support
+
+        This is a support note.
+
+        ### Bibliography
+
+      `;
+      const output = outdent`
+        ## Hello
+        Welcome to the [party][] [time][] in the [ACT Taskforce][]!
+
+        ### Accessibility Support
+
+        This is a support note.
+
+        \`aria-busy\` exists but, currently, is not widely supported, so the rule ignores it.
+
+        ### Bibliography
+
+      `;
+      const body = content + "\n";
+      const markdownAST = parseMarkdown(body) as Parent;
+      const frontmatter = {
+        rule_type: "atomic",
+        input_aspects: ["Accessibility tree"],
+      } as RuleFrontMatter;
+
+      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      expect(stripped).toBe(output.trim());
+    });
+
+    it("don't change accessibility support note", () => {
+      const content = outdent`
+        ## Hello
+        Welcome to the [party][] [time][] in the [ACT Taskforce][]!
+
+        ### Accessibility Support
+
+        There are no accessibility support issues known.
+
+        ### Bibliography
+
+      `;
+      const body = content + "\n";
+      const markdownAST = parseMarkdown(body) as Parent;
+      const frontmatter = {
+        rule_type: "atomic",
+        input_aspects: [""],
+      } as RuleFrontMatter;
+
+      const stripped = getRuleBody({ body, markdownAST, frontmatter });
       expect(stripped).toBe(content.trim());
     });
   });
