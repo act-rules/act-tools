@@ -16,7 +16,13 @@ describe("rule-content", () => {
         rule_type: "atomic",
         input_aspects: [""],
       } as RuleFrontMatter;
-      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      const stripped = getRuleBody(
+        { body, markdownAST, frontmatter },
+        "",
+        "",
+        "",
+        {}
+      );
 
       expect(stripped).toBe(body.trim());
     });
@@ -46,7 +52,13 @@ describe("rule-content", () => {
         input_aspects: [""],
       } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      const stripped = getRuleBody(
+        { body, markdownAST, frontmatter },
+        "",
+        "",
+        "",
+        {}
+      );
       expect(stripped).toBe(content.trim());
     });
 
@@ -75,7 +87,13 @@ describe("rule-content", () => {
         input_aspects: [""],
       } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      const stripped = getRuleBody(
+        { body, markdownAST, frontmatter },
+        "",
+        "",
+        "",
+        {}
+      );
       expect(stripped).toBe(content.trim());
     });
 
@@ -102,7 +120,13 @@ describe("rule-content", () => {
         input_aspects: [""],
       } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      const stripped = getRuleBody(
+        { body, markdownAST, frontmatter },
+        "",
+        "",
+        "",
+        {}
+      );
       expect(stripped).toBe(content.trim());
     });
 
@@ -136,7 +160,16 @@ describe("rule-content", () => {
         input_aspects: ["Accessibility tree"],
       } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      const stripped = getRuleBody(
+        { body, markdownAST, frontmatter },
+        "",
+        "",
+        "",
+        {
+          "accessibility tree":
+            "`aria-busy` exists but, currently, is not widely supported, so the rule ignores it.",
+        }
+      );
       expect(stripped).toBe(output.trim());
     });
 
@@ -172,7 +205,16 @@ describe("rule-content", () => {
         input_aspects: ["Accessibility tree"],
       } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      const stripped = getRuleBody(
+        { body, markdownAST, frontmatter },
+        "",
+        "",
+        "",
+        {
+          "accessibility tree":
+            "`aria-busy` exists but, currently, is not widely supported, so the rule ignores it.",
+        }
+      );
       expect(stripped).toBe(output.trim());
     });
 
@@ -195,7 +237,16 @@ describe("rule-content", () => {
         input_aspects: [""],
       } as RuleFrontMatter;
 
-      const stripped = getRuleBody({ body, markdownAST, frontmatter });
+      const stripped = getRuleBody(
+        { body, markdownAST, frontmatter },
+        "",
+        "",
+        "",
+        {
+          "accessibility tree":
+            "`aria-busy` exists but, currently, is not widely supported, so the rule ignores it.",
+        }
+      );
       expect(stripped).toBe(content.trim());
     });
   });
