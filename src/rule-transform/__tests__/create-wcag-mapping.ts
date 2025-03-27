@@ -14,6 +14,11 @@ const mappingBase = {
   wcagTechniques: [],
   proposed: false,
   deprecated: false,
+  frontmatter: {
+    accessibility_requirements: null,
+    name: "Hello world",
+    id: "123abc",
+  },
 };
 
 function getRulePage(metadata = ""): RulePage {
@@ -78,6 +83,13 @@ describe("rule-transform", () => {
             permalink: "/standards-guidelines/act/rules/123abc/proposed/",
             successCriteria: ["non-text-content", "language-of-page"],
             proposed: true,
+            frontmatter: {
+              accessibility_requirements: {
+                "wcag20:1.1.1": { forConformance: true },
+                "wcag20:3.1.1": { forConformance: true },
+              },
+              ...rulePage.frontmatter,
+            },
           },
         ],
       });
@@ -106,6 +118,14 @@ describe("rule-transform", () => {
             successCriteria: ["non-text-content"],
             wcagTechniques: ["G123", "H42"],
             proposed: true,
+            frontmatter: {
+              accessibility_requirements: {
+                "wcag-technique:G123": { forConformance: false },
+                "wcag-technique:H42": { forConformance: false },
+                "wcag20:1.1.1": { forConformance: true },
+              },
+              ...rulePage.frontmatter,
+            },
           },
         ],
       });
@@ -261,6 +281,10 @@ describe("rule-transform", () => {
             title: "Hello world",
             permalink: "/standards-guidelines/act/rules/123abc/",
             deprecated: true,
+            frontmatter: {
+              deprecated: "This rule is deprecated.",
+              ...rulePage.frontmatter,
+            },
           },
         ],
       });

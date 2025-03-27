@@ -10,6 +10,7 @@ export type ActWcagMap = {
   wcagTechniques: string[];
   proposed?: boolean;
   deprecated?: boolean;
+  frontmatter: RuleFrontMatter;
 };
 
 export type WcagMapping = {
@@ -61,6 +62,7 @@ export function updateWcagMapping(
     wcagTechniques,
     deprecated: typeof deprecated === "string",
     proposed,
+    frontmatter,
   });
   return wcagMapping;
 }
