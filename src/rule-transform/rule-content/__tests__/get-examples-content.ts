@@ -41,7 +41,7 @@ describe("rule-content", () => {
         assets: {},
       });
       expect(examples).toBe(outdent`
-        ## Test Cases
+        ## Examples
 
         ### Passed
 
@@ -79,7 +79,7 @@ describe("rule-content", () => {
         { noExampleLinks: true }
       );
       expect(examples).toBe(outdent`
-        ## Test Cases
+        ## Examples
 
         ### Passed
 
@@ -116,7 +116,7 @@ describe("rule-content", () => {
         assets,
       });
       expect(examples).toBe(outdent`
-        ## Test Cases
+        ## Examples
 
         <details class="act-inline-assets" markdown="block">
         <summary><span>This Javascript file is used in several examples:</span></summary>
@@ -171,7 +171,7 @@ describe("rule-content", () => {
         assets,
       });
       expect(examples).toBe(outdent`
-        ## Test Cases
+        ## Examples
 
         <details class="act-inline-assets" markdown="block">
         <summary><span>These Javascript files are used in several examples:</span></summary>
@@ -233,7 +233,7 @@ describe("rule-content", () => {
         assets,
       });
       expect(examples).toBe(outdent`
-        ## Test Cases
+        ## Examples
 
         <details class="act-inline-assets" markdown="block">
         <summary><span>These HTML, Javascript, and CSS files are used in several examples:</span></summary>
@@ -300,7 +300,7 @@ describe("rule-content", () => {
         assets,
       });
       expect(examples).toBe(outdent`
-        ## Test Cases
+        ## Examples
 
         <details class="act-inline-assets" markdown="block">
         <summary><span>These Javascript and CSS files are used in several examples:</span></summary>
