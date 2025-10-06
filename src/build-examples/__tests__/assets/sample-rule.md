@@ -3,7 +3,7 @@ id: abc123
 description: abc123 rule
 ---
 
-## Test Cases
+## Examples
 
 ### Passed
 

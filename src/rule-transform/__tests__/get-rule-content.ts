@@ -141,7 +141,7 @@ describe("getRuleContent", () => {
 
       - [DOM Tree](https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom)
 
-      ## Test Cases
+      ## Examples
       
       <details class="act-inline-assets" markdown="block">
       <summary><span>These Javascript and CSS files are used in several examples:</span></summary>
@@ -394,7 +394,7 @@ describe("getRuleContent", () => {
 
       - [DOM Tree](https://www.w3.org/TR/act-rules-aspects/#input-aspects-dom)
 
-      ## Test Cases
+      ## Examples
       
       ### Passed
 
