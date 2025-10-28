@@ -18,7 +18,8 @@
     "resolveJsonModule": true,
     "baseUrl": "./",
     "outDir": "dist",
-    "composite": true
+    "composite": true,
+    "rootDir": "src"
   },
   "ts-node": {
     "files": true
