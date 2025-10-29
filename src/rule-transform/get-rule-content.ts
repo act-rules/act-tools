@@ -1,4 +1,4 @@
-import { RulePage, DefinitionPage } from "../types";
+import { RulePage, DefinitionPage, AccessibilitySupport } from "../types";
 import { getFrontmatter } from "./rule-content/get-frontmatter";
 import { getRuleBody } from "./rule-content/get-rule-body";
 import { getExamplesContent } from "./rule-content/get-examples-content";
@@ -12,7 +12,8 @@ type RuleGenerator = (
   ruleData: RulePage,
   glossary: DefinitionPage[],
   options: Record<string, boolean | undefined>,
-  rulesData: RulePage[]
+  rulesData: RulePage[],
+  supportKeys: AccessibilitySupport
 ) => string;
 
 const sectionMethodsInOrder: RuleGenerator[] = [
@@ -29,11 +30,18 @@ export const getRuleContent: RuleGenerator = (
   ruleData,
   glossary,
   options = {},
-  rulesData
+  rulesData,
+  supportKeys
 ) => {
   const ruleDefinitions = getRuleDefinitions(ruleData, glossary);
   const rulePageSections = sectionMethodsInOrder.map((createContent) => {
-    return createContent(ruleData, ruleDefinitions, options, rulesData);
+    return createContent(
+      ruleData,
+      ruleDefinitions,
+      options,
+      rulesData,
+      supportKeys
+    );
   });
   return rulePageSections.join("\n\n") + "\n";
 };
