@@ -27,6 +27,7 @@ export type RuleFrontMatterBase = {
   deprecated?: string;
   accessibility_requirements?: Record<string, AccessibilityRequirement>;
   acknowledgments?: Record<string, string[]>;
+  rules_format?: string;
 };
 
 export type AtomicRuleFrontmatter = RuleFrontMatterBase & {
