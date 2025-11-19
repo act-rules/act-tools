@@ -124,4 +124,21 @@ describe("getFooter", () => {
       expect(footer1).toContain(`approved and published by the ${agwg}`);
     });
   });
+
+  describe("rules_format", () => {
+    it("does not include rules_format paragraph when not provided", () => {
+      const footer = getFooter({});
+      expect(footer).not.toContain("This rule is compatible with");
+      expect(footer).not.toContain("ACT Rules Format");
+    });
+
+    it("includes rules_format paragraph with version number", () => {
+      const footer1 = getFooter({ rules_format: "1.0" });
+      expect(footer1).toContain("This rule is compatible with");
+      expect(footer1).toMatch(/ACT Rules Format \d\.\d/);
+      expect(footer1).toMatch(
+        /href="https:\/\/www\.w3\.org\/TR\/act-rules-format-\d\.\d\/"/
+      );
+    });
+  });
 });
