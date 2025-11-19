@@ -8,10 +8,6 @@ export function getRuleMeta(
   fileName: string
 ): string {
   const date = moment().format("D MMMM YYYY");
-  const rulesFormat = frontmatter.rules_format
-    ? `rules_format: ${frontmatter.rules_format}\n`
-    : "";
-  const scsTested = getSCsTested(frontmatter.accessibility_requirements || {});
   return outdent`
     id: ${frontmatter.id}
     name: "${frontmatter.name}"
@@ -20,7 +16,7 @@ export function getRuleMeta(
     description: |
       ${frontmatter.description.trim()}
     last_modified: ${date}
-    ${rulesFormat}${scsTested}
+    ${getSCsTested(frontmatter.accessibility_requirements || {})}
   `.trim();
 }
 
