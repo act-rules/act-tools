@@ -42,7 +42,7 @@ function getRulesFormatParagraph(rules_format?: string): string {
     return "";
   }
   return (
-    `<p>This rule is compatible with ` +
+    `<p>This rule conforms to ` +
     `<a href="https://www.w3.org/TR/act-rules-format-${rules_format}/">` +
     `ACT Rules Format ${rules_format}</a>.</p>\n`
   );
