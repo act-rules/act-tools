@@ -11,6 +11,7 @@ program
   .option("-r, --rulesDir <dirname>", "Path to _rules directory")
   .option("-g, --glossaryDir <dirname>", "Path to glossary directory")
   .option("-t, --testAssetsDir <dirname>", "Path to test-assets dir")
+  .option("-a, --accSupFile <filename>", "Path to accessibility support file")
   .option("-p, --proposed", "List the rule with the Proposed rule template")
   .option("--noExampleLinks", "Don't add links to examples");
 
