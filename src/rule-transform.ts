@@ -3,7 +3,7 @@ import { pathExistsSync, readFileSync } from "fs-extra";
 import { getRulePages, getDefinitionPages } from "./utils/get-page-data";
 import { createFile } from "./utils";
 import { getRuleContent } from "./rule-transform/get-rule-content";
-import { DefinitionPage, RulePage } from "./types";
+import { AccessibilitySupport, DefinitionPage, RulePage } from "./types";
 import { createWcagMapping } from "./rule-transform/create-wcag-mapping";
 import { isEqualExcludingDates } from "./utils/is-equal-excluding-dates";
 
@@ -13,6 +13,7 @@ export type RuleTransformOptions = Partial<{
   testAssetsDir: string;
   outDir: string;
   ruleIds: string[];
+  accSupFile: string;
   proposed: boolean;
   noExampleLinks: boolean;
 }>;
@@ -23,15 +24,25 @@ export async function ruleTransform({
   testAssetsDir = ".",
   ruleIds,
   outDir = ".",
+  accSupFile = "./input-aspects-to-accessibility-support.json",
   proposed = false,
   noExampleLinks = false,
 }: RuleTransformOptions): Promise<void> {
   const options = { proposed, noExampleLinks };
   const rulesData = getRulePages(rulesDir, testAssetsDir, ruleIds);
   const glossary = getDefinitionPages(glossaryDir);
+  const supportKeys: AccessibilitySupport = JSON.parse(
+    readFileSync(accSupFile, "utf8")
+  );
 
   for (const ruleData of rulesData) {
-    const { content } = buildTfRuleFile(ruleData, glossary, options, rulesData);
+    const { content } = buildTfRuleFile(
+      ruleData,
+      glossary,
+      options,
+      rulesData,
+      supportKeys
+    );
     const ruleId = ruleData.frontmatter.id;
     const fileName = path.join(ruleId, `${proposed ? "proposed" : "index"}.md`);
     const absolutePath = path.resolve(outDir, "content", "rules", fileName);
@@ -47,11 +58,18 @@ function buildTfRuleFile(
   ruleData: RulePage,
   glossary: DefinitionPage[],
   options: Record<string, boolean | undefined>,
-  rulesData: RulePage[]
+  rulesData: RulePage[],
+  supportKeys: AccessibilitySupport
 ) {
   return {
     filepath: ruleData.filename,
-    content: getRuleContent(ruleData, glossary, options, rulesData),
+    content: getRuleContent(
+      ruleData,
+      glossary,
+      options,
+      rulesData,
+      supportKeys
+    ),
   };
 }
 

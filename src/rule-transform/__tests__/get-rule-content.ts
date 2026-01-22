@@ -74,7 +74,8 @@ describe("getRuleContent", () => {
       glossary,
 
       { matrix: true },
-      []
+      [],
+      {}
     );
 
     expect(taskforceMarkdown).toBe(
@@ -355,7 +356,8 @@ describe("getRuleContent", () => {
         glossary,
 
         { matrix: true },
-        []
+        [],
+        {}
       );
 
       expect(taskforceMarkdown).toBe(
