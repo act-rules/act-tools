@@ -28,6 +28,10 @@ export async function cliProgram({
   const meta = { vendor, name, version };
 
   const earlReportFile = await loadJson(jsonReport);
+
+  console.log("Loaded EARL report");
+  console.dir(earlReportFile);
+
   const testCaseFile = await loadJson<TestCaseJson>(testCaseJson);
 
   console.log("Loading files");

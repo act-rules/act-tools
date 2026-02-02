@@ -1,18 +1,21 @@
-import request from "request-promise";
+import axios from "axios";
 import debug from "debug";
-import { promisify } from "util";
-import fs from "fs";
-
-const readFile = promisify(fs.readFile);
+import fs from "node:fs";
 
 // eslint-disable @typescript-eslint/ban-types
 export async function loadJson<T = Object>(filePath: string): Promise<T> {
   if (/^https?:\/\//.test(filePath)) {
     debug("load:request")(`fetching ${filePath}`);
-    return await request({ uri: filePath, json: true });
+
+    const response = await axios.get(filePath, {
+      headers: { "Accept-Encoding": "application/json" },
+      responseType: "json",
+    });
+
+    return response.data;
   } else {
     debug("load:readFile")(`Loading ${filePath}`);
-    const str = await readFile(filePath, "utf8");
+    const str = fs.readFileSync(filePath, "utf8");
     return JSON.parse(str);
   }
 }
