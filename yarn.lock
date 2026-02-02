@@ -928,20 +928,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/bluebird@npm:*":
-  version: 3.5.36
-  resolution: "@types/bluebird@npm:3.5.36"
-  checksum: 10c0/e198df4483b3d351c0a5368c3197926842133e29328b808be483497a17aed5ba6a261d6d56695d57099326dbd125db38c6d2bc3d2a8ed91c130913a9f52fb1de
-  languageName: node
-  linkType: hard
-
-"@types/caseless@npm:*":
-  version: 0.12.2
-  resolution: "@types/caseless@npm:0.12.2"
-  checksum: 10c0/9d35e36439266b1d2593469fcb67cead3be1bba541bf71661063cd5751a6d497375dcda063f818dda8433041193c1d74e2c868e96c4fe0e344b5beaba487348e
-  languageName: node
-  linkType: hard
-
 "@types/debug@npm:^4.1.7":
   version: 4.1.7
   resolution: "@types/debug@npm:4.1.7"
@@ -1069,39 +1055,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/request-promise@npm:^4.1.48":
-  version: 4.1.48
-  resolution: "@types/request-promise@npm:4.1.48"
-  dependencies:
-    "@types/bluebird": "npm:*"
-    "@types/request": "npm:*"
-  checksum: 10c0/25353a483a3d025ae0148830ae3909669a475331019cb12af00a6cde93c99bb32b67e9784e1c23a311fa5b7bbf33861e3559993e623a712bc6bf15ae6dccd83a
-  languageName: node
-  linkType: hard
-
-"@types/request@npm:*":
-  version: 2.48.7
-  resolution: "@types/request@npm:2.48.7"
-  dependencies:
-    "@types/caseless": "npm:*"
-    "@types/node": "npm:*"
-    "@types/tough-cookie": "npm:*"
-    form-data: "npm:^2.5.0"
-  checksum: 10c0/f1c80ff5c071a677253595c05dd5616809ff1ae80e30173dae40a2ca5b0022afc40691d89d8ee67721ee40d093c49643d57541c6eed01284dd019ca3556d91f9
-  languageName: node
-  linkType: hard
-
 "@types/stack-utils@npm:^2.0.0":
   version: 2.0.1
   resolution: "@types/stack-utils@npm:2.0.1"
   checksum: 10c0/3327ee919a840ffe907bbd5c1d07dfd79137dd9732d2d466cf717ceec5bb21f66296173c53bb56cff95fae4185b9cd6770df3e9745fe4ba528bbc4975f54d13f
-  languageName: node
-  linkType: hard
-
-"@types/tough-cookie@npm:*":
-  version: 4.0.1
-  resolution: "@types/tough-cookie@npm:4.0.1"
-  checksum: 10c0/3cd60402ea7b647a759f5c468e00d9125e2f668999c8dbe6d7f91c435b105e5b6a3a9ed55f352417914f6485642264897b9a0986bfad5ed48ea2e5fc7c5d3666
   languageName: node
   linkType: hard
 
@@ -1272,7 +1229,6 @@ __metadata:
     "@types/jsonld": "npm:^1.5.8"
     "@types/markdown-table": "npm:2.0.0"
     "@types/node": "npm:^16.3.1"
-    "@types/request-promise": "npm:^4.1.48"
     "@types/unist": "npm:^2.0.6"
     "@typescript-eslint/eslint-plugin": "npm:^4.28.3"
     "@typescript-eslint/parser": "npm:^4.28.3"
@@ -1887,7 +1843,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"combined-stream@npm:^1.0.6, combined-stream@npm:^1.0.8":
+"combined-stream@npm:^1.0.8":
   version: 1.0.8
   resolution: "combined-stream@npm:1.0.8"
   dependencies:
@@ -2604,17 +2560,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^2.5.0":
-  version: 2.5.1
-  resolution: "form-data@npm:2.5.1"
-  dependencies:
-    asynckit: "npm:^0.4.0"
-    combined-stream: "npm:^1.0.6"
-    mime-types: "npm:^2.1.12"
-  checksum: 10c0/7e8fb913b84a7ac04074781a18d0f94735bbe82815ff35348803331f6480956ff0035db5bcf15826edee09fe01e665cfac664678f1526646a6374ee13f960e56
-  languageName: node
-  linkType: hard
-
 "form-data@npm:^4.0.4":
   version: 4.0.5
   resolution: "form-data@npm:4.0.5"
@@ -2699,14 +2644,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"function-bind@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "function-bind@npm:1.1.1"
-  checksum: 10c0/60b74b2407e1942e1ed7f8c284f8ef714d0689dcfce5319985a5b7da3fc727f40b4a59ec72dc55aa83365ad7b8fa4fac3a30d93c850a2b452f29ae03dbc10a1e
-  languageName: node
-  linkType: hard
-
-"function-bind@npm:^1.1.2":
+"function-bind@npm:^1.1.1, function-bind@npm:^1.1.2":
   version: 1.1.2
   resolution: "function-bind@npm:1.1.2"
   checksum: 10c0/d8680ee1e5fcd4c197e4ac33b2b4dce03c71f4d91717292785703db200f5c21f977c568d28061226f9b5900cbcd2c84463646134fd5337e7925e0942bc3f46d5
