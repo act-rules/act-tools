@@ -34,7 +34,7 @@ export function getExamplesContent(
   const assetsString = getAssetsString(assets);
 
   return joinStrings(
-    "## Test Cases",
+    "## Examples",
     assetsString,
     "### Passed",
     ...passed,

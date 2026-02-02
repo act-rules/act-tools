@@ -17,7 +17,9 @@
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "baseUrl": "./",
-    "outDir": "dist"
+    "outDir": "dist",
+    "composite": true,
+    "rootDir": "src"
   },
   "ts-node": {
     "files": true

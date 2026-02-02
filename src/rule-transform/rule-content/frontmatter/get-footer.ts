@@ -6,10 +6,11 @@ import { markdownToHtml } from "../../../utils";
 type PartialFrontMatter = {
   id?: string;
   acknowledgments?: RuleFrontMatter["acknowledgments"];
+  rules_format?: string;
 };
 
 export function getFooter(
-  { acknowledgments, id }: PartialFrontMatter,
+  { acknowledgments, id, rules_format }: PartialFrontMatter,
   proposed?: boolean
 ): string {
   const date = moment().format("D MMMM YYYY");
@@ -17,6 +18,7 @@ export function getFooter(
     `<p><strong>Rule Identifier:</strong> ${id ?? "unknown"}</p>\n` +
     `<p><strong>Date:</strong> Updated ${date}</p>\n` +
     getAuthorParagraph(acknowledgments || {}) +
+    getRulesFormatParagraph(rules_format) +
     getSponsorParagraph(acknowledgments || {}, proposed) +
     getAssetsParagraph(acknowledgments || {})
   ).trim();
@@ -33,6 +35,17 @@ function getAuthorParagraph(acknowledgments: Record<string, string[]>): string {
     paragraph += `Previous Authors: ${getAuthors(previous_authors)}. `;
   }
   return paragraph + `${contributors}</p>\n`;
+}
+
+function getRulesFormatParagraph(rules_format?: string): string {
+  if (!rules_format) {
+    return "";
+  }
+  return (
+    `<p>This rule conforms to ` +
+    `<a href="https://www.w3.org/TR/act-rules-format-${rules_format}/">` +
+    `ACT Rules Format ${rules_format}</a>.</p>\n`
+  );
 }
 
 function getSponsorParagraph(
