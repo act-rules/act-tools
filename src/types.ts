@@ -99,3 +99,5 @@ export interface Implementation {
   vendor: string;
   report: string;
 }
+
+export type AccessibilitySupport = Record<string, string>;
