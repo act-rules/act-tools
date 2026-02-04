@@ -28,7 +28,7 @@
     "globby": "^11.0.4",
     "jsonld": "^9.0.0",
     "markdown-table": "2.0.0",
-    "moment": "^2.29.4",
+    "moment": "^2.30.1",
     "outdent": "^0.8.0",
     "rehype-stringify": "8.0.0",
     "remark-frontmatter": "^3.0.0",
