@@ -1,11 +1,12 @@
 import * as fs from "node:fs";
+import * as path from "node:path";
 import outdent from "outdent";
 import { parsePage } from "../../utils/parse-page";
 import { RulePage } from "../../types";
 import { createFile, indent } from "../../utils/index";
 import { createWcagMapping } from "../create-wcag-mapping";
 
-const tmpDir = "./.tmp";
+const tmpDir = path.join(".", ".tmp");
 const mappingBase = {
   successCriteria: [],
   wcagTechniques: [],

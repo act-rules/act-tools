@@ -1,7 +1,8 @@
 import * as fs from "node:fs";
+import * as path from "node:path";
 import { createFile } from "../create-file";
 
-const tmpDir = "./.tmp-create-file";
+const tmpDir = path.join(".", ".tmp-create-file");
 
 describe("utils", () => {
   describe("createFile", () => {

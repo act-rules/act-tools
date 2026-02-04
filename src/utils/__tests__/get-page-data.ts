@@ -1,4 +1,5 @@
 import * as fs from "node:fs";
+import * as path from "node:path";
 import { outdent } from "outdent";
 import {
   getRulePages,
@@ -6,7 +7,7 @@ import {
   getTestAssets,
 } from "../get-page-data";
 
-const tmpDir = "./.tmp-get-page-data";
+const tmpDir = path.join(".", ".tmp-get-page-data");
 
 describe("utils", () => {
   const ruleText = outdent`
