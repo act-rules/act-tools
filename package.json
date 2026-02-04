@@ -34,7 +34,7 @@
     "remark-frontmatter": "^3.0.0",
     "remark-parse": "^9.0.0",
     "remark-rehype": "8.1.0",
-    "rimraf": "^3.0.2",
+    "rimraf": "^6.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "unified": "^9.2.1"
