@@ -1,7 +1,7 @@
+import * as fs from "node:fs";
 import * as path from "node:path";
 import { createFile } from "./utils/create-file";
 import { getRulePages } from "./utils/get-page-data";
-import { copySync } from "fs-extra";
 import {
   extractTestCases,
   TestCaseData,
@@ -35,7 +35,7 @@ export async function buildExamples({
       ruleData,
       baseUrl,
       pageUrl,
-      proposed
+      proposed,
     );
     testCaseData.push(...extractedCases);
   }
@@ -48,8 +48,8 @@ export async function buildExamples({
   console.log(
     `created ${testCaseData.length} test cases in ${path.resolve(
       outDir,
-      "content/testcases/"
-    )}`
+      "content/testcases/",
+    )}`,
   );
 
   // Write testcases.json
@@ -60,7 +60,7 @@ export async function buildExamples({
   // Copy test assets
   if (testAssetsDir) {
     const targetDir = path.resolve(assetsPath, "test-assets");
-    copySync(testAssetsDir, targetDir);
+    fs.copyFileSync(testAssetsDir, targetDir);
     console.log(`Copied test assets to  ${targetDir}`);
   }
 }
