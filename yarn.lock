@@ -1002,12 +1002,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/debug@npm:^4.1.7":
-  version: 4.1.7
-  resolution: "@types/debug@npm:4.1.7"
+"@types/debug@npm:^4.1.12":
+  version: 4.1.12
+  resolution: "@types/debug@npm:4.1.12"
   dependencies:
     "@types/ms": "npm:*"
-  checksum: 10c0/742b752b60e14a752d9bf172e64f28e172f630b9933e763d2b54c7c8c1f33b99b1ef067d7312665a4d0539d8df7ea3eb664a8039f900e4b8234c647a569d123a
+  checksum: 10c0/5dcd465edbb5a7f226e9a5efd1f399c6172407ef5840686b73e3608ce135eeca54ae8037dcd9f16bdb2768ac74925b820a8b9ecc588a58ca09eca6acabe33e2f
   languageName: node
   linkType: hard
 
@@ -1301,7 +1301,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "act-tools@workspace:."
   dependencies:
-    "@types/debug": "npm:^4.1.7"
+    "@types/debug": "npm:^4.1.12"
     "@types/fs-extra": "npm:^9.0.13"
     "@types/jest": "npm:^29.5.1"
     "@types/js-yaml": "npm:^4.0.2"
