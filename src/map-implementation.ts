@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import { promisify } from "util";
+import fs from "node:fs";
+import path from "node:path";
+import { promisify } from "node:util";
 import { getActImplementationReport } from "./map-implementation/get-act-implementation-report";
 import { loadJson } from "./utils/load-json";
 import { ImplementationBase, TestCaseJson } from "./map-implementation/types";

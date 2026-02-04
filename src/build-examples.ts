@@ -1,4 +1,4 @@
-import * as path from "path";
+import * as path from "node:path";
 import { createFile } from "./utils/create-file";
 import { getRulePages } from "./utils/get-page-data";
 import { copySync } from "fs-extra";

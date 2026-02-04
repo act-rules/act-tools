@@ -1,5 +1,5 @@
 import outdent from "outdent";
-import * as path from "path";
+import * as path from "node:path";
 import { getRulePages } from "../../utils/get-page-data";
 import { extractTestCases } from "../extract-test-cases";
 

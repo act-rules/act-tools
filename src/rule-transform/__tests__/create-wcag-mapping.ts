@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import { promisify } from "util";
+import * as fs from "node:fs";
+import { promisify } from "node:util";
 import outdent from "outdent";
 import { parsePage } from "../../utils/parse-page";
 import { RulePage } from "../../types";

@@ -1,6 +1,6 @@
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { outdent } from "outdent";
-import { promisify } from "util";
+import { promisify } from "node:util";
 import {
   getRulePages,
   getDefinitionPages,

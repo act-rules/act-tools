@@ -1,6 +1,6 @@
-import * as fs from "fs";
-import { promisify } from "util";
-import { dirname as getDirName } from "path";
+import * as fs from "node:fs";
+import { promisify } from "node:util";
+import { dirname as getDirName } from "node:path";
 import makeDir from "make-dir";
 
 // Some stuff to simplify testing:

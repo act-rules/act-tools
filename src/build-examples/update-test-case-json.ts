@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
 import { createFile } from "../utils/create-file";
 import { TestCaseJson } from "../types";
 import { TestCaseData } from "./extract-test-cases";
