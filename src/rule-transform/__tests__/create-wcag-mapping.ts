@@ -1,13 +1,10 @@
 import * as fs from "node:fs";
-import { promisify } from "node:util";
 import outdent from "outdent";
 import { parsePage } from "../../utils/parse-page";
 import { RulePage } from "../../types";
 import { createFile, indent } from "../../utils/index";
 import { createWcagMapping } from "../create-wcag-mapping";
 
-const mkdir = promisify(fs.mkdir);
-const rm = promisify(fs.rm);
 const tmpDir = "./.tmp";
 const mappingBase = {
   successCriteria: [],
@@ -39,12 +36,12 @@ describe("rule-transform", () => {
   describe("updateWcagMapping", () => {
     beforeEach(async () => {
       if (!fs.existsSync(tmpDir)) {
-        await mkdir(tmpDir);
+        fs.mkdirSync(tmpDir, { recursive: true });
       }
     });
 
     afterEach(async () => {
-      await rm(tmpDir, { recursive: true, force: true });
+      fs.rmSync(tmpDir, { recursive: true, force: true });
     });
 
     it("returns a WCAG mapping", async () => {

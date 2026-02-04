@@ -1,12 +1,9 @@
 import * as fs from "node:fs";
-import { promisify } from "node:util";
 import { dirname as getDirName } from "node:path";
-import makeDir from "make-dir";
 
 // Some stuff to simplify testing:
 let isMocked = false;
 let mockCalls: { path: string; content: string | unknown }[] = [];
-const writeFile = promisify(fs.writeFile);
 
 /**
  * Create file with given contents at specified location
@@ -24,8 +21,8 @@ export const createFile = async (
     typeof content !== "string" ? JSON.stringify(content, null, 2) : content;
 
   const dirname = getDirName(path);
-  await makeDir(dirname);
-  await writeFile(path, stringData);
+  fs.mkdirSync(dirname, { recursive: true });
+  fs.writeFileSync(path, stringData);
 };
 
 createFile.mock = () => {

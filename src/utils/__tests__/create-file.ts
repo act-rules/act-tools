@@ -1,21 +1,18 @@
 import * as fs from "node:fs";
-import { promisify } from "node:util";
 import { createFile } from "../create-file";
 
-const mkdir = promisify(fs.mkdir);
-const rm = promisify(fs.rm);
 const tmpDir = "./.tmp-create-file";
 
 describe("utils", () => {
   describe("createFile", () => {
     beforeEach(async () => {
       if (!fs.existsSync(tmpDir)) {
-        await mkdir(tmpDir);
+        fs.mkdirSync(tmpDir, { recursive: true });
       }
     });
 
     afterEach(async () => {
-      await rm(tmpDir, { recursive: true, force: true });
+      fs.rmSync(tmpDir, { recursive: true, force: true });
     });
 
     it("creates a new file at the specified path", async () => {

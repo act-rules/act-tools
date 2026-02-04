@@ -1243,7 +1243,6 @@ __metadata:
     jest: "npm:^29.5.0"
     jsonld: "npm:^8.1.1"
     lint-staged: "npm:^11.0.1"
-    make-dir: "npm:^3.1.0"
     markdown-table: "npm:2.0.0"
     moment: "npm:^2.29.4"
     outdent: "npm:^0.8.0"
@@ -3985,7 +3984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"make-dir@npm:^3.0.0, make-dir@npm:^3.1.0":
+"make-dir@npm:^3.0.0":
   version: 3.1.0
   resolution: "make-dir@npm:3.1.0"
   dependencies:

@@ -1,14 +1,11 @@
 import * as fs from "node:fs";
 import { outdent } from "outdent";
-import { promisify } from "node:util";
 import {
   getRulePages,
   getDefinitionPages,
   getTestAssets,
 } from "../get-page-data";
 
-const mkdir = promisify(fs.mkdir);
-const rm = promisify(fs.rm);
 const tmpDir = "./.tmp-get-page-data";
 
 describe("utils", () => {
@@ -34,7 +31,7 @@ describe("utils", () => {
 
   beforeEach(async () => {
     if (!fs.existsSync(tmpDir)) {
-      await mkdir(tmpDir);
+      fs.mkdirSync(tmpDir, { recursive: true });
     }
     fs.writeFileSync(`${tmpDir}/abc123.md`, ruleText);
     fs.writeFileSync(`${tmpDir}/dfn.md`, definitionText);
@@ -42,7 +39,7 @@ describe("utils", () => {
   });
 
   afterEach(async () => {
-    await rm(tmpDir, { recursive: true, force: true });
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
   describe("getRulePages", () => {
