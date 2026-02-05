@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import * as yaml from "js-yaml";
 import { getActImplementationReport } from "./map-implementation/get-act-implementation-report";
 import { loadJson } from "./utils/load-json";

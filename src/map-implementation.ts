@@ -1,11 +1,8 @@
-import fs from "fs";
-import path from "path";
-import { promisify } from "util";
+import fs from "node:fs";
+import path from "node:path";
 import { getActImplementationReport } from "./map-implementation/get-act-implementation-report";
 import { loadJson } from "./utils/load-json";
 import { ImplementationBase, TestCaseJson } from "./map-implementation/types";
-
-const writeFile = promisify(fs.writeFile);
 
 export type CliArgs = ImplementationBase & {
   jsonReport: string;
@@ -41,5 +38,5 @@ export async function cliProgram({
 
   // Save the report
   console.log(`Saved report to ${outputPath}`);
-  await writeFile(outputPath, fileContent, "utf8");
+  fs.writeFileSync(outputPath, fileContent, "utf8");
 }

@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { createFile } from "../utils/create-file";
 import { RulePage, RuleFrontMatter } from "../types";
 import { getWcagCriterion } from "../act/get-accessibility-requirement";

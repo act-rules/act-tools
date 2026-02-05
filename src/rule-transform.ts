@@ -1,5 +1,5 @@
-import * as path from "path";
-import { pathExistsSync, readFileSync } from "fs-extra";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { getRulePages, getDefinitionPages } from "./utils/get-page-data";
 import { createFile } from "./utils";
 import { getRuleContent } from "./rule-transform/get-rule-content";
@@ -47,7 +47,7 @@ function buildTfRuleFile(
   ruleData: RulePage,
   glossary: DefinitionPage[],
   options: Record<string, boolean | undefined>,
-  rulesData: RulePage[]
+  rulesData: RulePage[],
 ) {
   return {
     filepath: ruleData.filename,
@@ -57,11 +57,11 @@ function buildTfRuleFile(
 
 async function saveRuleFileIfChanged(
   absolutePath: string,
-  newContent: string
+  newContent: string,
 ): Promise<void> {
   let contentChanged = true;
-  if (pathExistsSync(absolutePath)) {
-    const currentContent = readFileSync(absolutePath, "utf8");
+  if (fs.existsSync(absolutePath)) {
+    const currentContent = fs.readFileSync(absolutePath, "utf8");
     contentChanged = !isEqualExcludingDates(currentContent, newContent);
   }
 

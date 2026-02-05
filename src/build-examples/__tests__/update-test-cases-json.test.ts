@@ -1,5 +1,5 @@
-import * as path from "path";
-import { readFileSync } from "fs";
+import * as path from "node:path";
+import { readFileSync } from "node:fs";
 import { RulePage, TestCaseJson, TestCase } from "../../types";
 import { getRulePages } from "../../utils/get-page-data";
 import { createFile } from "../../utils/create-file";
