@@ -21,7 +21,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "axios": "^1.13.4",
+    "axios": "^1.13.5",
     "commander": "^14.0.3",
     "debug": "^4.4.3",
     "fastmatter": "^2.1.1",
