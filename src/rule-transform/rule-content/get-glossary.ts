@@ -6,10 +6,23 @@ export const getGlossary = (_: unknown, glossary: DefinitionPage[]): string => {
   return joinStrings(`## Glossary`, ...glossaryTexts);
 };
 
+export const getFullGlossary = (glossary: DefinitionPage[]): string => {
+  const glossaryTexts = glossary.map(getFullGlossaryMarkdown);
+  return joinStrings(`## Glossary`, ...glossaryTexts);
+};
+
 function getGlossaryMarkdown(definition: DefinitionPage): string {
   const { title, key } = definition.frontmatter;
   const heading = `### ${title} {#${key}}`;
   const body = getDefinitionBody(definition);
+  return joinStrings(heading, body);
+}
+
+function getFullGlossaryMarkdown(definition: DefinitionPage): string {
+  const { title, key } = definition.frontmatter;
+  const heading = `### ${title} {#${key}}`;
+  const body = definition.body.trim();
+  // Keep full source definition body (including all sections after first ##)
   return joinStrings(heading, body);
 }
 
@@ -28,7 +41,7 @@ function getDefinitionBody(definition: DefinitionPage): string | string[] {
 
 function stripDefinitions({ body, markdownAST }: DefinitionPage): string {
   const firstRefLink = markdownAST.children.find(
-    ({ type }) => type === "definition"
+    ({ type }) => type === "definition",
   );
   const refLinkOffset = firstRefLink?.position?.start?.offset;
 
