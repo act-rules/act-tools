@@ -141,13 +141,11 @@ async function generateFile(options: GlossaryOptions): Promise<void> {
   await fs.promises.writeFile(outputFile, content, "utf8");
   console.log(`Created glossary at ${outputFile}`);
 
-  if (options.wcagActRulesDir) {
-    await updateWcagConfigNav(options.wcagActRulesDir);
-  }
+  await updateWcagConfigNav(options.outDir);
 }
 
-async function updateWcagConfigNav(wcagActRulesDir: string) {
-  const configPath = path.join(wcagActRulesDir, "_config.yml");
+async function updateWcagConfigNav(outputDir: string) {
+  const configPath = path.join(outputDir, "_config.yml");
   const configContent = await fs.promises.readFile(configPath, "utf8");
   const configData: any = yaml.load(configContent);
 
