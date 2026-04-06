@@ -74,6 +74,13 @@ export function generateApprovalReportMarkdown(
     }
   }
 
+  if (notReady.length > 0) {
+    sections.push("## Not ready — details", "");
+    for (const r of notReady) {
+      sections.push(...renderRuleSection(r, r.waiApproved, github));
+    }
+  }
+
   return sections.join("\n").trimEnd() + "\n";
 }
 

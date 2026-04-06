@@ -309,6 +309,7 @@ describe("generateApprovalReportMarkdown", () => {
     );
     expect(md).not.toContain("Approved ready for update — details");
     expect(md).not.toContain("Proposed ready for update — details");
+    expect(md).not.toContain("Not ready — details");
   });
 
   it("includes approved and proposed detail sections when buckets are non-empty", () => {
@@ -356,6 +357,64 @@ describe("generateApprovalReportMarkdown", () => {
       md.split("## Proposed ready for update — details")[1] ?? "";
     expect(propDetail).toContain('<h3 id="prop">');
     expect(propDetail).not.toContain("#### Changes since approval");
+  });
+
+  it("includes not ready detail section when not ready bucket is non-empty", () => {
+    const md = generateApprovalReportMarkdown(
+      [
+        baseRow("nr-prop", {
+          reportBucket: "notReady",
+          implementations: [],
+          waiApproved: false,
+          commitsBehindSummary: "2",
+          lastApprovedSummary: "-",
+          blockersCount: 0,
+          issues: [
+            {
+              number: 12,
+              title: "Need impl",
+              html_url: "https://github.com/a/b/issues/12",
+            },
+          ],
+        }),
+        baseRow("nr-appr", {
+          reportBucket: "notReady",
+          implementations: ["axe"],
+          waiApproved: true,
+          approvalIsoDate: "2023-06-01",
+          lastApprovedSummary: "2023-06-01",
+          commitsBehindSummary: "2",
+          blockersCount: 1,
+          changes: [
+            {
+              hash: "e".repeat(40),
+              subject: "touch rule",
+              dateIso: "",
+              touchedRule: true,
+              touchedDefinitionKeys: [],
+            },
+            {
+              hash: "f".repeat(40),
+              subject: "other",
+              dateIso: "",
+              touchedRule: false,
+              touchedDefinitionKeys: [],
+            },
+          ],
+        }),
+      ],
+      github,
+    );
+    expect(md).toContain("## Not ready — details");
+    expect(md).toContain('<h3 id="nr-prop">');
+    expect(md).toContain('<h3 id="nr-appr">');
+    const afterNotReady = md.split("## Not ready — details")[1] ?? "";
+    const iProp = afterNotReady.indexOf('<h3 id="nr-prop">');
+    const iAppr = afterNotReady.indexOf('<h3 id="nr-appr">');
+    expect(iProp).toBeLessThan(iAppr);
+    expect(afterNotReady).toContain("#12:");
+    expect(afterNotReady).toContain("#### Changes since approval");
+    expect(afterNotReady).toContain("touch rule");
   });
 
   it("renders not-ready sort: fewer blockers before more when commits tie", () => {
