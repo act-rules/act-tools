@@ -76,8 +76,8 @@ function generateGlossaryContent(
   lines.push("---");
   lines.push("layout: standalone_resource");
   lines.push('title: "ACT Rules Glossary"');
-  lines.push("permalink: /standards-guidelines/act/rules/glossary/");
-  lines.push("ref: /standards-guidelines/act/rules/glossary/");
+  lines.push("permalink: /standards-guidelines/act/rules/terms/");
+  lines.push("ref: /standards-guidelines/act/rules/terms/");
   lines.push("lang: en");
   lines.push('type_of_guidance: ""');
   lines.push("feedbackmail: public-wcag-act@w3.org");
@@ -158,13 +158,13 @@ async function updateWcagConfigNav(outputDir: string) {
 
   const navLinks = defaultValues.values.standalone_resource_nav_links;
   const hasGlossary = navLinks.some(
-    (link: any) => link.ref === "/standards-guidelines/act/rules/glossary/",
+    (link: any) => link.ref === "/standards-guidelines/act/rules/terms/",
   );
 
   if (!hasGlossary) {
     navLinks.push({
       name: "Glossary",
-      ref: "/standards-guidelines/act/rules/glossary/",
+      ref: "/standards-guidelines/act/rules/terms/",
     });
     await fs.promises.writeFile(configPath, yaml.dump(configData), "utf8");
     console.log(
