@@ -1,4 +1,5 @@
 import { DefinitionPage } from "../../types";
+import { getGlossaryBody, getGlossaryHeading } from "../../utils/glossary";
 import { joinStrings } from "../../utils/join-strings";
 
 export const getGlossary = (_: unknown, glossary: DefinitionPage[]): string => {
@@ -12,38 +13,14 @@ export const getFullGlossary = (glossary: DefinitionPage[]): string => {
 };
 
 function getGlossaryMarkdown(definition: DefinitionPage): string {
-  const { title, key } = definition.frontmatter;
-  const heading = `### ${title} {#${key}}`;
-  const body = getDefinitionBody(definition);
+  const heading = getGlossaryHeading(definition.frontmatter, 3);
+  const body = getGlossaryBody(definition, { mode: "rule" });
   return joinStrings(heading, body);
 }
 
 function getFullGlossaryMarkdown(definition: DefinitionPage): string {
-  const { title, key } = definition.frontmatter;
-  const heading = `### ${title} {#${key}}`;
-  const body = definition.body.trim();
+  const heading = getGlossaryHeading(definition.frontmatter, 3);
+  const body = getGlossaryBody(definition, { mode: "full" });
   // Keep full source definition body (including all sections after first ##)
   return joinStrings(heading, body);
-}
-
-function getDefinitionBody(definition: DefinitionPage): string | string[] {
-  // Delete all lines after the first heading
-  // References are mixed into the bottom of the rule page later
-  const lines = definition.body.split("\n");
-  const headingLineNum = lines.findIndex((line) => line.match(/^##/));
-  if (headingLineNum === -1) {
-    return stripDefinitions(definition);
-  }
-
-  lines.splice(headingLineNum);
-  return lines;
-}
-
-function stripDefinitions({ body, markdownAST }: DefinitionPage): string {
-  const firstRefLink = markdownAST.children.find(
-    ({ type }) => type === "definition",
-  );
-  const refLinkOffset = firstRefLink?.position?.start?.offset;
-
-  return !refLinkOffset ? body : body.substr(0, refLinkOffset);
 }

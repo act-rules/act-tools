@@ -3,7 +3,13 @@ import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
 import { Command } from "commander";
+import { DefinitionPage } from "../types";
 import { getRulePages, getDefinitionPages } from "../utils/get-page-data";
+import {
+  getGlossaryBody,
+  getGlossaryHeading,
+  normalizeHeadingLevels as normalizeGlossaryHeadingLevels,
+} from "../utils/glossary";
 import { getRuleDefinitions } from "../act/get-rule-definitions";
 
 interface GlossaryOptions {
@@ -56,19 +62,11 @@ function buildUsedInRulesMap(
 }
 
 export function normalizeHeadingLevels(body: string): string {
-  return body.replace(/^(\s*)(#{1,6})(\s+)/gm, (_, leading, hashes, space) => {
-    if (hashes.length <= 1) {
-      return `${leading}${hashes}${space}`;
-    }
-    return `${leading}${"#".repeat(hashes.length - 1)}${space}`;
-  });
+  return normalizeGlossaryHeadingLevels(body);
 }
 
 function generateGlossaryContent(
-  glossaryDefinitions: Array<{
-    frontmatter: { key: string; title: string };
-    body: string;
-  }>,
+  glossaryDefinitions: DefinitionPage[],
   usedInRules: Map<string, Set<{ id: string; name: string }>>,
 ): string {
   const lines: string[] = [];
@@ -95,9 +93,12 @@ function generateGlossaryContent(
   glossaryDefinitions.forEach((def) => {
     const key = def.frontmatter.key;
     const title = def.frontmatter.title;
-    const body = normalizeHeadingLevels(def.body.trim());
+    const body = getGlossaryBody(def, {
+      mode: "full",
+      normalizeHeadings: true,
+    });
 
-    lines.push(`## ${title} {#${key}}`);
+    lines.push(getGlossaryHeading({ title, key }, 2));
     lines.push("");
     lines.push(body);
     lines.push("");
