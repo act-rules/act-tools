@@ -85,10 +85,6 @@ function generateGlossaryContent(
   lines.push("  path: content/terms/glossary.md");
   lines.push("---");
   lines.push("");
-  lines.push("{::nomarkdown}");
-  lines.push('{% include box.html type="start" title="Glossary" class="" %}');
-  lines.push("{:/}");
-  lines.push("");
 
   glossaryDefinitions.forEach((def) => {
     const key = def.frontmatter.key;
