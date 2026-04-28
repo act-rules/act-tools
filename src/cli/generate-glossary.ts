@@ -116,9 +116,6 @@ function generateGlossaryContent(
     lines.push("");
   });
 
-  lines.push("{::nomarkdown}");
-  lines.push('{% include box.html type="end" %}');
-  lines.push("{:/}");
 
   return lines.join("\n");
 }
