@@ -129,7 +129,7 @@ async function generateFile(options: GlossaryOptions): Promise<void> {
 
   const content = generateGlossaryContent(glossary, usedInRules);
   const outputDir = path.join(options.outDir, "content");
-  const outputFile = path.join(outputDir, "glossary.md");
+  const outputFile = path.join(outputDir, "terms.md");
 
   await fs.promises.mkdir(outputDir, { recursive: true });
   await fs.promises.writeFile(outputFile, content, "utf8");
