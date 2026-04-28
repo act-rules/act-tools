@@ -82,7 +82,7 @@ function generateGlossaryContent(
   lines.push('footer: ""');
   lines.push("github:");
   lines.push("  repository: w3c/wcag-act-rules");
-  lines.push("  path: content/terms/glossary.md");
+  lines.push("  path: content/terms.md");
   lines.push("---");
   lines.push("");
 
