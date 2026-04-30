@@ -1,6 +1,6 @@
 import outdent from "outdent";
 import { parsePage } from "../../../utils/parse-page";
-import { getGlossary, getFullGlossary } from "../get-glossary";
+import { getGlossary } from "../get-glossary";
 import { createGlossary } from "../../__test-utils";
 
 describe("rule-content", () => {
@@ -60,25 +60,6 @@ describe("rule-content", () => {
         ### Visible {#visible}
 
         You can see [it][].
-      `);
-    });
-
-    it("keeps full source body for the glossary page", () => {
-      const glossary = createGlossary({ visible });
-      const fullGlossary = getFullGlossary(glossary);
-
-      expect(fullGlossary).toBe(outdent`
-        ## Glossary
-
-        ### Visible {#visible}
-
-        You can see [it][].
-
-        ### Really
-
-        Ignore me
-
-        [it]: https://w3.org/
       `);
     });
   });
