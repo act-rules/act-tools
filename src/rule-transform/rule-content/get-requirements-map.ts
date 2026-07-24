@@ -12,7 +12,7 @@ export const headingText = "Accessibility Requirements Mapping";
 export const secondaryReqText = outdent`
   This rule is related to the following accessibility requirements, but was 
   not designed to test this requirements directly. These 
-  [secondary requirements](https://w3c.github.io/wcag-act/act-rules-format.html#secondary-requirements)
+  [secondary requirements](https://www.w3.org/TR/act-rules-format/#secondary-requirements)
   can either be stricter than the rule requires, or may be satisfied in ways 
   not tested by the rule:
 `;
@@ -20,7 +20,7 @@ export const secondaryReqText = outdent`
 export function getRequirementsMap({ frontmatter }: Args): string {
   const requirementText: string[] = [`## ${headingText}`];
   const accMapping: RequirementEntry[] = Object.entries(
-    frontmatter.accessibility_requirements || {}
+    frontmatter.accessibility_requirements || {},
   );
 
   const secondaryReq: RequirementEntry[] = [];
@@ -45,7 +45,7 @@ export function getRequirementsMap({ frontmatter }: Args): string {
     requirementText.push(
       "### Secondary Requirements",
       secondaryReqText,
-      secondaryReq.map(secondaryReqItem).join("\n")
+      secondaryReq.map(secondaryReqItem).join("\n"),
     );
   }
 
@@ -83,7 +83,7 @@ function conformanceReqItem([
         <li>Outcome mapping: ${indent(
           outcomeMapping(requirementType, mapping),
           " ",
-          4
+          4,
         ).trim()}</li>
       </ul>
     </details></li>
@@ -96,19 +96,19 @@ function outcomeMapping(
     failed = "not satisfied",
     passed = "further testing is needed",
     inapplicable = "further testing is needed",
-  }
+  },
 ) {
   return outdent`
     <ul>
       <li>Any <code>failed</code> outcomes: ${requirementType} ${getConformanceText(
-    failed
-  )}</li>
+        failed,
+      )}</li>
       <li>All <code>passed</code> outcomes: ${requirementType} ${getConformanceText(
-    passed
-  )}</li>
+        passed,
+      )}</li>
       <li>An <code>inapplicable</code> outcome: ${requirementType} ${getConformanceText(
-    inapplicable
-  )}</li>
+        inapplicable,
+      )}</li>
     </ul>
   `;
 }

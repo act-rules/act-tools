@@ -74,7 +74,7 @@ describe("getRuleContent", () => {
       glossary,
 
       { matrix: true },
-      []
+      [],
     );
 
     expect(taskforceMarkdown).toBe(
@@ -128,7 +128,7 @@ describe("getRuleContent", () => {
 
       This rule is related to the following accessibility requirements, but was 
       not designed to test this requirements directly. These 
-      [secondary requirements](https://w3c.github.io/wcag-act/act-rules-format.html#secondary-requirements)
+      [secondary requirements](https://www.w3.org/TR/act-rules-format/#secondary-requirements)
       can either be stricter than the rule requires, or may be satisfied in ways 
       not tested by the rule:
 
@@ -197,7 +197,7 @@ describe("getRuleContent", () => {
       [w3c]: https://w3.org 'W3C website'
       [world]: #world
 
-    `
+    `,
     );
   });
 
@@ -355,7 +355,7 @@ describe("getRuleContent", () => {
         glossary,
 
         { matrix: true },
-        []
+        [],
       );
 
       expect(taskforceMarkdown).toBe(
@@ -433,7 +433,7 @@ describe("getRuleContent", () => {
       [w3c]: https://w3.org 'W3C website'
       [world]: #world
 
-    `
+    `,
       );
     }
   });
