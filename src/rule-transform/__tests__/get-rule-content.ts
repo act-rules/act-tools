@@ -74,7 +74,7 @@ describe("getRuleContent", () => {
       glossary,
 
       { matrix: true },
-      [],
+      []
     );
 
     expect(taskforceMarkdown).toBe(
@@ -197,7 +197,7 @@ describe("getRuleContent", () => {
       [w3c]: https://w3.org 'W3C website'
       [world]: #world
 
-    `,
+    `
     );
   });
 
@@ -355,7 +355,7 @@ describe("getRuleContent", () => {
         glossary,
 
         { matrix: true },
-        [],
+        []
       );
 
       expect(taskforceMarkdown).toBe(
@@ -433,7 +433,7 @@ describe("getRuleContent", () => {
       [w3c]: https://w3.org 'W3C website'
       [world]: #world
 
-    `,
+    `
       );
     }
   });
