@@ -102,3 +102,17 @@ The following commands are available for use in development:
 - `yarn lint`: Check code for lint errors using [ESLint](https://eslint.org/)
 - `yarn format`: Format the code using [Prettier](https://prettier.io/)
 
+### Update act-board issues
+
+First generate the classifier JSON, then upsert the generated rule issues and
+cross-repository blocker sub-issues. The second command requires a
+`GITHUB_TOKEN` with write access to `act-rules/act-board` and issue read access
+to `act-rules/act-rules.github.io`.
+
+```sh
+yarn approval-report
+GITHUB_TOKEN=... yarn upsert-act-board --input approval-report.json
+```
+
+The upsert command owns act-board issue titles, bodies, state, and sub-issue
+relationships. It does not update GitHub Project fields.
