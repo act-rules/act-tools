@@ -5,6 +5,7 @@ jest.mock("@octokit/rest", () => ({
 import type { Parent } from "unist";
 import {
   buildRuleApprovalRows,
+  classifyRuleStatus,
   type ApprovalReportDeps,
 } from "../build-rule-approval-rows";
 import type { ApprovalReportOptions } from "../types";
@@ -71,7 +72,7 @@ function oneAtomic(
 }
 
 describe("buildRuleApprovalRows", () => {
-  it("skips deprecated rules", async () => {
+  it("includes deprecated rules with highest-priority status", async () => {
     const rows = await buildRuleApprovalRows(
       baseOpts,
       mockDeps({
@@ -83,8 +84,11 @@ describe("buildRuleApprovalRows", () => {
         pathRelativeToRepo: () => "_rules/keep.md",
       }),
     );
-    expect(rows).toHaveLength(1);
-    expect(rows[0].ruleId).toBe("keep");
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toMatchObject({
+      ruleId: "gone",
+      status: "Deprecated",
+    });
   });
 
   it("strips issue body from row issues", async () => {
@@ -108,6 +112,7 @@ describe("buildRuleApprovalRows", () => {
         number: 7,
         title: "rid bug",
         html_url: "https://github.com/o/r/issues/7",
+        labelNames: [],
       },
     ]);
   });
@@ -118,6 +123,7 @@ describe("buildRuleApprovalRows", () => {
       oneAtomic("n", { loadCompleteImplementationsByRuleId: () => ({}) }),
     );
     expect(rows[0].reportBucket).toBe("notReady");
+    expect(rows[0].status).toBe("Awaiting implementation");
   });
 
   it("buckets notReady when a matched issue has Blocker label", async () => {
@@ -136,13 +142,17 @@ describe("buildRuleApprovalRows", () => {
       }),
     );
     expect(rows[0].reportBucket).toBe("notReady");
+    expect(rows[0].status).toBe("Blocked by issue");
     expect(rows[0].blockersCount).toBe(1);
+    expect(rows[0].blockers).toEqual(rows[0].issues);
   });
 
   it("buckets proposedReadyForUpdate when not WAI-approved but has implementation", async () => {
     const rows = await buildRuleApprovalRows(baseOpts, oneAtomic("p"));
     expect(rows[0].reportBucket).toBe("proposedReadyForUpdate");
+    expect(rows[0].status).toBe("Proposed, reviewable");
     expect(rows[0].waiApproved).toBe(false);
+    expect(rows[0].reviewPrUrl).toBeNull();
   });
 
   it("buckets approvedUpToDate when approved with no commits after approval", async () => {
@@ -155,6 +165,7 @@ describe("buildRuleApprovalRows", () => {
       }),
     );
     expect(rows[0].reportBucket).toBe("approvedUpToDate");
+    expect(rows[0].status).toBe("Approved, current");
     expect(rows[0].commitsBehindSummary).toBe("0");
   });
 
@@ -177,8 +188,49 @@ describe("buildRuleApprovalRows", () => {
       }),
     );
     expect(rows[0].reportBucket).toBe("approvedReadyForUpdate");
+    expect(rows[0].status).toBe("Approved, unpublished changes");
     expect(rows[0].commitsBehindSummary).toBe("1");
     expect(rows[0].changes).toEqual([change]);
+  });
+
+  it("splits rule commits from definition-only commits", async () => {
+    const changes = [
+      {
+        hash: "a".repeat(40),
+        subject: "rule and definition",
+        dateIso: "2024-03-01T00:00:00Z",
+        touchedRule: true,
+        touchedDefinitionKeys: ["foo"],
+      },
+      {
+        hash: "b".repeat(40),
+        subject: "definition only",
+        dateIso: "2024-02-01T00:00:00Z",
+        touchedRule: false,
+        touchedDefinitionKeys: ["foo"],
+      },
+      {
+        hash: "c".repeat(40),
+        subject: "rule only",
+        dateIso: "2024-01-01T00:00:00Z",
+        touchedRule: true,
+        touchedDefinitionKeys: [],
+      },
+    ];
+    const rows = await buildRuleApprovalRows(
+      baseOpts,
+      oneAtomic("split", {
+        loadApprovalByRuleId: () => ({
+          split: { approved: true, approvalIsoDate: "2023-01-01" },
+        }),
+        getChangesSinceApproval: () => changes,
+      }),
+    );
+
+    expect(rows[0]).toMatchObject({
+      ruleCommitCount: 2,
+      definitionCommitCount: 1,
+    });
   });
 
   it("does not call getChangesSinceApproval when rule is not WAI-approved", async () => {
@@ -213,5 +265,83 @@ describe("buildRuleApprovalRows", () => {
       }),
     );
     expect(rows[0].compositeInputs).toEqual(["in1", "in2"]);
+  });
+});
+
+describe("classifyRuleStatus", () => {
+  const reviewable = {
+    deprecated: false,
+    reviewPrUrl: null,
+    blockersCount: 0,
+    completeImplementationCount: 1,
+    waiApproved: false,
+    changesCount: 0,
+  };
+
+  it.each([
+    [
+      {
+        ...reviewable,
+        deprecated: true,
+        reviewPrUrl: "https://example.test/pr/1",
+        blockersCount: 1,
+        completeImplementationCount: 0,
+      },
+      "Deprecated",
+    ],
+    [
+      {
+        ...reviewable,
+        reviewPrUrl: "https://example.test/pr/1",
+        blockersCount: 1,
+        completeImplementationCount: 0,
+      },
+      "In review",
+    ],
+    [
+      {
+        ...reviewable,
+        blockersCount: 1,
+        completeImplementationCount: 0,
+        waiApproved: true,
+      },
+      "Blocked by issue",
+    ],
+    [
+      {
+        ...reviewable,
+        completeImplementationCount: 0,
+        waiApproved: true,
+      },
+      "Awaiting implementation",
+    ],
+    [{ ...reviewable, waiApproved: true }, "Approved, current"],
+    [
+      { ...reviewable, waiApproved: true, changesCount: 1 },
+      "Approved, unpublished changes",
+    ],
+    [reviewable, "Proposed, reviewable"],
+  ])("applies status inputs in precedence order", (inputs, expected) => {
+    expect(classifyRuleStatus(inputs)).toBe(expected);
+  });
+
+  it("does not let a non-blocker issue affect status", async () => {
+    const rows = await buildRuleApprovalRows(
+      baseOpts,
+      oneAtomic("open-issue", {
+        fetchOpenIssues: async () => [
+          {
+            number: 2,
+            title: "open-issue discussion",
+            html_url: "https://example.test/issues/2",
+            labelNames: ["enhancement"],
+          },
+        ],
+      }),
+    );
+
+    expect(rows[0].status).toBe("Proposed, reviewable");
+    expect(rows[0].issues).toHaveLength(1);
+    expect(rows[0].blockers).toHaveLength(0);
   });
 });
