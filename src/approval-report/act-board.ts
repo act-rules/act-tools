@@ -106,7 +106,7 @@ export function renderActBoardIssueBody(row: RuleApprovalRow): string {
     lines.push(`- [Approved WAI rule](${WAI_RULES_BASE}/${row.ruleId}/)`);
   }
   lines.push(
-    `- [Community Group rule file](${CG_RULES_BASE}/${row.ruleId}.md)`,
+    `- [Community Group rule file](${CG_RULES_BASE}/${row.filename})`,
     "",
     "## Complete implementations",
     "",
@@ -173,13 +173,8 @@ export async function upsertActBoardIssues(
   const listedIssues = (await client.listBoardIssues(boardRepository)).filter(
     (issue) => !issue.isPullRequest,
   );
-  const managedIssues = new Map<string, BoardIssue>();
-  for (const issue of [...listedIssues].sort((a, b) => a.number - b.number)) {
-    const ruleId = ruleIdFromActBoardTitle(issue.title);
-    if (ruleId && !managedIssues.has(ruleId)) {
-      managedIssues.set(ruleId, issue);
-    }
-  }
+  const { managedIssues, duplicateIssues } = selectManagedIssues(listedIssues);
+  const unwrittenIssueNodeIds = new Set<string>();
 
   const rowsByRuleId = new Map(
     rows.map((row) => [row.ruleId.toLowerCase(), row]),
@@ -212,11 +207,11 @@ export async function upsertActBoardIssues(
       state?: "open" | "closed";
     } = {};
     if (issue.title !== title) update.title = title;
-    if ((issue.body ?? "") !== body) update.body = body;
+    if (normalizeBody(issue.body) !== normalizeBody(body)) update.body = body;
     if (issue.state !== desiredState) update.state = desiredState;
 
     if (Object.keys(update).length === 0) {
-      result.skipped += 1;
+      unwrittenIssueNodeIds.add(issue.nodeId);
     } else {
       issue = await client.updateBoardIssue(
         boardRepository,
@@ -238,6 +233,14 @@ export async function upsertActBoardIssues(
       { state: "closed" },
     );
     managedIssues.set(ruleId, closed);
+    result.closed += 1;
+  }
+
+  for (const duplicate of duplicateIssues) {
+    if (duplicate.state === "closed") continue;
+    await client.updateBoardIssue(boardRepository, duplicate.number, {
+      state: "closed",
+    });
     result.closed += 1;
   }
 
@@ -271,6 +274,7 @@ export async function upsertActBoardIssues(
     for (const child of current) {
       if (desired.has(child.nodeId)) continue;
       await client.removeSubIssue(parentNodeId, child.nodeId);
+      unwrittenIssueNodeIds.delete(parentNodeId);
       result.subIssuesRemoved += 1;
     }
   }
@@ -282,11 +286,47 @@ export async function upsertActBoardIssues(
     for (const childNodeId of desired) {
       if (currentIds.has(childNodeId)) continue;
       await client.addSubIssue(parentNodeId, childNodeId);
+      unwrittenIssueNodeIds.delete(parentNodeId);
       result.subIssuesAdded += 1;
     }
   }
 
+  result.skipped = unwrittenIssueNodeIds.size;
+
   return result;
+}
+
+/**
+ * Pick the board issue to manage per rule id, preferring an open issue over a
+ * lower-numbered closed one. Remaining issues are duplicates to close.
+ */
+function selectManagedIssues(issues: BoardIssue[]): {
+  managedIssues: Map<string, BoardIssue>;
+  duplicateIssues: BoardIssue[];
+} {
+  const issuesByRuleId = new Map<string, BoardIssue[]>();
+  for (const issue of [...issues].sort((a, b) => a.number - b.number)) {
+    const ruleId = ruleIdFromActBoardTitle(issue.title);
+    if (!ruleId) continue;
+    const matches = issuesByRuleId.get(ruleId) ?? [];
+    matches.push(issue);
+    issuesByRuleId.set(ruleId, matches);
+  }
+
+  const managedIssues = new Map<string, BoardIssue>();
+  const duplicateIssues: BoardIssue[] = [];
+  for (const [ruleId, matches] of issuesByRuleId) {
+    const managed =
+      matches.find((issue) => issue.state === "open") ?? matches[0];
+    managedIssues.set(ruleId, managed);
+    duplicateIssues.push(...matches.filter((issue) => issue !== managed));
+  }
+  return { managedIssues, duplicateIssues };
+}
+
+/** GitHub can return bodies with CRLF or trimmed trailing whitespace. */
+function normalizeBody(body: string | null | undefined): string {
+  return (body ?? "").replace(/\r\n/g, "\n").trimEnd();
 }
 
 function desiredBlockerParents(rows: RuleApprovalRow[]): Map<number, string> {
@@ -340,7 +380,7 @@ function appendChanges(lines: string[], changes: ChangeEntry[]): void {
             .join(", ")}`
         : "";
     lines.push(
-      `- [\`${shortHash}\`](${commitUrl}) ${change.subject}${definitions}`,
+      `- [\`${shortHash}\`](${commitUrl}) ${escMdText(change.subject)}${definitions}`,
     );
   }
 }
@@ -353,8 +393,18 @@ function appendIssues(lines: string[], issues: GitHubIssueRef[]): void {
   for (const issue of [...issues].sort(
     (a, b) => a.number - b.number || compareText(a.title, b.title),
   )) {
-    lines.push(`- [#${issue.number}: ${issue.title}](${issue.html_url})`);
+    lines.push(
+      `- [#${issue.number}: ${escMdText(issue.title)}](${issue.html_url})`,
+    );
   }
+}
+
+/** Collapse whitespace and escape delimiters that would break Markdown links. */
+function escMdText(text: string): string {
+  return text
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/[[\])]/g, (character) => `\\${character}`);
 }
 
 function sortedChanges(changes: ChangeEntry[]): ChangeEntry[] {
