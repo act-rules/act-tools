@@ -25,14 +25,54 @@ import {
   GitHubIssueRef,
   ReportBucket,
   RuleApprovalRow,
+  RuleStatus,
 } from "./types";
 
 function stripIssueBody(issues: GitHubIssueRef[]): GitHubIssueRef[] {
-  return issues.map(({ number, title, html_url }) => ({
+  return issues.map(({ number, title, html_url, labelNames }) => ({
     number,
     title,
     html_url,
+    labelNames,
   }));
+}
+
+export type RuleStatusInputs = {
+  deprecated: boolean;
+  reviewPrUrl: string | null;
+  blockersCount: number;
+  completeImplementationCount: number;
+  waiApproved: boolean;
+  changesCount: number;
+};
+
+/** Apply the status precedence defined by the act-board epic. */
+export function classifyRuleStatus(inputs: RuleStatusInputs): RuleStatus {
+  if (inputs.deprecated) return "Deprecated";
+  if (inputs.reviewPrUrl) return "In review";
+  if (inputs.blockersCount > 0) return "Blocked";
+  if (inputs.completeImplementationCount === 0) {
+    return "No complete implementation";
+  }
+  if (inputs.waiApproved) {
+    return inputs.changesCount === 0
+      ? "Approved, current"
+      : "Approved, unpublished changes";
+  }
+  return "Proposed, reviewable";
+}
+
+function reportBucketForStatus(status: RuleStatus): ReportBucket {
+  switch (status) {
+    case "Approved, current":
+      return "approvedUpToDate";
+    case "Approved, unpublished changes":
+      return "approvedReadyForUpdate";
+    case "Proposed, reviewable":
+      return "proposedReadyForUpdate";
+    default:
+      return "notReady";
+  }
 }
 
 export type ApprovalReportDeps = {
@@ -74,13 +114,13 @@ export async function buildRuleApprovalRows(
   const rows: RuleApprovalRow[] = [];
   for (const rule of rules) {
     const ruleId = rule.frontmatter.id;
-    if (rule.frontmatter.deprecated) continue;
 
     const approval = approvalById[ruleId] ?? { approved: false };
     const implementations = implById[ruleId] ?? [];
     const matched = issuesForRuleId(ruleId, openIssues);
-    const blockersCount = matched.filter(issueHasBlockerLabel).length;
     const issues = stripIssueBody(matched);
+    const blockers = stripIssueBody(matched.filter(issueHasBlockerLabel));
+    const blockersCount = blockers.length;
 
     const ruleRel = d.pathRelativeToRepo(
       opts.actRulesRepo,
@@ -117,19 +157,23 @@ export async function buildRuleApprovalRows(
     const waiApproved = Boolean(approval.approved && approval.approvalIsoDate);
     const lastApprovedSummary = approval.approvalIsoDate ?? "-";
     const commitsBehindSummary = waiApproved ? String(changes.length) : "-";
-
-    const hasCompleteImpl = implementations.length > 0;
-    const hasBlockers = blockersCount > 0;
-
-    let reportBucket: ReportBucket;
-    if (!hasCompleteImpl || hasBlockers) {
-      reportBucket = "notReady";
-    } else if (waiApproved) {
-      reportBucket =
-        changes.length > 0 ? "approvedReadyForUpdate" : "approvedUpToDate";
-    } else {
-      reportBucket = "proposedReadyForUpdate";
-    }
+    const reviewPrUrl = null;
+    const status = classifyRuleStatus({
+      deprecated: Boolean(rule.frontmatter.deprecated),
+      reviewPrUrl,
+      blockersCount,
+      completeImplementationCount: implementations.length,
+      waiApproved,
+      changesCount: changes.length,
+    });
+    const reportBucket = reportBucketForStatus(status);
+    const ruleCommitCount = changes.filter(
+      (change) => change.touchedRule,
+    ).length;
+    const definitionCommitCount = changes.filter(
+      (change) =>
+        !change.touchedRule && change.touchedDefinitionKeys.length > 0,
+    ).length;
 
     rows.push({
       ruleId,
@@ -140,11 +184,17 @@ export async function buildRuleApprovalRows(
           ? [...rule.frontmatter.input_rules]
           : undefined,
       waiApproved,
+      status,
+      reviewPrUrl,
       reportBucket,
       implementations,
       issues,
+      blockers,
       changes,
-      approvalIsoDate: approval.approvalIsoDate,
+      approvalIsoDate: approval.approvalIsoDate ?? null,
+      lastUpdatedIsoDate: lastUpdatedRaw,
+      ruleCommitCount,
+      definitionCommitCount,
       lastApprovedSummary,
       lastUpdatedSummary,
       commitsBehindSummary,

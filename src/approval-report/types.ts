@@ -32,6 +32,16 @@ export type ReportBucket =
   | "approvedUpToDate"
   | "notReady";
 
+/** Values intentionally match the act-board Project Status options. */
+export type RuleStatus =
+  | "Deprecated"
+  | "In review"
+  | "Blocked"
+  | "No complete implementation"
+  | "Approved, current"
+  | "Approved, unpublished changes"
+  | "Proposed, reviewable";
+
 export type RuleApprovalRow = {
   ruleId: string;
   name: string;
@@ -40,11 +50,20 @@ export type RuleApprovalRow = {
   compositeInputs?: string[];
   /** Rule has an approved WAI snapshot (`index.md` in rule-versions) */
   waiApproved: boolean;
+  status: RuleStatus;
+  /** Populated by the PR lookup added in issue #66. */
+  reviewPrUrl: string | null;
   reportBucket: ReportBucket;
   implementations: string[];
   issues: GitHubIssueRef[];
+  blockers: GitHubIssueRef[];
   changes: ChangeEntry[];
-  approvalIsoDate?: string;
+  approvalIsoDate: string | null;
+  lastUpdatedIsoDate: string | null;
+  /** Post-approval commits that touched the rule file (including rule + glossary commits). */
+  ruleCommitCount: number;
+  /** Post-approval commits that touched glossary paths, but not the rule file. */
+  definitionCommitCount: number;
   /** Summary table: YYYY-MM-DD when rule has an approved snapshot, else "-" */
   lastApprovedSummary: string;
   /** Summary table: YYYY-MM-DD of latest commit touching rule + transitive glossary, else "-" */
@@ -62,6 +81,8 @@ export type ApprovalReportOptions = {
   actRulesRepo: string;
   wcagActRulesDir: string;
   outFile: string;
+  /** Optional legacy four-bucket report for debugging. */
+  markdownFile?: string;
   githubOwner: string;
   githubRepo: string;
 };

@@ -10,9 +10,7 @@ const defaultSibling = (segment: string): string =>
 
 const program = new Command();
 program
-  .description(
-    "List ACT rules ready for WAI approval: updated approved rules, or proposed rules with a complete implementation",
-  )
+  .description("Write the act-board classifier JSON snapshot for all ACT rules")
   .option(
     "-r, --rulesDir <path>",
     "Path to act-rules.github.io _rules directory",
@@ -40,9 +38,10 @@ program
   )
   .option(
     "-o, --outFile <path>",
-    "Output markdown file",
-    path.resolve(process.cwd(), "approval-report.md"),
+    "Output JSON file",
+    path.resolve(process.cwd(), "approval-report.json"),
   )
+  .option("--markdownFile <path>", "Optional four-bucket markdown debug report")
   .option(
     "--githubOwner <owner>",
     "GitHub owner for issues lookup and commit links in report details",
@@ -64,6 +63,7 @@ const opts: ApprovalReportOptions = {
   actRulesRepo: path.resolve(o.actRulesRepo),
   wcagActRulesDir: path.resolve(o.wcagActRulesDir),
   outFile: path.resolve(o.outFile),
+  markdownFile: o.markdownFile ? path.resolve(o.markdownFile) : undefined,
   githubOwner: o.githubOwner,
   githubRepo: o.githubRepo,
 };

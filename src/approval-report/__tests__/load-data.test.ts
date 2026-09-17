@@ -125,6 +125,21 @@ describe("loadCompleteImplementationsByRuleId", () => {
     expect(loadCompleteImplementationsByRuleId(dir)["rx"]).toEqual(["custom"]);
   });
 
+  it("uses the act-implementations name when JSON name is missing", () => {
+    writeTree(dir, {
+      "_data/wcag-act-rules/act-implementations.yml": `
+- uniqueKey: custom
+  name: Custom Accessibility Tool
+`,
+      "_data/wcag-act-rules/implementations/custom.json": JSON.stringify({
+        actRuleMapping: [{ ruleId: "rx", consistency: "complete" }],
+      }),
+    });
+    expect(loadCompleteImplementationsByRuleId(dir)["rx"]).toEqual([
+      "Custom Accessibility Tool",
+    ]);
+  });
+
   it("returns empty object when implementations dir has no json", () => {
     fs.mkdirSync(path.join(dir, "_data/wcag-act-rules/implementations"), {
       recursive: true,

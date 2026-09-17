@@ -47,14 +47,11 @@ export function loadApprovalByRuleId(
 export function loadCompleteImplementationsByRuleId(
   wcagActRulesDir: string,
 ): Record<string, string[]> {
-  const implDir = path.join(
-    wcagActRulesDir,
-    "_data",
-    "wcag-act-rules",
-    "implementations",
-  );
+  const dataDir = path.join(wcagActRulesDir, "_data", "wcag-act-rules");
+  const implDir = path.join(dataDir, "implementations");
   const files = globby.sync(path.join(implDir, "*.json"));
   const byRule: Record<string, Set<string>> = {};
+  const implementationNames = loadImplementationNames(dataDir);
 
   for (const file of files) {
     const json = JSON.parse(fs.readFileSync(file, "utf8")) as {
@@ -64,7 +61,8 @@ export function loadCompleteImplementationsByRuleId(
         consistency?: string;
       }>;
     };
-    const toolName = json.name ?? path.basename(file, ".json");
+    const uniqueKey = path.basename(file, ".json");
+    const toolName = json.name ?? implementationNames[uniqueKey] ?? uniqueKey;
     for (const row of json.actRuleMapping ?? []) {
       if (row.consistency !== "complete") continue;
       const ruleId = row.ruleId;
@@ -78,4 +76,18 @@ export function loadCompleteImplementationsByRuleId(
     result[ruleId] = Array.from(toolNames).sort((a, b) => a.localeCompare(b));
   }
   return result;
+}
+
+function loadImplementationNames(dataDir: string): Record<string, string> {
+  const implementationsPath = path.join(dataDir, "act-implementations.yml");
+  if (!fs.existsSync(implementationsPath)) return {};
+
+  const entries = yaml.load(fs.readFileSync(implementationsPath, "utf8")) as
+    | Array<{ uniqueKey?: string; name?: string }>
+    | undefined;
+  const names: Record<string, string> = {};
+  for (const entry of entries ?? []) {
+    if (entry.uniqueKey && entry.name) names[entry.uniqueKey] = entry.name;
+  }
+  return names;
 }
