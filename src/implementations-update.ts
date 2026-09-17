@@ -28,7 +28,7 @@ export async function cliProgram({
   const implementationMappings = await createImplementationMappings(
     implementationPath,
     outDir,
-    testCaseJson
+    testCaseJson,
   );
 
   for (const ruleId of getRuleIds(testCaseJson)) {
@@ -41,7 +41,7 @@ export async function cliProgram({
 async function createImplementationMappings(
   implementationPath: string,
   outDir: string,
-  testCasesJson: TestCaseJson
+  testCasesJson: TestCaseJson,
 ): Promise<ActImplementationReport[]> {
   const implementations = loadImplementations(implementationPath);
   const implementationMappings: ActImplementationReport[] = [];
@@ -54,7 +54,7 @@ async function createImplementationMappings(
       {
         name,
         vendor,
-      }
+      },
     );
     const filePath = path.resolve(outDir, `${filenameEscape(name)}.json`);
     console.log(`Writing file ${filePath}`);
@@ -69,8 +69,14 @@ function loadImplementations(implementationPath: string): Implementation[] {
   if (typeof yamlData !== "object" || yamlData === null) {
     return [];
   }
+  const yamlRecord = yamlData as Record<string, unknown>;
   const implementations: Implementation[] = [];
-  Object.entries(yamlData).forEach(([name, { vendor, report }]) => {
+  Object.entries(yamlRecord).forEach(([name, entry]) => {
+    if (typeof entry !== "object" || entry === null) {
+      console.warn(`Failed to load ${name}. Properties missing or invalid`);
+      return;
+    }
+    const { vendor, report } = entry as Record<string, unknown>;
     if (typeof vendor === "string" && typeof report === "string") {
       implementations.push({ name, vendor, report });
     } else {

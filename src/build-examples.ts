@@ -60,7 +60,7 @@ export async function buildExamples({
   // Copy test assets
   if (testAssetsDir) {
     const targetDir = path.resolve(assetsPath, "test-assets");
-    fs.copyFileSync(testAssetsDir, targetDir);
+    fs.cpSync(testAssetsDir, targetDir, { recursive: true });
     console.log(`Copied test assets to  ${targetDir}`);
   }
 }
