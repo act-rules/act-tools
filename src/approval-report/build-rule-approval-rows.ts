@@ -50,9 +50,9 @@ export type RuleStatusInputs = {
 export function classifyRuleStatus(inputs: RuleStatusInputs): RuleStatus {
   if (inputs.deprecated) return "Deprecated";
   if (inputs.reviewPrUrl) return "In review";
-  if (inputs.blockersCount > 0) return "Blocked";
+  if (inputs.blockersCount > 0) return "Blocked by issue";
   if (inputs.completeImplementationCount === 0) {
-    return "No complete implementation";
+    return "Awaiting implementation";
   }
   if (inputs.waiApproved) {
     return inputs.changesCount === 0

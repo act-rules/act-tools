@@ -123,7 +123,7 @@ describe("buildRuleApprovalRows", () => {
       oneAtomic("n", { loadCompleteImplementationsByRuleId: () => ({}) }),
     );
     expect(rows[0].reportBucket).toBe("notReady");
-    expect(rows[0].status).toBe("No complete implementation");
+    expect(rows[0].status).toBe("Awaiting implementation");
   });
 
   it("buckets notReady when a matched issue has Blocker label", async () => {
@@ -142,7 +142,7 @@ describe("buildRuleApprovalRows", () => {
       }),
     );
     expect(rows[0].reportBucket).toBe("notReady");
-    expect(rows[0].status).toBe("Blocked");
+    expect(rows[0].status).toBe("Blocked by issue");
     expect(rows[0].blockersCount).toBe(1);
     expect(rows[0].blockers).toEqual(rows[0].issues);
   });
@@ -305,7 +305,7 @@ describe("classifyRuleStatus", () => {
         completeImplementationCount: 0,
         waiApproved: true,
       },
-      "Blocked",
+      "Blocked by issue",
     ],
     [
       {
@@ -313,7 +313,7 @@ describe("classifyRuleStatus", () => {
         completeImplementationCount: 0,
         waiApproved: true,
       },
-      "No complete implementation",
+      "Awaiting implementation",
     ],
     [{ ...reviewable, waiApproved: true }, "Approved, current"],
     [

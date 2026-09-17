@@ -36,8 +36,8 @@ export type ReportBucket =
 export type RuleStatus =
   | "Deprecated"
   | "In review"
-  | "Blocked"
-  | "No complete implementation"
+  | "Blocked by issue"
+  | "Awaiting implementation"
   | "Approved, current"
   | "Approved, unpublished changes"
   | "Proposed, reviewable";
