@@ -17,10 +17,12 @@
     "build-examples": "ts-node src/cli/build-examples.ts",
     "map-implementation": "ts-node src/cli/map-implementation.ts",
     "implementations-update": "ts-node src/cli/implementations-update.ts",
+    "approval-report": "ts-node src/cli/approval-report.ts",
     "test": "jest",
     "prepare": "husky install"
   },
   "dependencies": {
+    "@octokit/rest": "^22.0.0",
     "@types/debug": "^4.1.12",
     "@types/js-yaml": "^4.0.2",
     "@types/jsonld": "^1.5.15",
@@ -30,6 +32,7 @@
     "debug": "^4.4.3",
     "fastmatter": "^2.1.1",
     "globby": "^11.0.4",
+    "js-yaml": "^4.1.0",
     "jsonld": "^9.0.0",
     "markdown-table": "2.0.0",
     "moment": "^2.30.1",
