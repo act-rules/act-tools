@@ -126,7 +126,10 @@ yarn write-act-board-snapshot --input approval-report.json \
 
 `sync-act-board-project` writes Projects v2 Status and optional numeric/date/URL
 fields. It skips GitHub writes when values already match, warns and skips
-missing optional fields, and exits if the Status field is missing. Both
+missing or mistyped optional fields, and exits if the Status field is missing.
+`--projectOwner` must name a GitHub organization; user-owned Projects are not
+supported. Row failures are reported after the remaining rows are attempted and
+cause a non-zero exit status. Both
 `upsert-act-board` and `sync-act-board-project` fail clearly when `GITHUB_TOKEN`
 is unset. The snapshot command rewrites `data/snapshot.json` only when the
 classifier JSON actually changed.

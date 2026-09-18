@@ -1,8 +1,9 @@
 import { BoardIssue } from "../act-board";
-import { snapshotsEqual } from "../snapshot";
 import {
   ActBoardProjectClient,
   DEFAULT_PROJECT_FIELD_NAMES,
+  OctokitActBoardProjectClient,
+  parseProjectNumber,
   ProjectField,
   ProjectItem,
   ProjectSnapshot,
@@ -243,6 +244,7 @@ describe("syncActBoardProject", () => {
 
   it("skips missing optional fields and still syncs Status", async () => {
     const warnings: string[] = [];
+    const second = row("2ee8b8");
     const project = fakeProject({
       id: "PROJECT",
       title: "ACT board",
@@ -262,13 +264,29 @@ describe("syncActBoardProject", () => {
             },
           ],
         },
+        {
+          id: "ITEM_2ee8b8",
+          issueNodeId: "ISSUE_2ee8b8",
+          fieldValues: [
+            {
+              fieldId: "FIELD_STATUS",
+              fieldName: "Status",
+              optionId: statusField().options?.find(
+                (option) => option.name === "Approved, current",
+              )?.id,
+              optionName: "Approved, current",
+            },
+          ],
+        },
       ],
     });
 
     const result = await syncActBoardProject(
-      [current],
+      [current, second],
       {
-        listBoardIssues: jest.fn().mockResolvedValue([boardIssue(current)]),
+        listBoardIssues: jest
+          .fn()
+          .mockResolvedValue([boardIssue(current), boardIssue(second)]),
         project,
       },
       {
@@ -281,6 +299,41 @@ describe("syncActBoardProject", () => {
     expect(project.updateFieldValue).not.toHaveBeenCalled();
     expect(warnings.some((message) => message.includes("impl count"))).toBe(
       true,
+    );
+    expect(warnings).toHaveLength(9);
+  });
+
+  it("skips an optional field with the wrong data type once", async () => {
+    const wrongType = textField(
+      "FIELD_IMPL",
+      DEFAULT_PROJECT_FIELD_NAMES.implCount,
+    );
+    const warnings: string[] = [];
+    const project = fakeProject({
+      id: "PROJECT",
+      title: "ACT board",
+      fields: [statusField(), wrongType],
+      items: [matchingItem(current)],
+    });
+
+    const result = await syncActBoardProject(
+      [current],
+      {
+        listBoardIssues: jest.fn().mockResolvedValue([boardIssue(current)]),
+        project,
+      },
+      { projectNumber: 1, warn: (message) => warnings.push(message) },
+    );
+
+    expect(result.optionalFieldsSkipped).toBe(9);
+    expect(warnings).toContain(
+      'Skipping optional Project field "impl count": expected data type NUMBER, got TEXT',
+    );
+    expect(project.updateFieldValue).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      "FIELD_IMPL",
+      expect.anything(),
     );
   });
 
@@ -360,16 +413,285 @@ describe("syncActBoardProject", () => {
       "FIELD_PR",
     );
   });
+
+  it("prefers an open higher-numbered issue over a closed duplicate", async () => {
+    const closed = {
+      ...boardIssue(current),
+      number: 10,
+      state: "closed" as const,
+      nodeId: "ISSUE_CLOSED",
+    };
+    const open = {
+      ...boardIssue(current),
+      number: 20,
+      state: "open" as const,
+      nodeId: "ISSUE_OPEN",
+    };
+    const project = fakeProject({
+      id: "PROJECT",
+      title: "ACT board",
+      fields: [statusField()],
+      items: [],
+    });
+
+    await syncActBoardProject(
+      [current],
+      {
+        listBoardIssues: jest.fn().mockResolvedValue([closed, open]),
+        project,
+      },
+      { projectNumber: 1, warn: () => undefined },
+    );
+
+    expect(project.addItem).toHaveBeenCalledWith("PROJECT", "ISSUE_OPEN");
+  });
+
+  it("continues after a row failure and reports rows without issues", async () => {
+    const failed = row("2ee8b8");
+    const missing = row("abcdef");
+    const project = fakeProject({
+      id: "PROJECT",
+      title: "ACT board",
+      fields: [statusField()],
+      items: [],
+    });
+    project.addItem
+      .mockRejectedValueOnce(new Error("mutation failed"))
+      .mockResolvedValueOnce("ITEM_OK");
+
+    const result = await syncActBoardProject(
+      [failed, current, missing],
+      {
+        listBoardIssues: jest
+          .fn()
+          .mockResolvedValue([boardIssue(failed), boardIssue(current)]),
+        project,
+      },
+      { projectNumber: 1, warn: () => undefined },
+    );
+
+    expect(result.failures).toEqual([
+      { ruleId: failed.ruleId, message: "mutation failed" },
+    ]);
+    expect(result.rowsWithoutIssue).toBe(1);
+    expect(result.itemsAdded).toBe(1);
+    expect(project.addItem).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not count a field update when its mutation fails", async () => {
+    const stale = matchingItem(current);
+    const staleStatus = stale.fieldValues.find(
+      (value) => value.fieldId === "FIELD_STATUS",
+    );
+    if (!staleStatus) throw new Error("Missing status fixture");
+    staleStatus.optionId = "STALE";
+    staleStatus.optionName = "In review";
+    const project = fakeProject({
+      id: "PROJECT",
+      title: "ACT board",
+      fields: allFields(),
+      items: [stale],
+    });
+    project.updateFieldValue.mockRejectedValueOnce(new Error("write failed"));
+
+    const result = await syncActBoardProject(
+      [current],
+      {
+        listBoardIssues: jest.fn().mockResolvedValue([boardIssue(current)]),
+        project,
+      },
+      { projectNumber: 1, warn: () => undefined },
+    );
+
+    expect(result.fieldsUpdated).toBe(0);
+    expect(result.failures).toHaveLength(1);
+  });
+
+  it("normalizes both date values before comparing", async () => {
+    const item = matchingItem(current);
+    const approved = item.fieldValues.find(
+      (value) => value.fieldId === "FIELD_APPROVED",
+    );
+    if (approved) approved.date = "2024-01-01T23:59:59Z";
+    const project = fakeProject({
+      id: "PROJECT",
+      title: "ACT board",
+      fields: allFields(),
+      items: [item],
+    });
+
+    await syncActBoardProject(
+      [row(current.ruleId, { approvalIsoDate: "2024-01-01T00:00:00Z" })],
+      {
+        listBoardIssues: jest.fn().mockResolvedValue([boardIssue(current)]),
+        project,
+      },
+      { projectNumber: 1 },
+    );
+
+    expect(project.updateFieldValue).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      "FIELD_APPROVED",
+      expect.anything(),
+    );
+  });
 });
 
-describe("snapshotsEqual", () => {
-  it("ignores key order when deciding whether snapshot.json changed", () => {
+describe("parseProjectNumber", () => {
+  it("accepts only positive integer strings", () => {
+    expect(parseProjectNumber("12")).toBe(12);
+    expect(parseProjectNumber("12abc")).toBeNull();
+    expect(parseProjectNumber("1.5")).toBeNull();
+    expect(parseProjectNumber("0")).toBeNull();
+  });
+});
+
+describe("OctokitActBoardProjectClient", () => {
+  function mockOctokit(
+    graphql: jest.Mock,
+  ): ConstructorParameters<typeof OctokitActBoardProjectClient>[0] {
+    return { graphql } as unknown as ConstructorParameters<
+      typeof OctokitActBoardProjectClient
+    >[0];
+  }
+
+  it("paginates project fields, items, and each item's field values", async () => {
+    const graphql = jest
+      .fn()
+      .mockImplementation(
+        async (query: string, variables: Record<string, unknown>) => {
+          if (query.includes("query ActBoardProject(")) {
+            return {
+              organization: {
+                projectV2: {
+                  id: "PROJECT",
+                  title: "ACT board",
+                  fields: {
+                    nodes: [
+                      {
+                        id: "STATUS",
+                        name: "Status",
+                        dataType: "SINGLE_SELECT",
+                      },
+                    ],
+                    pageInfo: { hasNextPage: true, endCursor: "FIELDS_2" },
+                  },
+                },
+              },
+            };
+          }
+          if (query.includes("ActBoardProjectFields")) {
+            expect(variables.cursor).toBe("FIELDS_2");
+            return {
+              node: {
+                fields: {
+                  nodes: [
+                    { id: "COUNT", name: "impl count", dataType: "NUMBER" },
+                  ],
+                  pageInfo: { hasNextPage: false, endCursor: null },
+                },
+              },
+            };
+          }
+          if (query.includes("ActBoardProjectItems")) {
+            return {
+              node: {
+                items: {
+                  nodes:
+                    variables.cursor === null
+                      ? [
+                          {
+                            id: "ITEM",
+                            content: {
+                              id: "ISSUE",
+                              number: 1,
+                              title: "[674b10] Rule",
+                            },
+                          },
+                        ]
+                      : [],
+                  pageInfo:
+                    variables.cursor === null
+                      ? { hasNextPage: true, endCursor: "ITEMS_2" }
+                      : { hasNextPage: false, endCursor: null },
+                },
+              },
+            };
+          }
+          if (query.includes("ActBoardProjectItemFieldValues")) {
+            return {
+              node: {
+                fieldValues: {
+                  nodes:
+                    variables.cursor === null
+                      ? [
+                          {
+                            number: 1,
+                            field: { id: "COUNT", name: "impl count" },
+                          },
+                        ]
+                      : [
+                          {
+                            text: "https://example.com/pr",
+                            field: { id: "PR", name: "review PR URL" },
+                          },
+                        ],
+                  pageInfo:
+                    variables.cursor === null
+                      ? { hasNextPage: true, endCursor: "VALUES_2" }
+                      : { hasNextPage: false, endCursor: null },
+                },
+              },
+            };
+          }
+          throw new Error(`Unexpected query: ${query}`);
+        },
+      );
+    const client = new OctokitActBoardProjectClient(mockOctokit(graphql));
+
+    const snapshot = await client.getProject("act-rules", 1);
+
+    expect(snapshot.fields.map((field) => field.id)).toEqual([
+      "STATUS",
+      "COUNT",
+    ]);
+    expect(snapshot.items[0].fieldValues).toHaveLength(2);
     expect(
-      snapshotsEqual(
-        '{"ruleId":"674b10","name":"A"}\n',
-        '{"name":"A","ruleId":"674b10"}',
+      graphql.mock.calls.filter(([query]) =>
+        String(query).includes("ActBoardProjectItemFieldValues"),
+      ),
+    ).toHaveLength(2);
+    expect(
+      graphql.mock.calls.every(
+        ([query]) => !String(query).includes("first: 20"),
       ),
     ).toBe(true);
-    expect(snapshotsEqual('{"ruleId":"a"}', '{"ruleId":"b"}')).toBe(false);
+  });
+
+  it("sends add, update, and clear mutations with their variables", async () => {
+    const graphql = jest
+      .fn()
+      .mockResolvedValueOnce({ addProjectV2ItemById: { item: { id: "ITEM" } } })
+      .mockResolvedValue({});
+    const client = new OctokitActBoardProjectClient(mockOctokit(graphql));
+
+    await expect(client.addItem("PROJECT", "ISSUE")).resolves.toBe("ITEM");
+    await client.updateFieldValue("PROJECT", "ITEM", "FIELD", { number: 3 });
+    await client.clearFieldValue("PROJECT", "ITEM", "FIELD");
+
+    expect(graphql.mock.calls[0][0]).toContain("addProjectV2ItemById");
+    expect(graphql.mock.calls[0][1]).toEqual({
+      projectId: "PROJECT",
+      contentId: "ISSUE",
+    });
+    expect(graphql.mock.calls[1][0]).toContain("updateProjectV2ItemFieldValue");
+    expect(graphql.mock.calls[1][1]).toEqual({
+      projectId: "PROJECT",
+      itemId: "ITEM",
+      fieldId: "FIELD",
+      value: { number: 3 },
+    });
+    expect(graphql.mock.calls[2][0]).toContain("clearProjectV2ItemFieldValue");
   });
 });

@@ -7,6 +7,7 @@ import { OctokitActBoardClient } from "../approval-report/act-board";
 import { loadRuleApprovalRows } from "../approval-report/load-rows";
 import {
   OctokitActBoardProjectClient,
+  parseProjectNumber,
   syncActBoardProject,
 } from "../approval-report/sync-project";
 
@@ -24,7 +25,7 @@ program
   .option("--boardRepo <repo>", "act-board repository name", "act-board")
   .option(
     "--projectOwner <owner>",
-    "GitHub organization that owns the Project",
+    "GitHub organization (not user) that owns the Project",
     "act-rules",
   )
   .option(
@@ -43,8 +44,8 @@ if (!process.env.GITHUB_TOKEN) {
   process.exit(1);
 }
 
-const projectNumber = Number.parseInt(String(options.projectNumber ?? ""), 10);
-if (!Number.isFinite(projectNumber) || projectNumber < 1) {
+const projectNumber = parseProjectNumber(options.projectNumber);
+if (projectNumber === null) {
   console.error(
     "ACT_BOARD_PROJECT_NUMBER or --projectNumber is required and must be a positive integer.",
   );
@@ -74,6 +75,7 @@ syncActBoardProject(
 )
   .then((result) => {
     console.log(`Synced Project fields: ${JSON.stringify(result)}`);
+    if (result.failures.length > 0) process.exitCode = 1;
   })
   .catch((error) => {
     console.error(error);
