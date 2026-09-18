@@ -55,7 +55,7 @@ function boardIssue(
     number: Number.parseInt(rule.ruleId, 16) || 1,
     title: actBoardIssueTitle(rule),
     body: renderActBoardIssueBody(rule),
-    state: rule.status === "Deprecated" ? "closed" : "open",
+    state: "open",
     nodeId: `BOARD_${rule.ruleId}`,
     ...overrides,
   };
@@ -290,28 +290,57 @@ describe("upsertActBoardIssues", () => {
     expect(client.updateBoardIssue).not.toHaveBeenCalled();
   });
 
-  it("closes deprecated and snapshot-missing rule issues", async () => {
+  it("keeps deprecated rule issues open and closes snapshot-missing ones", async () => {
     const deprecated = row("674b10", { status: "Deprecated" });
-    const oldDeprecated = boardIssue(deprecated, {
-      body: "old body",
-      state: "open",
-    });
+    const oldDeprecated = boardIssue(deprecated, { body: "old body" });
     const removed = boardIssue(row("2ee8b8"));
     const client = fakeClient({ issues: [oldDeprecated, removed] });
 
     const result = await upsertActBoardIssues([deprecated], client);
 
-    expect(result.closed).toBe(2);
+    expect(result.closed).toBe(1);
     expect(client.updateBoardIssue).toHaveBeenCalledWith(
       expect.anything(),
       oldDeprecated.number,
-      expect.objectContaining({ state: "closed" }),
+      { body: renderActBoardIssueBody(deprecated) },
     );
     expect(client.updateBoardIssue).toHaveBeenCalledWith(
       expect.anything(),
       removed.number,
       { state: "closed" },
     );
+  });
+
+  it("reopens a deprecated rule issue closed by an earlier run", async () => {
+    const deprecated = row("674b10", { status: "Deprecated" });
+    const closedIssue = boardIssue(deprecated, { state: "closed" });
+    const client = fakeClient({ issues: [closedIssue] });
+
+    const result = await upsertActBoardIssues([deprecated], client);
+
+    expect(result.reopened).toBe(1);
+    expect(result.closed).toBe(0);
+    expect(client.updateBoardIssue).toHaveBeenCalledWith(
+      expect.anything(),
+      closedIssue.number,
+      { state: "open" },
+    );
+  });
+
+  it("creates a deprecated rule issue as open", async () => {
+    const deprecated = row("674b10", { status: "Deprecated" });
+    const client = fakeClient();
+
+    const result = await upsertActBoardIssues([deprecated], client);
+
+    expect(result.created).toBe(1);
+    expect(result.closed).toBe(0);
+    expect(client.createBoardIssue).toHaveBeenCalledWith(
+      expect.anything(),
+      actBoardIssueTitle(deprecated),
+      expect.stringContaining("**Status:** Deprecated"),
+    );
+    expect(client.updateBoardIssue).not.toHaveBeenCalled();
   });
 
   it("adds new blockers and removes dropped sub-issues", async () => {

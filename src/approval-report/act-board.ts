@@ -185,18 +185,11 @@ export async function upsertActBoardIssues(
     const ruleId = row.ruleId.toLowerCase();
     const title = actBoardIssueTitle(row);
     const body = renderActBoardIssueBody(row);
-    const desiredState = row.status === "Deprecated" ? "closed" : "open";
     let issue = managedIssues.get(ruleId);
 
     if (!issue) {
       issue = await client.createBoardIssue(boardRepository, title, body);
       result.created += 1;
-      if (desiredState === "closed") {
-        issue = await client.updateBoardIssue(boardRepository, issue.number, {
-          state: "closed",
-        });
-        result.closed += 1;
-      }
       managedIssues.set(ruleId, issue);
       continue;
     }
@@ -208,7 +201,10 @@ export async function upsertActBoardIssues(
     } = {};
     if (issue.title !== title) update.title = title;
     if (normalizeBody(issue.body) !== normalizeBody(body)) update.body = body;
-    if (issue.state !== desiredState) update.state = desiredState;
+    // Every rule in the snapshot keeps an open issue, deprecated ones included.
+    // Projects v2 moves closed items to Done, which this Project renames
+    // "Approved, current"; the Deprecated status comes from the Project sync.
+    if (issue.state === "closed") update.state = "open";
 
     if (Object.keys(update).length === 0) {
       unwrittenIssueNodeIds.add(issue.nodeId);
@@ -219,8 +215,7 @@ export async function upsertActBoardIssues(
         update,
       );
       managedIssues.set(ruleId, issue);
-      if (update.state === "closed") result.closed += 1;
-      else if (update.state === "open") result.reopened += 1;
+      if (update.state === "open") result.reopened += 1;
       else result.updated += 1;
     }
   }
