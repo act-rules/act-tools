@@ -116,3 +116,17 @@ GITHUB_TOKEN=... yarn upsert-act-board --input approval-report.json
 
 The upsert command owns act-board issue titles, bodies, state, and sub-issue
 relationships. It does not update GitHub Project fields.
+
+```sh
+GITHUB_TOKEN=... ACT_BOARD_PROJECT_NUMBER=1 yarn sync-act-board-project \
+  --input approval-report.json
+yarn write-act-board-snapshot --input approval-report.json \
+  --outFile ../act-board/data/snapshot.json
+```
+
+`sync-act-board-project` writes Projects v2 Status and optional numeric/date/URL
+fields. It skips GitHub writes when values already match, warns and skips
+missing optional fields, and exits if the Status field is missing. Both
+`upsert-act-board` and `sync-act-board-project` fail clearly when `GITHUB_TOKEN`
+is unset. The snapshot command rewrites `data/snapshot.json` only when the
+classifier JSON actually changed.

@@ -19,6 +19,8 @@
     "implementations-update": "ts-node src/cli/implementations-update.ts",
     "approval-report": "ts-node src/cli/approval-report.ts",
     "upsert-act-board": "ts-node src/cli/upsert-act-board.ts",
+    "sync-act-board-project": "ts-node src/cli/sync-act-board-project.ts",
+    "write-act-board-snapshot": "ts-node src/cli/write-act-board-snapshot.ts",
     "test": "jest",
     "prepare": "husky install"
   },
