@@ -1,5 +1,4 @@
 #!/usr/bin/env ts-node
-import * as fs from "node:fs";
 import * as path from "node:path";
 import { Octokit } from "@octokit/rest";
 import { Command } from "commander";
@@ -8,7 +7,7 @@ import {
   OctokitActBoardClient,
   upsertActBoardIssues,
 } from "../approval-report/act-board";
-import { RuleApprovalRow } from "../approval-report/types";
+import { loadRuleApprovalRows } from "../approval-report/load-rows";
 
 const program = new Command();
 program
@@ -31,8 +30,16 @@ program
 
 program.parse(process.argv);
 const options = program.opts();
+
+if (!process.env.GITHUB_TOKEN) {
+  console.error(
+    "GITHUB_TOKEN is required (GitHub App installation token or PAT).",
+  );
+  process.exit(1);
+}
+
 const inputPath = path.resolve(options.input);
-const rows = readRows(inputPath);
+const rows = loadRuleApprovalRows(inputPath);
 const client = new OctokitActBoardClient(
   new Octokit({ auth: process.env.GITHUB_TOKEN }),
 );
@@ -54,19 +61,3 @@ upsertActBoardIssues(rows, client, {
     console.error(error);
     process.exit(1);
   });
-
-function readRows(filePath: string): RuleApprovalRow[] {
-  const parsed: unknown = JSON.parse(fs.readFileSync(filePath, "utf8"));
-  if (
-    !Array.isArray(parsed) ||
-    parsed.some(
-      (row) =>
-        typeof row !== "object" ||
-        row === null ||
-        typeof (row as { ruleId?: unknown }).ruleId !== "string",
-    )
-  ) {
-    throw new Error(`${filePath} is not a RuleApprovalRow JSON array`);
-  }
-  return parsed as RuleApprovalRow[];
-}

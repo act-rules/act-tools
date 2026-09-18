@@ -300,7 +300,7 @@ export async function upsertActBoardIssues(
  * Pick the board issue to manage per rule id, preferring an open issue over a
  * lower-numbered closed one. Remaining issues are duplicates to close.
  */
-function selectManagedIssues(issues: BoardIssue[]): {
+export function selectManagedIssues(issues: BoardIssue[]): {
   managedIssues: Map<string, BoardIssue>;
   duplicateIssues: BoardIssue[];
 } {
