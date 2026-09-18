@@ -1,0 +1,426 @@
+import {
+  actBoardIssueTitle,
+  ActBoardGitHubClient,
+  BoardIssue,
+  renderActBoardIssueBody,
+  ruleIdFromActBoardTitle,
+  SubIssue,
+  upsertActBoardIssues,
+} from "../act-board";
+import { GitHubIssueRef, RuleApprovalRow } from "../types";
+
+function issue(number: number, title: string, blocker = false): GitHubIssueRef {
+  return {
+    number,
+    title,
+    html_url: `https://github.com/act-rules/act-rules.github.io/issues/${number}`,
+    labelNames: blocker ? ["Blocker"] : [],
+  };
+}
+
+function row(
+  ruleId: string,
+  overrides: Partial<RuleApprovalRow> = {},
+): RuleApprovalRow {
+  return {
+    ruleId,
+    name: `Rule ${ruleId}`,
+    filename: `rule-${ruleId}.md`,
+    ruleTypeSummary: "atomic",
+    waiApproved: true,
+    status: "Approved, current",
+    reviewPrUrl: null,
+    reportBucket: "approvedUpToDate",
+    implementations: ["axe-core"],
+    issues: [],
+    blockers: [],
+    changes: [],
+    approvalIsoDate: "2024-01-01",
+    lastUpdatedIsoDate: "2024-01-01",
+    ruleCommitCount: 0,
+    definitionCommitCount: 0,
+    lastApprovedSummary: "2024-01-01",
+    lastUpdatedSummary: "2024-01-01",
+    commitsBehindSummary: "0",
+    blockersCount: 0,
+    ...overrides,
+  };
+}
+
+function boardIssue(
+  rule: RuleApprovalRow,
+  overrides: Partial<BoardIssue> = {},
+): BoardIssue {
+  return {
+    number: Number.parseInt(rule.ruleId, 16) || 1,
+    title: actBoardIssueTitle(rule),
+    body: renderActBoardIssueBody(rule),
+    state: rule.status === "Deprecated" ? "closed" : "open",
+    nodeId: `BOARD_${rule.ruleId}`,
+    ...overrides,
+  };
+}
+
+function fakeClient(
+  overrides: {
+    issues?: BoardIssue[];
+    subIssues?: Record<string, SubIssue[]>;
+    blockerNodeIds?: Record<number, string>;
+  } = {},
+): ActBoardGitHubClient & {
+  createBoardIssue: jest.Mock;
+  updateBoardIssue: jest.Mock;
+  listSubIssues: jest.Mock;
+  getIssueNodeId: jest.Mock;
+  addSubIssue: jest.Mock;
+  removeSubIssue: jest.Mock;
+} {
+  let nextIssueNumber = 100;
+  return {
+    listBoardIssues: jest.fn().mockResolvedValue(overrides.issues ?? []),
+    createBoardIssue: jest
+      .fn()
+      .mockImplementation(
+        async (
+          _repository,
+          title: string,
+          body: string,
+        ): Promise<BoardIssue> => {
+          nextIssueNumber += 1;
+          return {
+            number: nextIssueNumber,
+            title,
+            body,
+            state: "open",
+            nodeId: `BOARD_NEW_${nextIssueNumber}`,
+          };
+        },
+      ),
+    updateBoardIssue: jest
+      .fn()
+      .mockImplementation(
+        async (
+          _repository,
+          issueNumber: number,
+          update: Partial<BoardIssue>,
+        ): Promise<BoardIssue> => {
+          const existing = (overrides.issues ?? []).find(
+            (candidate) => candidate.number === issueNumber,
+          ) ?? {
+            number: issueNumber,
+            title: "",
+            body: null,
+            state: "open" as const,
+            nodeId: `BOARD_NEW_${issueNumber}`,
+          };
+          return { ...existing, ...update };
+        },
+      ),
+    listSubIssues: jest
+      .fn()
+      .mockImplementation(
+        async (nodeId: string) => overrides.subIssues?.[nodeId] ?? [],
+      ),
+    getIssueNodeId: jest
+      .fn()
+      .mockImplementation(
+        async (_repository, number: number) =>
+          overrides.blockerNodeIds?.[number] ?? `CG_${number}`,
+      ),
+    addSubIssue: jest.fn().mockResolvedValue(undefined),
+    removeSubIssue: jest.fn().mockResolvedValue(undefined),
+  };
+}
+
+describe("act-board issue rendering", () => {
+  it("uses the bracketed six-character rule id as its title key", () => {
+    expect(actBoardIssueTitle(row("674b10"))).toBe("[674b10] Rule 674b10");
+    expect(
+      ruleIdFromActBoardTitle("[674b10] Role attribute has valid value"),
+    ).toBe("674b10");
+    expect(ruleIdFromActBoardTitle("Rule 674b10")).toBeNull();
+    expect(ruleIdFromActBoardTitle("[too-long] Rule")).toBeNull();
+  });
+
+  it("renders all generated body sections deterministically", () => {
+    const blocker = issue(20, "Fix blocker", true);
+    const nonBlocker = issue(10, "Discuss wording");
+    const body = renderActBoardIssueBody(
+      row("674b10", {
+        name: "Role attribute has valid value",
+        filename: "role-attribute-valid-value-674b10.md",
+        implementations: ["Zeta", "Alpha"],
+        issues: [blocker, nonBlocker],
+        blockers: [blocker],
+        changes: [
+          {
+            hash: "b".repeat(40),
+            subject: "Definition update",
+            dateIso: "2024-03-01",
+            touchedRule: false,
+            touchedDefinitionKeys: ["role", "attribute"],
+          },
+          {
+            hash: "a".repeat(40),
+            subject: "Rule and definition update",
+            dateIso: "2024-04-01",
+            touchedRule: true,
+            touchedDefinitionKeys: ["role"],
+          },
+        ],
+        ruleCommitCount: 1,
+        definitionCommitCount: 1,
+      }),
+    );
+
+    expect(
+      body.startsWith("> [!NOTE]\n> This issue is generated by a bot."),
+    ).toBe(true);
+    expect(body).toContain("Do not edit this issue body");
+    expect(body).toContain("### Rule changes (1)");
+    expect(body).toContain("### Definition-only changes (1)");
+    expect(body).toContain("Rule and definition update — definitions: role");
+    expect(body).toContain("Definition update — definitions: attribute, role");
+    expect(body).toContain("## Open non-blocker Community Group issues");
+    expect(body).toContain("[#10: Discuss wording]");
+    expect(body).toContain("## Open blocker Community Group issues");
+    expect(body).toContain("[#20: Fix blocker]");
+    expect(body.match(/\[#20: Fix blocker\]/g)).toHaveLength(1);
+    expect(body.indexOf("- Alpha")).toBeLessThan(body.indexOf("- Zeta"));
+    expect(body).toContain(
+      "https://www.w3.org/WAI/standards-guidelines/act/rules/674b10/proposed/",
+    );
+    expect(body).toContain(
+      "https://www.w3.org/WAI/standards-guidelines/act/rules/674b10/",
+    );
+    expect(body).toContain(
+      "https://github.com/act-rules/act-rules.github.io/blob/develop/_rules/role-attribute-valid-value-674b10.md",
+    );
+  });
+
+  it("escapes link-breaking characters in issue titles and commit subjects", () => {
+    const body = renderActBoardIssueBody(
+      row("674b10", {
+        issues: [issue(10, "Fix [role] (aria)\nsecond line")],
+        changes: [
+          {
+            hash: "c".repeat(40),
+            subject: "fix: [role] handling (again)",
+            dateIso: "2024-05-01",
+            touchedRule: true,
+            touchedDefinitionKeys: [],
+          },
+        ],
+        ruleCommitCount: 1,
+      }),
+    );
+
+    expect(body).toContain(
+      "- [#10: Fix \\[role\\] (aria\\) second line](https://github.com/act-rules/act-rules.github.io/issues/10)",
+    );
+    expect(body).toContain("fix: \\[role\\] handling (again\\)");
+  });
+});
+
+describe("upsertActBoardIssues", () => {
+  it("updates an existing issue found by rule-id prefix", async () => {
+    const currentRow = row("674b10", { name: "New rule name" });
+    const existing = boardIssue(currentRow, {
+      title: "[674b10] Old rule name",
+      body: "old body",
+    });
+    const client = fakeClient({ issues: [existing] });
+
+    const result = await upsertActBoardIssues([currentRow], client);
+
+    expect(result.created).toBe(0);
+    expect(client.createBoardIssue).not.toHaveBeenCalled();
+    expect(client.updateBoardIssue).toHaveBeenCalledWith(
+      expect.anything(),
+      existing.number,
+      expect.objectContaining({
+        title: "[674b10] New rule name",
+        body: renderActBoardIssueBody(currentRow),
+      }),
+    );
+  });
+
+  it("performs no writes when title, body, state, and sub-issues match", async () => {
+    const blocker = issue(7, "Shared blocker", true);
+    const existingRow = row("674b10", {
+      issues: [blocker],
+      blockers: [blocker],
+      blockersCount: 1,
+    });
+    const existingIssue = boardIssue(existingRow);
+    const client = fakeClient({
+      issues: [existingIssue],
+      subIssues: {
+        [existingIssue.nodeId]: [
+          {
+            nodeId: "CG_7",
+            owner: "act-rules",
+            repo: "act-rules.github.io",
+            number: 7,
+          },
+        ],
+      },
+    });
+
+    const result = await upsertActBoardIssues([existingRow], client);
+
+    expect(result.skipped).toBe(1);
+    expect(client.createBoardIssue).not.toHaveBeenCalled();
+    expect(client.updateBoardIssue).not.toHaveBeenCalled();
+    expect(client.getIssueNodeId).not.toHaveBeenCalled();
+    expect(client.addSubIssue).not.toHaveBeenCalled();
+    expect(client.removeSubIssue).not.toHaveBeenCalled();
+  });
+
+  it("treats CRLF and trailing whitespace in the stored body as unchanged", async () => {
+    const existingRow = row("674b10");
+    const existingIssue = boardIssue(existingRow, {
+      body: `${renderActBoardIssueBody(existingRow).replace(/\n/g, "\r\n")}   `,
+    });
+    const client = fakeClient({ issues: [existingIssue] });
+
+    const result = await upsertActBoardIssues([existingRow], client);
+
+    expect(result.skipped).toBe(1);
+    expect(client.updateBoardIssue).not.toHaveBeenCalled();
+  });
+
+  it("closes deprecated and snapshot-missing rule issues", async () => {
+    const deprecated = row("674b10", { status: "Deprecated" });
+    const oldDeprecated = boardIssue(deprecated, {
+      body: "old body",
+      state: "open",
+    });
+    const removed = boardIssue(row("2ee8b8"));
+    const client = fakeClient({ issues: [oldDeprecated, removed] });
+
+    const result = await upsertActBoardIssues([deprecated], client);
+
+    expect(result.closed).toBe(2);
+    expect(client.updateBoardIssue).toHaveBeenCalledWith(
+      expect.anything(),
+      oldDeprecated.number,
+      expect.objectContaining({ state: "closed" }),
+    );
+    expect(client.updateBoardIssue).toHaveBeenCalledWith(
+      expect.anything(),
+      removed.number,
+      { state: "closed" },
+    );
+  });
+
+  it("adds new blockers and removes dropped sub-issues", async () => {
+    const blocker = issue(12, "Current blocker", true);
+    const currentRow = row("674b10", {
+      issues: [blocker],
+      blockers: [blocker],
+      blockersCount: 1,
+    });
+    const parent = boardIssue(currentRow);
+    const client = fakeClient({
+      issues: [parent],
+      subIssues: {
+        [parent.nodeId]: [
+          {
+            nodeId: "CG_99",
+            owner: "act-rules",
+            repo: "act-rules.github.io",
+            number: 99,
+          },
+        ],
+      },
+      blockerNodeIds: { 12: "CG_12" },
+    });
+
+    const result = await upsertActBoardIssues([currentRow], client);
+
+    expect(result.subIssuesRemoved).toBe(1);
+    expect(result.subIssuesAdded).toBe(1);
+    expect(result.skipped).toBe(0);
+    expect(client.removeSubIssue).toHaveBeenCalledWith(parent.nodeId, "CG_99");
+    expect(client.addSubIssue).toHaveBeenCalledWith(parent.nodeId, "CG_12");
+  });
+
+  it("manages the open duplicate and closes the remaining ones", async () => {
+    const currentRow = row("674b10", { name: "New rule name" });
+    const closedLow = boardIssue(currentRow, {
+      number: 4,
+      title: "[674b10] Old rule name",
+      body: "old body",
+      state: "closed",
+      nodeId: "BOARD_CLOSED_LOW",
+    });
+    const openHigh = boardIssue(currentRow, {
+      number: 9,
+      title: "[674b10] Old rule name",
+      body: "old body",
+      state: "open",
+      nodeId: "BOARD_OPEN_HIGH",
+    });
+    const openExtra = boardIssue(currentRow, {
+      number: 12,
+      title: "[674b10] Another duplicate",
+      body: "old body",
+      state: "open",
+      nodeId: "BOARD_OPEN_EXTRA",
+    });
+    const client = fakeClient({ issues: [openExtra, closedLow, openHigh] });
+
+    const result = await upsertActBoardIssues([currentRow], client);
+
+    expect(client.updateBoardIssue).toHaveBeenCalledWith(
+      expect.anything(),
+      openHigh.number,
+      expect.objectContaining({
+        title: "[674b10] New rule name",
+        body: renderActBoardIssueBody(currentRow),
+      }),
+    );
+    expect(client.updateBoardIssue).toHaveBeenCalledWith(
+      expect.anything(),
+      openExtra.number,
+      { state: "closed" },
+    );
+    expect(client.updateBoardIssue).not.toHaveBeenCalledWith(
+      expect.anything(),
+      closedLow.number,
+      expect.anything(),
+    );
+    expect(result.updated).toBe(1);
+    expect(result.closed).toBe(1);
+    expect(client.listSubIssues).toHaveBeenCalledWith(openHigh.nodeId);
+    expect(client.listSubIssues).not.toHaveBeenCalledWith(closedLow.nodeId);
+  });
+
+  it("attaches a shared blocker only to the lowest matching rule id", async () => {
+    const blocker = issue(42, "Shared blocker", true);
+    const low = row("2ee8b8", {
+      issues: [blocker],
+      blockers: [blocker],
+      blockersCount: 1,
+    });
+    const high = row("674b10", {
+      issues: [blocker],
+      blockers: [blocker],
+      blockersCount: 1,
+    });
+    const lowParent = boardIssue(low);
+    const highParent = boardIssue(high);
+    const client = fakeClient({
+      issues: [highParent, lowParent],
+      blockerNodeIds: { 42: "CG_42" },
+    });
+
+    await upsertActBoardIssues([high, low], client);
+
+    expect(client.addSubIssue).toHaveBeenCalledTimes(1);
+    expect(client.addSubIssue).toHaveBeenCalledWith(lowParent.nodeId, "CG_42");
+    expect(renderActBoardIssueBody(low)).toContain("[#42: Shared blocker]");
+    expect(renderActBoardIssueBody(high)).toContain("[#42: Shared blocker]");
+  });
+});

@@ -178,6 +178,7 @@ export async function buildRuleApprovalRows(
     rows.push({
       ruleId,
       name: rule.frontmatter.name,
+      filename: rule.filename,
       ruleTypeSummary,
       compositeInputs:
         rule.frontmatter.rule_type === "composite"

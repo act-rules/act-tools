@@ -46,6 +46,7 @@ describe("runApprovalReport", () => {
       {
         ruleId: "only",
         name: "Only rule",
+        filename: "only-rule-only.md",
         ruleTypeSummary: "atomic",
         waiApproved: true,
         status: "Approved, current",

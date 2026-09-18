@@ -20,7 +20,7 @@ function atomicPage(
   return {
     body: "",
     markdownAST: emptyMdAst,
-    filename: `${id}.md`,
+    filename: `rule-${id}.md`,
     assets: {},
     frontmatter: {
       id,
@@ -89,6 +89,18 @@ describe("buildRuleApprovalRows", () => {
       ruleId: "gone",
       status: "Deprecated",
     });
+  });
+
+  it("keeps the rule file name so links can point at the real file", async () => {
+    const rows = await buildRuleApprovalRows(
+      baseOpts,
+      mockDeps({
+        getRulePages: () => [atomicPage("674b10")],
+        loadCompleteImplementationsByRuleId: () => ({ "674b10": ["axe"] }),
+        pathRelativeToRepo: () => "_rules/rule-674b10.md",
+      }),
+    );
+    expect(rows[0].filename).toBe("rule-674b10.md");
   });
 
   it("strips issue body from row issues", async () => {

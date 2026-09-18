@@ -45,6 +45,8 @@ export type RuleStatus =
 export type RuleApprovalRow = {
   ruleId: string;
   name: string;
+  /** Rule file name within `_rules`, including the `-ruleId.md` suffix. */
+  filename: string;
   ruleTypeSummary: RuleTypeSummary;
   /** Set for composite rules only: atomic ids from `input_rules` (for table ordering). */
   compositeInputs?: string[];

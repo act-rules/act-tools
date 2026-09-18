@@ -10,6 +10,7 @@ function baseRow(
   return {
     ruleId,
     name: ruleId,
+    filename: `rule-${ruleId}.md`,
     ruleTypeSummary: "atomic",
     waiApproved: false,
     status: "Approved, current",
