@@ -169,19 +169,19 @@ describe("buildRuleApprovalRows", () => {
   });
 
   it("sets reviewPrUrl and In review from an open publication PR", async () => {
+    const fetchOpenPublishPrs = jest.fn(async () => [
+      {
+        number: 42,
+        html_url: "https://github.com/w3c/wcag-act-rules/pull/42",
+        ruleIds: ["674b10"],
+      },
+    ]);
     const rows = await buildRuleApprovalRows(
       baseOpts,
-      oneAtomic("674b10", {
-        fetchOpenPublishPrs: async () => [
-          {
-            number: 42,
-            html_url: "https://github.com/w3c/wcag-act-rules/pull/42",
-            ruleIds: ["674b10"],
-          },
-        ],
-      }),
+      oneAtomic("674b10", { fetchOpenPublishPrs }),
     );
 
+    expect(fetchOpenPublishPrs).toHaveBeenCalledWith("w3c", "wcag-act-rules");
     expect(rows[0]).toMatchObject({
       reviewPrUrl: "https://github.com/w3c/wcag-act-rules/pull/42",
       status: "In review",

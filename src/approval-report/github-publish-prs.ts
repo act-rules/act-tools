@@ -141,8 +141,13 @@ function githubErrorMessage(error: unknown): string {
 
 function isAccessError(error: unknown): boolean {
   if (!error || typeof error !== "object") return false;
-  const status = (error as { status?: number }).status;
-  return status === 403 || status === 404;
+  const githubError = error as {
+    status?: number;
+    response?: { headers?: { "x-ratelimit-remaining"?: string } };
+  };
+  if (githubError.status === 404) return true;
+  if (githubError.status !== 403) return false;
+  return githubError.response?.headers?.["x-ratelimit-remaining"] !== "0";
 }
 
 function throwFetchError(owner: string, repo: string, error: unknown): never {

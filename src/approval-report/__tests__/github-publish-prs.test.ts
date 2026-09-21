@@ -12,6 +12,7 @@ describe("fetchOpenPublishPrs", () => {
   const list = jest.fn();
   const listFiles = jest.fn();
   const iterator = jest.fn();
+  const originalGithubToken = process.env.GITHUB_TOKEN;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -23,7 +24,11 @@ describe("fetchOpenPublishPrs", () => {
   });
 
   afterAll(() => {
-    delete process.env.GITHUB_TOKEN;
+    if (originalGithubToken === undefined) {
+      delete process.env.GITHUB_TOKEN;
+    } else {
+      process.env.GITHUB_TOKEN = originalGithubToken;
+    }
   });
 
   function mockGitHub(
@@ -81,6 +86,21 @@ describe("fetchOpenPublishPrs", () => {
     expect(Octokit).toHaveBeenCalledWith({ auth: undefined });
   });
 
+  it("lists publication PRs with state open", async () => {
+    mockGitHub([], {});
+
+    await fetchOpenPublishPrs("w3c", "wcag-act-rules");
+
+    expect(iterator).toHaveBeenCalledWith(
+      list,
+      expect.objectContaining({
+        owner: "w3c",
+        repo: "wcag-act-rules",
+        state: "open",
+      }),
+    );
+  });
+
   it("returns no match when no open PR is listed", async () => {
     mockGitHub([], {});
 
@@ -108,31 +128,37 @@ describe("fetchOpenPublishPrs", () => {
     expect(Octokit).toHaveBeenCalledWith({ auth: "test-token" });
   });
 
-  it("retries without auth when an installation token cannot access W3C", async () => {
-    process.env.GITHUB_TOKEN = "installation-token";
-    iterator
-      .mockImplementationOnce(() => {
-        async function* denied() {
-          throw { status: 404, message: "Not Found" };
-          yield { data: [] };
-        }
-        return denied();
-      })
-      .mockImplementationOnce(() => {
-        async function* publicResponse() {
-          yield { data: [] };
-        }
-        return publicResponse();
-      });
+  it.each([
+    { status: 404, message: "Not Found" },
+    { status: 403, message: "Forbidden" },
+  ])(
+    "retries without auth on HTTP $status when an installation token cannot access W3C",
+    async ({ status, message }) => {
+      process.env.GITHUB_TOKEN = "installation-token";
+      iterator
+        .mockImplementationOnce(() => {
+          async function* denied() {
+            throw { status, message };
+            yield { data: [] };
+          }
+          return denied();
+        })
+        .mockImplementationOnce(() => {
+          async function* publicResponse() {
+            yield { data: [] };
+          }
+          return publicResponse();
+        });
 
-    await expect(fetchOpenPublishPrs("w3c", "wcag-act-rules")).resolves.toEqual(
-      [],
-    );
-    expect(Octokit).toHaveBeenNthCalledWith(1, {
-      auth: "installation-token",
-    });
-    expect(Octokit).toHaveBeenNthCalledWith(2, { auth: undefined });
-  });
+      await expect(
+        fetchOpenPublishPrs("w3c", "wcag-act-rules"),
+      ).resolves.toEqual([]);
+      expect(Octokit).toHaveBeenNthCalledWith(1, {
+        auth: "installation-token",
+      });
+      expect(Octokit).toHaveBeenNthCalledWith(2, { auth: undefined });
+    },
+  );
 
   it("reports repository and rate-limit failures clearly", async () => {
     iterator.mockImplementation(() => {
@@ -155,6 +181,33 @@ describe("fetchOpenPublishPrs", () => {
     await expect(fetchOpenPublishPrs("w3c", "wcag-act-rules")).rejects.toThrow(
       /Unable to list open publication PRs for w3c\/wcag-act-rules.*rate limit.*GITHUB_TOKEN/i,
     );
+  });
+
+  it("does not retry unauthenticated when rate-limited with GITHUB_TOKEN", async () => {
+    process.env.GITHUB_TOKEN = "installation-token";
+    iterator.mockImplementation(() => {
+      async function* responses() {
+        throw {
+          status: 403,
+          message: "API rate limit exceeded",
+          response: {
+            headers: {
+              "x-ratelimit-remaining": "0",
+              "x-ratelimit-reset": "123",
+            },
+          },
+        };
+        yield { data: [] };
+      }
+      return responses();
+    });
+
+    await expect(fetchOpenPublishPrs("w3c", "wcag-act-rules")).rejects.toThrow(
+      /Unable to list open publication PRs for w3c\/wcag-act-rules.*rate limit.*GITHUB_TOKEN/i,
+    );
+    expect(Octokit).toHaveBeenCalledTimes(1);
+    expect(Octokit).toHaveBeenCalledWith({ auth: "installation-token" });
+    expect(Octokit).not.toHaveBeenCalledWith({ auth: undefined });
   });
 });
 
