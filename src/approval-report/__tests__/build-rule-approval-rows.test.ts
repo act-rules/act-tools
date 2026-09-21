@@ -51,6 +51,7 @@ function mockDeps(
     getDefinitionPages: () => [],
     loadApprovalByRuleId: () => ({}),
     fetchOpenIssues: async () => [],
+    fetchOpenPublishPrs: async () => [],
     getRuleDefinitions: () => [],
     getChangesSinceApproval: () => [],
     getLatestCommitDateOnPaths: () => "2024-01-01",
@@ -165,6 +166,27 @@ describe("buildRuleApprovalRows", () => {
     expect(rows[0].status).toBe("Proposed, reviewable");
     expect(rows[0].waiApproved).toBe(false);
     expect(rows[0].reviewPrUrl).toBeNull();
+  });
+
+  it("sets reviewPrUrl and In review from an open publication PR", async () => {
+    const fetchOpenPublishPrs = jest.fn(async () => [
+      {
+        number: 42,
+        html_url: "https://github.com/w3c/wcag-act-rules/pull/42",
+        ruleIds: ["674b10"],
+      },
+    ]);
+    const rows = await buildRuleApprovalRows(
+      baseOpts,
+      oneAtomic("674b10", { fetchOpenPublishPrs }),
+    );
+
+    expect(fetchOpenPublishPrs).toHaveBeenCalledWith("w3c", "wcag-act-rules");
+    expect(rows[0]).toMatchObject({
+      reviewPrUrl: "https://github.com/w3c/wcag-act-rules/pull/42",
+      status: "In review",
+      reportBucket: "notReady",
+    });
   });
 
   it("buckets approvedUpToDate when approved with no commits after approval", async () => {
