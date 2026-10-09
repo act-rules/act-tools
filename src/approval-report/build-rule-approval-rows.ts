@@ -12,6 +12,10 @@ import {
   issuesForRuleId,
 } from "./github-issues";
 import {
+  fetchOpenPublishPrs,
+  reviewPrUrlsByRuleId,
+} from "./github-publish-prs";
+import {
   loadApprovalByRuleId,
   loadCompleteImplementationsByRuleId,
 } from "./load-data";
@@ -81,6 +85,7 @@ export type ApprovalReportDeps = {
   loadApprovalByRuleId: typeof loadApprovalByRuleId;
   loadCompleteImplementationsByRuleId: typeof loadCompleteImplementationsByRuleId;
   fetchOpenIssues: typeof fetchOpenIssues;
+  fetchOpenPublishPrs: typeof fetchOpenPublishPrs;
   getRuleDefinitions: typeof getRuleDefinitions;
   getChangesSinceApproval: typeof getChangesSinceApproval;
   getLatestCommitDateOnPaths: typeof getLatestCommitDateOnPaths;
@@ -93,6 +98,7 @@ const defaultDeps: ApprovalReportDeps = {
   loadApprovalByRuleId,
   loadCompleteImplementationsByRuleId,
   fetchOpenIssues,
+  fetchOpenPublishPrs,
   getRuleDefinitions,
   getChangesSinceApproval,
   getLatestCommitDateOnPaths,
@@ -109,6 +115,9 @@ export async function buildRuleApprovalRows(
   const approvalById = d.loadApprovalByRuleId(opts.wcagActRulesDir);
   const implById = d.loadCompleteImplementationsByRuleId(opts.wcagActRulesDir);
   const openIssues = await d.fetchOpenIssues(opts.githubOwner, opts.githubRepo);
+  const reviewPrUrls = reviewPrUrlsByRuleId(
+    await d.fetchOpenPublishPrs("w3c", "wcag-act-rules"),
+  );
   const referencedAtomicIds = buildAtomicIdsReferencedByComposites(rules);
 
   const rows: RuleApprovalRow[] = [];
@@ -157,7 +166,7 @@ export async function buildRuleApprovalRows(
     const waiApproved = Boolean(approval.approved && approval.approvalIsoDate);
     const lastApprovedSummary = approval.approvalIsoDate ?? "-";
     const commitsBehindSummary = waiApproved ? String(changes.length) : "-";
-    const reviewPrUrl = null;
+    const reviewPrUrl = reviewPrUrls.get(ruleId.toLowerCase()) ?? null;
     const status = classifyRuleStatus({
       deprecated: Boolean(rule.frontmatter.deprecated),
       reviewPrUrl,
